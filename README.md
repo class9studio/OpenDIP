@@ -7,7 +7,10 @@ Writen by C/C++ totally, cross platform.
 
 
 Instruction for each folders:
-	data		>>>>	for test image, result image and so on;
-	include		>>>>	head file;
-	samples		>>>>	demos for each function usage;
-	src		>>>>	source code;
+
+|   folders       | comment                                  | others  |
+|   ------------- |:----------------------------------------:| -------:|
+|   data          | for test image, result image and so on   |         |
+|   include	  | head file                                |         |
+|   samples       | demos for each function usage            |         |
+|   src           | source code                              |         |
