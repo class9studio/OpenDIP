@@ -1,7 +1,7 @@
 # OpenDIP
 This repo is an Open source for Digital Image Processing.
 
-Contribute by @kingLCH,@jinbaoziyl
+Contribute by @[kingLCH](https://github.com/kingLCH),@[jinbaoziyl](https://github.com/jinbaoziyl)
 
 Writen by C/C++ totally, cross platform.
 
