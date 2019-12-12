@@ -20,9 +20,9 @@
 #define _COMMON_H_
 
 //read image data
-int ReadImage(char* file_name, unsigned char* p_image_data);
+int ReadImage(char* file_name, unsigned char* p_image_data, long int image_size);
 
 //write image
-int WriteImage(char* file_name, unsigned char* p_image_data);
+int WriteImage(char* file_name, unsigned char* p_image_data, long int image_size);
 
 #endif
