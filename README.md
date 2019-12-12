@@ -14,3 +14,13 @@ Instruction for each folders:
 |   include	  | head file                                |         |
 |   samples       | demos for each function usage            |         |
 |   src           | source code                              |         |
+## Build System
+ cmake build this project!
+ 
+ ```
+ $ mkdir build
+ $ cd build
+ $ cmake ..
+ $ make
+ $ ./OpenDIP
+ ```
