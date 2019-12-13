@@ -8,8 +8,7 @@ project (OpenDIP)
 set(SOURCES
     src/common.cpp
     src/image.cpp
-    src/unittest.cpp
-    src/main.cpp
+    unit_tests/unit_tests.cpp
 )
 
 # Add an executable with the above sources
