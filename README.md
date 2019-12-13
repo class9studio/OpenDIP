@@ -23,4 +23,7 @@ Instruction for each folders:
  $ cmake ..
  $ make
  $ ./OpenDIP
+
+ 单元测试:
+$ make test
  ```
