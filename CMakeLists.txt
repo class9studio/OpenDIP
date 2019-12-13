@@ -4,19 +4,49 @@ cmake_minimum_required(VERSION 3.1)
 # Set the project name
 project (OpenDIP)
 
-# Create a sources variable with a link to all cpp files to compile
-set(SOURCES
+# Use c++11, to build catch2 
+set(CMAKE_CXX_STANDARD 11)
+
+# add the CMakeFile that defines catch2
+add_subdirectory(3rd_party/catch2)
+
+
+# Create a library to all cpp files to compile
+# Add an library for the example classes
+add_library(OpenDIP
     src/common.cpp
     src/image.cpp
-    unit_tests/unit_tests.cpp
 )
 
-# Add an executable with the above sources
-add_executable(OpenDIP ${SOURCES})
+#############################################
+# Unit tests
+
+# enable CTest testing
+enable_testing()
+
+# Create a sources variable with a link to all cpp files to compile
+set(SOURCES
+    unit_tests/unit_tests.cpp
+)
+# Set the directories that should be included in the build command for this target
+# when running g++ these will be included as -I/directory/path/
+
+
+# Add a testing executable
+add_executable(unit_tests ${SOURCES})
+
+target_link_libraries(unit_tests
+    OpenDIP
+    Catch2::Test
+)
+
+add_test(test_all unit_tests)
 
 # Set the directories that should be included in the build command for this target
 # when running g++ these will be included as -I/directory/path/
 target_include_directories(OpenDIP
-    PRIVATE 
+    PUBLIC 
         ${PROJECT_SOURCE_DIR}/include
 )
+
+

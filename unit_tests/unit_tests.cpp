@@ -3,9 +3,11 @@
 #include "common.h"
 #include "image.h"
 
-using namespace std;
-int main(int argc, char *argv[])
+#define CATCH_CONFIG_MAIN          //catch2的main函数
+#include "catch2.h"
+
+
+TEST_CASE( "simple" )
 {
-	cout << "[Main] Main Function." << endl;
-    return 0;
+    REQUIRE( OPENDIP_IMAGE_PNG == GetImageTypeFromFile((char *)"yanglin.png") );
 }
