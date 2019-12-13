@@ -7,6 +7,8 @@ project (OpenDIP)
 # Create a sources variable with a link to all cpp files to compile
 set(SOURCES
     src/common.cpp
+    src/image.cpp
+    src/unittest.cpp
     src/main.cpp
 )
 
