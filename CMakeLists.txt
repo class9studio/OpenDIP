@@ -18,6 +18,14 @@ add_library(OpenDIP
     src/image.cpp
 )
 
+# include third package library, then check
+find_package (Eigen3 3.3 REQUIRED NO_MODULE)
+if(Eigen3_FOUND)
+    message ("Eigen3 found")
+else()
+    message (FATAL_ERROR "Cannot find Eigen3")
+endif()
+
 #############################################
 # Unit tests
 
@@ -35,9 +43,12 @@ set(SOURCES
 # Add a testing executable
 add_executable(unit_tests ${SOURCES})
 
+
+# link library
 target_link_libraries(unit_tests
     OpenDIP
     Catch2::Test
+    Eigen3::Eigen
 )
 
 add_test(test_all unit_tests)
