@@ -1,18 +1,21 @@
 #include <iostream>
 #include <Eigen/Dense>
+#include<opencv2/opencv.hpp>
+
 #include "common.h"
 #include "image.h"
 
 #define CATCH_CONFIG_MAIN          //catch2的main函数
 #include "catch2.h"
 using namespace Eigen;
+using namespace cv;
 
 TEST_CASE( "simple" )
 {
     REQUIRE( OPENDIP_IMAGE_PNG == GetImageTypeFromFile((char *)"yanglin.png") );
 }
 
-TEST_CASE("empty")
+TEST_CASE("eigen")
 {       
   MatrixXd m(2,2);
   m(0,0) = 3;
@@ -26,4 +29,14 @@ TEST_CASE("empty")
   std::cout << "Here is the vector v:\n" << v << std::endl;
 
  REQUIRE( 0 == 0 );
+}
+
+
+
+TEST_CASE("opencv")
+{       
+    Mat picture = imread("../data/test_image/cat.jpg");
+    imshow("OpenCV Test", picture); 
+    waitKey(1000);
+    REQUIRE( 0 == 0 );
 }

@@ -26,6 +26,15 @@ else()
     message (FATAL_ERROR "Cannot find Eigen3")
 endif()
 
+# find required opencv
+find_package(OpenCV REQUIRED)
+if(OpenCV_FOUND)
+    message("OpenCV found")
+else()
+    message(FATAL_ERROR "cannot find OpenCV")
+endif()
+
+
 #############################################
 # Unit tests
 
@@ -49,6 +58,7 @@ target_link_libraries(unit_tests
     OpenDIP
     Catch2::Test
     Eigen3::Eigen
+    ${OpenCV_LIBS}
 )
 
 add_test(test_all unit_tests)
@@ -58,6 +68,7 @@ add_test(test_all unit_tests)
 target_include_directories(OpenDIP
     PUBLIC 
         ${PROJECT_SOURCE_DIR}/include
+        ${OpenCV_INCLUDE_DIRS}
 )
 
 
