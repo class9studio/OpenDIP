@@ -67,6 +67,19 @@ sudo ldconfig -v
  $ sudo make install
  ```
 
+ c++ Environment configuration
+ ```
+ $ cd /etc/ld.so.conf.d/
+ $ sudo touch opencv4.conf
+ $ sudo echo "/usr/local/lib" > opencv4.
+ $ sudo ldconfig
+
+check success or not
+ $ pkg-config --libs opencv4
+ $ pkg-config --cflags opencv4
+
+ ```
+
 
  ### OpenDIP Lib Build,And Test
  ```
