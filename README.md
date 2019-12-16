@@ -10,9 +10,10 @@ Instruction for each folders:
 
 |   folders       | comment                                  | others  |
 |   ------------- |:----------------------------------------:| -------:|
+|   3rd_party     | for 3rd dependent lib (manually tanshou) |         |
 |   data          | for test image, result image and so on   |         |
 |   include	  | head file                                |         |
-|   samples       | demos for each function usage            |         |
+|   unit_tests       | demos for each function usage         |         |
 |   src           | source code                              |         |
 ## Build System
  Cmake build this project. OpenDIP project have a requirement for including third party libraries, such as Catch2, Eigen or OpenCV.

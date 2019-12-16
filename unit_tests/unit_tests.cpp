@@ -7,7 +7,7 @@
 #define CATCH_CONFIG_MAIN          //catch2的main函数
 #include "catch2.h"
 using namespace Eigen;
-
+using namespace opendip;
 
 TEST_CASE( "simple" )
 {

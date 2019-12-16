@@ -3,9 +3,11 @@
 #include<cstring>
 #include "image.h"
 
-OpenDIP_Image_Type_e GetImageTypeFromFile(char *filename)
+namespace opendip {
+
+OpenDIP_Image_FILE_Type_e GetImageTypeFromFile(char *filename)
 {
-    OpenDIP_Image_Type_e  image_type = OPENDIP_IMAGE_UNKOWN; 
+    OpenDIP_Image_FILE_Type_e  image_type = OPENDIP_IMAGE_UNKOWN; 
     unsigned char file_size = 0;
     unsigned char index = 0;
     char suffix[64] = {0};
@@ -58,3 +60,9 @@ OpenDIP_Image_Type_e GetImageTypeFromFile(char *filename)
 
     return image_type;
 }
+
+
+
+
+
+}  //namespace opendip

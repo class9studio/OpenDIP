@@ -20,6 +20,7 @@ add_library(OpenDIP
 
 #[[
 # include third package library, then check
+
 # find required opencv
 find_package(OpenCV REQUIRED)
 if(OpenCV_FOUND)
@@ -28,7 +29,6 @@ else()
     message(FATAL_ERROR "cannot find OpenCV")
 endif()
 ]]
-
 
 #############################################
 # Unit tests
