@@ -19,20 +19,20 @@ add_library(OpenDIP
 )
 
 # include third package library, then check
-find_package (Eigen3 3.3 REQUIRED NO_MODULE)
-if(Eigen3_FOUND)
-    message ("Eigen3 found")
-else()
-    message (FATAL_ERROR "Cannot find Eigen3")
-endif()
+#find_package (Eigen3 3.3 REQUIRED NO_MODULE)
+#if(Eigen3_FOUND)
+#    message ("Eigen3 found")
+#else()
+#    message (FATAL_ERROR "Cannot find Eigen3")
+#endif()
 
 # find required opencv
-find_package(OpenCV REQUIRED)
-if(OpenCV_FOUND)
-    message("OpenCV found")
-else()
-    message(FATAL_ERROR "cannot find OpenCV")
-endif()
+#find_package(OpenCV REQUIRED)
+#if(OpenCV_FOUND)
+#    message("OpenCV found")
+#else()
+#    message(FATAL_ERROR "cannot find OpenCV")
+#endif()
 
 
 #############################################
