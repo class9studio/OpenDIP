@@ -7,9 +7,9 @@ project (OpenDIP)
 # Use c++11, to build catch2 
 set(CMAKE_CXX_STANDARD 11)
 
-# add the CMakeFile that defines catch2
+# add the CMakeFile that defines catch2、eigen3
 add_subdirectory(3rd_party/catch2)
-
+add_subdirectory(3rd_party/eigen3)
 
 # Create a library to all cpp files to compile
 # Add an library for the example classes
@@ -18,14 +18,8 @@ add_library(OpenDIP
     src/image.cpp
 )
 
+#[[
 # include third package library, then check
-find_package (Eigen3 3.3 REQUIRED NO_MODULE)
-if(Eigen3_FOUND)
-    message ("Eigen3 found")
-else()
-    message (FATAL_ERROR "Cannot find Eigen3")
-endif()
-
 # find required opencv
 find_package(OpenCV REQUIRED)
 if(OpenCV_FOUND)
@@ -33,6 +27,7 @@ if(OpenCV_FOUND)
 else()
     message(FATAL_ERROR "cannot find OpenCV")
 endif()
+]]
 
 
 #############################################
@@ -57,8 +52,11 @@ add_executable(unit_tests ${SOURCES})
 target_link_libraries(unit_tests
     OpenDIP
     Catch2::Test
+
+    #[[    
     Eigen3::Eigen
     ${OpenCV_LIBS}
+    ]]
 )
 
 add_test(test_all unit_tests)
@@ -68,7 +66,8 @@ add_test(test_all unit_tests)
 target_include_directories(OpenDIP
     PUBLIC 
         ${PROJECT_SOURCE_DIR}/include
-        ${OpenCV_INCLUDE_DIRS}
+        ${PROJECT_SOURCE_DIR}/3rd_party/eigen3
+        #${OpenCV_INCLUDE_DIRS}
 )
 
 
