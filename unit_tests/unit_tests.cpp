@@ -1,6 +1,6 @@
 #include <iostream>
 #include <Eigen/Dense>
-
+#include <opencv2/opencv.hpp>
 #include "common.h"
 #include "image.h"
 
@@ -8,6 +8,7 @@
 #include "catch2.h"
 using namespace Eigen;
 using namespace opendip;
+using namespace cv;
 
 TEST_CASE( "simple" )
 {
@@ -30,4 +31,11 @@ TEST_CASE("eigen")
  REQUIRE( 0 == 0 );
 }
 
+TEST_CASE("opencv")
+{       
+    Mat picture = imread("../data/test_image/cat.jpg");
+    imshow("OpenCV Test", picture); 
+    waitKey(5000);
+    REQUIRE( 0 == 0 );
+} 
 
