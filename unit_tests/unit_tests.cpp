@@ -1,14 +1,21 @@
 #include <iostream>
 #include <Eigen/Dense>
-#include <opencv2/opencv.hpp>
+//#include <opencv2/opencv.hpp>
 #include "common.h"
 #include "image.h"
 
 #define CATCH_CONFIG_MAIN          //catch2的main函数
 #include "catch2.h"
+
+#define STB_IMAGE_WRITE_IMPLEMENTATION
+#include "stb_image_write.h"
+
+#define STB_IMAGE_IMPLEMENTATION
+#include "stb_image.h"
+
 using namespace Eigen;
 using namespace opendip;
-using namespace cv;
+//using namespace cv;
 
 TEST_CASE( "simple" )
 {
@@ -31,6 +38,8 @@ TEST_CASE("eigen")
  REQUIRE( 0 == 0 );
 }
 
+
+#if 0
 TEST_CASE("opencv")
 {       
     Mat picture = imread("../data/test_image/cat.jpg");
@@ -38,4 +47,21 @@ TEST_CASE("opencv")
     waitKey(5000);
     REQUIRE( 0 == 0 );
 } 
+#endif
+
+TEST_CASE("stb")
+{       
+    int w, h, n;
+
+    //rgba
+    //load image
+    unsigned char *data = stbi_load("../data/test_image/aloeGT.png", &w, &h, &n, 0);
+
+    std::cout << "aloeGT Info :" << std::endl << "wight:" << w << " hight: " << h << " channel: " << n << std::endl;
+
+    stbi_image_free(data);  
+
+    REQUIRE( 0 == 0 );
+} 
+
 

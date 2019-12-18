@@ -20,13 +20,15 @@ add_library(OpenDIP
 
 # include third package library, then check
 
-# find required opencv
-find_package(OpenCV REQUIRED)
-if(OpenCV_FOUND)
-    message("OpenCV found")
-else()
-    message(FATAL_ERROR "cannot find OpenCV")
-endif()
+#[[
+    # find required opencv
+    find_package(OpenCV REQUIRED)
+    if(OpenCV_FOUND)
+        message("OpenCV found")
+    else()
+        message(FATAL_ERROR "cannot find OpenCV")
+    endif()
+]]
 
 #############################################
 # Unit tests
@@ -51,7 +53,7 @@ target_link_libraries(unit_tests
     OpenDIP
     Catch2::Test   
     #Eigen3::Eigen
-    ${OpenCV_LIBS}
+    #${OpenCV_LIBS}
 
 )
 
@@ -63,7 +65,8 @@ target_include_directories(OpenDIP
     PUBLIC 
         ${PROJECT_SOURCE_DIR}/include
         ${PROJECT_SOURCE_DIR}/3rd_party/eigen3
-        ${OpenCV_INCLUDE_DIRS}
+        ${PROJECT_SOURCE_DIR}/3rd_party/stb
+        #${OpenCV_INCLUDE_DIRS}
 )
 
 
