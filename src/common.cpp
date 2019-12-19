@@ -76,8 +76,8 @@ Image ImgRead(char* file_name)
 	Image img;
 	unsigned char* data;
 
-	img.data = stbi_load(file_name, &img.w, &img.h, &img.c, 0);
-	if (img.data == NULL)
+	data = stbi_load(file_name, &img.w, &img.h, &img.c, 0);
+	if (data == NULL)
 	{
 		printf("image load fail\n");
 		return img;
@@ -85,7 +85,7 @@ Image ImgRead(char* file_name)
 
 	img.cstep = img.w;
 	img.ftype = GetImageTypeFromFile(file_name);
-	data = (unsigned char*)img.data;
+	img.data =(unsigned char*) data;
 
 	return img;
 }
@@ -107,7 +107,6 @@ int ImgWrite(char* file_name, Image &img)
 {
 	int ret = 0;
 	OpenDIP_Image_FILE_Type_e type = img.ftype;
-	unsigned char* data = (unsigned char*)img.data;
 
 	switch (type)
 	{

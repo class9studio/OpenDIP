@@ -482,18 +482,13 @@ template <typename T>
 
   void Image::release()
 {
-	//if (refcount && OPENDIP_XADD(refcount, -1) == 1)
-	//{
-	//    if (allocator)
-	//        allocator->fastFree(data);
-	//    else
-	//        fastFree(data);
-	//}
-
-	if (allocator)
-		allocator->fastFree(data);
-	else
-		fastFree(data);
+	if (refcount && OPENDIP_XADD(refcount, -1) == 1)
+	{
+	    if (allocator)
+	        allocator->fastFree(data);
+	    else
+	        fastFree(data);
+	}
 
 
 	data = 0;

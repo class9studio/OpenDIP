@@ -4,3 +4,5 @@
 /build/
 /.vscode/
 /Windows/.vs/
+/Windows/OpenDIP/x64/
+/Windows/Windows/x64

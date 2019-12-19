@@ -53,14 +53,28 @@ TEST_CASE("opencv")
 
 TEST_CASE("image read")
 {
-	int w, h, n;
+
+#if _WIN32
+	std::string img_path = "../../data/test_image/cat.jpg";
+	std::string dst_img = "../../data/test_image/cat_copy.jpg";
+#else
 	std::string img_path = "../data/test_image/cat.jpg";
 	std::string dst_img = "../data/test_image/yl.jpg";
+#endif
 	Image src = ImgRead((char*)img_path.c_str());
+	Image dst(src);//浅拷贝
+	unsigned char* p_data =(unsigned char*) dst.data;
+	for (size_t j = 0; j < dst.h; j++)
+	{
+		for (size_t i = 0; i < dst.w; i++)
+		{
+			p_data[j * dst.c * dst.w + dst.c*i + 0] = 255;
+			p_data[j * dst.c * dst.w + dst.c*i + 1] = 0;
+			p_data[j * dst.c * dst.w + dst.c*i + 2] = 0;
+		}
+	}
 	ImgWrite((char*)dst_img.c_str(), src);
  
 	REQUIRE(true);
 }
-
-
 
