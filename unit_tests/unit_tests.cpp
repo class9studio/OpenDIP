@@ -56,10 +56,10 @@ TEST_CASE("image read")
 
 #if _WIN32
 	std::string img_path = "../../data/test_image/cat.jpg";
-	std::string dst_img = "../../data/test_image/cat_copy.jpg";
+	std::string dst_img = "../../data/output_image/windows/cat_copy.jpg";
 #else
 	std::string img_path = "../data/test_image/cat.jpg";
-	std::string dst_img = "../data/test_image/yl.jpg";
+	std::string dst_img = "../data/output_image/linux/cat_copy.jpg";
 #endif
 	Image src = ImgRead((char*)img_path.c_str());
 	Image dst(src);//浅拷贝
