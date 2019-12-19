@@ -74,25 +74,20 @@ int WriteImage(char* file_name, unsigned char* p_image_data, long int image_size
 Image ImgRead(char* file_name)
 {
 	Image img;
+	unsigned char* data;
 
 	img.data = stbi_load(file_name, &img.w, &img.h, &img.c, 0);
-
 	if (img.data == NULL)
 	{
+		printf("image load fail\n");
 		return img;
 	}
 
 	img.cstep = img.w;
-
 	img.ftype = GetImageTypeFromFile(file_name);
-	unsigned char* data = (unsigned char*)img.data;
-	printf("data[0]:%x\n", &data[0]);
-	printf("%d	%d	%d\n", data[100], data[200], data[300]);
-
-	stbi_write_jpg("result.jpg", img.w, img.h, img.c, img.data, img.w * img.c);
+	data = (unsigned char*)img.data;
 
 	return img;
-
 }
 
 /*****************************************************************************
@@ -108,27 +103,20 @@ Image ImgRead(char* file_name)
 *           Author       : kingLCH
 *           Modification : function draft
 *****************************************************************************/
-int ImgWrite(char* file_name, Image img)
+int ImgWrite(char* file_name, Image &img)
 {
 	int ret = 0;
 	OpenDIP_Image_FILE_Type_e type = img.ftype;
-	char dst_name[1024] = {0};
 	unsigned char* data = (unsigned char*)img.data;
-	printf("data[0]:%x\n", &data[0]);
-	printf("%d	%d	%d\n", data[100], data[200], data[300]);
 
-	strcpy(dst_name, file_name);
 	switch (type)
 	{
 	case OPENDIP_IMAGE_JPG:
-		strcat(dst_name, ".jpg");
 		stbi_write_jpg(file_name, img.w, img.h, img.c, img.data, img.w * img.c);
 		break;
 	case OPENDIP_IMAGE_PNG:
-		strcat(dst_name, ".png");
-		stbi_write_png(dst_name, img.w, img.h, img.c, img.data, img.w * img.c);
+		stbi_write_png(file_name, img.w, img.h, img.c, img.data, img.w * img.c);
 		break;
-
 	default:
 		ret = -1;
 		break;

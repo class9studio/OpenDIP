@@ -1,4 +1,6 @@
 #include <iostream>
+#include <string>
+
 #include <Eigen/Dense>
 //#include <opencv2/opencv.hpp>
 #include "common.h"
@@ -49,93 +51,15 @@ TEST_CASE("opencv")
 } 
 #endif
 
-//TEST_CASE("stb")
-//{       
-//    int w, h, n;
-//
-//#if _WIN32
-//	char img_path[] = "../../data/test_image/cat.jpg";
-//#else
-//	char img_path[] = "../data/test_image/aloeGT11.png";
-//#endif
-//
-//    //rgba
-//    //load image
-//    unsigned char *data = stbi_load(img_path, &w, &h, &n, 0);
-//
-//
-//    std::cout << "aloeGT Info :" << std::endl << "width:" << w << " hight: " << h << " channel: " << n << std::endl;
-//
-//	//std::cout << "data:" << &data << std::endl;
-//	printf("data[0]:%x\n", &data[0]);
-//	printf("data[w-1]:%x\n", &data[w-1]);
-//	printf("data[w]:%x\n", &data[w]);
-//	printf("width:%d", &data[w] - &data[0]);
-//
-//	//for (size_t j = 0; j < h; j++)
-//	//{
-//	//	for (size_t i = 0; i < w; i++)
-//	//	{
-//	//		data[j*n*w + n * i + 0] = 0;
-//	//		data[j*n*w + n * i + 1] = 0;
-//	//		data[j*n*w + n * i + 2] = 255;
-//	//	}
-//	//}
-//
-//	stbi_write_jpg("result..jpg", w, h, n, data, w * n);
-//
-//    stbi_image_free(data);
-//
-//	system("pause");
-//
-//    REQUIRE( 0 == 0 );
-//}
-TEST_CASE("image read ")
+TEST_CASE("image read")
 {
 	int w, h, n;
-
-#if _WIN32
-	char img_path[] = "../../data/test_image/cat.jpg";
-#else
-	char img_path[] = "../data/test_image/aloeGT11.png";
-#endif
-
-	//rgba
-	//load image
-	//unsigned char *data = stbi_load(img_path, &w, &h, &n, 0);
-
-	Image src = ImgRead(img_path);
-
-	unsigned char *data = (unsigned char *)src.data;
-
-	printf("data[0]:%x\n", &data[0]);
-	printf("%d	%d	%d\n", data[100], data[200], data[300]);
-
-	std::cout << "aloeGT Info :" << std::endl << "width:" << src.w << " hight: " << src.h << " channel: " << src.c << std::endl;
-
-	////std::cout << "data:" << &data << std::endl;
-	//printf("data[0]:%x\n", &data[0]);
-	//printf("data[w-1]:%x\n", &data[w - 1]);
-	//printf("data[w]:%x\n", &data[w]);
-	//printf("width:%d", &data[w] - &data[0]);
-	//for (size_t j = 0; j < h; j++)
-	//{
-	//	for (size_t i = 0; i < w; i++)
-	//	{
-	//		data[j*n*w + n * i + 0] = 0;
-	//		data[j*n*w + n * i + 1] = 0;
-	//		data[j*n*w + n * i + 2] = 255;
-	//	}
-	//}
-
-	//stbi_write_jpg("result.jpg", src.w, src.h, src.c, data, src.w * src.c);
-
-	//stbi_image_free(data);
-	ImgWrite((char*)"result.jpg", src);
-
-	system("pause");
-
-	REQUIRE(0 == 0);
+	std::string img_path = "../data/test_image/cat.jpg";
+	std::string dst_img = "../data/test_image/yl.jpg";
+	Image src = ImgRead((char*)img_path.c_str());
+	ImgWrite((char*)dst_img.c_str(), src);
+ 
+	REQUIRE(true);
 }
 
 

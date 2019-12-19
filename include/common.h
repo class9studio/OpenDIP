@@ -33,7 +33,7 @@ namespace opendip {
 	Image ImgRead(char* file_name);
 
 	//read image and return Image class
-	int ImgWrite(char* file_name, Image img);
+	int ImgWrite(char* file_name, Image &img);
 
 	//get image file type
 	OpenDIP_Image_FILE_Type_e GetImageTypeFromFile(char *filename);
