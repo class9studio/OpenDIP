@@ -9,7 +9,6 @@ set(CMAKE_CXX_STANDARD 11)
 
 # add the CMakeFile that defines catch2、eigen3
 add_subdirectory(3rd_party/catch2)
-add_subdirectory(3rd_party/eigen3)
 
 # Create a library to all cpp files to compile
 # Add an library for the example classes
@@ -19,7 +18,15 @@ add_library(OpenDIP
 )
 
 # include third package library, then check
-
+find_package (Eigen3  REQUIRED NO_MODULE)
+if(Eigen3_FOUND)
+    message ("Eigen3 found")
+	set(EIGEN3_INCLUDE_DIR ${EIGEN_INCLUDE_DIRS})
+else()
+    message (FATAL_ERROR "Cannot find Eigen3, then install")
+	add_subdirectory(3rd_party/eigen3)
+	set(EIGEN3_INCLUDE_DIR ${EIGEN_INCLUDE_DIRS})
+endif()
 #[[
     # find required opencv
     find_package(OpenCV REQUIRED)
@@ -43,7 +50,6 @@ set(SOURCES
 # Set the directories that should be included in the build command for this target
 # when running g++ these will be included as -I/directory/path/
 
-
 # Add a testing executable
 add_executable(unit_tests ${SOURCES})
 
@@ -51,10 +57,8 @@ add_executable(unit_tests ${SOURCES})
 # link library
 target_link_libraries(unit_tests
     OpenDIP
-    Catch2::Test   
-    #Eigen3::Eigen
-    #${OpenCV_LIBS}
-
+    Catch2::Test
+	Eigen3::Eigen	
 )
 
 add_test(test_all unit_tests)
@@ -64,9 +68,8 @@ add_test(test_all unit_tests)
 target_include_directories(OpenDIP
     PUBLIC 
         ${PROJECT_SOURCE_DIR}/include
-        ${PROJECT_SOURCE_DIR}/3rd_party/eigen3
         ${PROJECT_SOURCE_DIR}/3rd_party/stb
-        #${OpenCV_INCLUDE_DIRS}
+		${EIGEN_INCLUDE_DIRS}
 )
 
 
