@@ -11,10 +11,18 @@ set(CMAKE_CXX_STANDARD 11)
 add_subdirectory(3rd_party/catch2)
 
 # Create a library to all cpp files to compile
-# Add an library for the example classes
-add_library(OpenDIP
-    src/common.cpp
-    src/image.cpp
+set(COMMON_SOURCE
+    src/common/common.cpp 
+	src/common/image.cpp
+)
+
+set(ALGORITHM_SOURCE
+    src/algorithm/interpolation.cpp 
+)
+
+add_library(OpenDIP STATIC
+    ${COMMON_SOURCE}
+    ${ALGORITHM_SOURCE}
 )
 
 # include third package library, then check

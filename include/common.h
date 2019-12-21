@@ -22,6 +22,7 @@
 #include "image.h"
 
 namespace opendip {
+	void ShowDebugInfo();
 
 	//read image data
 	int ReadImage(char* file_name, unsigned char* p_image_data, long int image_size);

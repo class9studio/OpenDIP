@@ -1,8 +1,6 @@
 #include <cstring>
 #include "image.h"
 
-
-
 namespace opendip {
 
   Image::Image()

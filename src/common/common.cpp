@@ -1,4 +1,3 @@
-
 #include <stdlib.h>
 #include <iostream>
 #include "common.h"
@@ -12,6 +11,12 @@
 
 namespace opendip{
 
+void ShowDebugInfo()
+{
+    std::cout<< "[File]: " << __FILE__ << std::endl;
+	std::cout<< "[Line]: " << __LINE__ << std::endl;
+	std::cout<< "[Function]: " << __FUNCTION__<< std::endl;
+}
 /*****************************************************************************
 *   Function name: ReadImage
 *   Description  : read image in local filesystem(jpg, jpeg, bmp, png, raw...)
@@ -153,7 +158,6 @@ OpenDIP_Image_FILE_Type_e GetImageTypeFromFile(char *filename)
 		index--;
 	}
 	strcpy(suffix, (char *)(filename + index));
-	printf("suffix: %s\n", suffix);
 
 	if (0 == strcmp(suffix, "raw"))
 	{

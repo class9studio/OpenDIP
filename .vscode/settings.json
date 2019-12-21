@@ -64,5 +64,6 @@
         "variant": "cpp",
         "alignedvector3": "cpp",
         "dense": "cpp"
-    }
+    },
+    "cmake.configureOnOpen": true
 }
