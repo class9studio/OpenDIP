@@ -13,7 +13,6 @@
 #include <list>
 #include <vector>
 
-
 namespace opendip {
 
 // the alignment of all the allocated buffers
@@ -50,7 +49,8 @@ static inline void fastFree(void* ptr)
 {
     if (ptr)
     {
-        free(ptr);
+        unsigned char* udata = ((unsigned char**)ptr)[-1];
+        free(udata);
     }
 }
 
@@ -77,7 +77,8 @@ public:
     {
         if (ptr)
         {
-            free(ptr);
+            unsigned char* udata = ((unsigned char**)ptr)[-1];
+            free(udata);
         }
     }
 };

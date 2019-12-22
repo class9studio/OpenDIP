@@ -65,8 +65,7 @@ add_executable(unit_tests ${SOURCES})
 # link library
 target_link_libraries(unit_tests
     OpenDIP
-    Catch2::Test
-	Eigen3::Eigen	
+    Catch2::Test	
 )
 
 add_test(test_all unit_tests)
@@ -77,6 +76,7 @@ target_include_directories(OpenDIP
     PUBLIC 
         ${PROJECT_SOURCE_DIR}/include
         ${PROJECT_SOURCE_DIR}/3rd_party/stb
+        ${PROJECT_SOURCE_DIR}/3rd_party/eigen3
 		${EIGEN_INCLUDE_DIRS}
 )
 
