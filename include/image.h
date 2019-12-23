@@ -31,7 +31,7 @@ class Image
 {
 public:
     // empty
-    Image();
+    Image(size_t elemsize = 4u, Allocator* allocator = 0);
     // vec
     Image(int w, size_t elemsize = 4u, Allocator* allocator = 0);
     // image
@@ -77,6 +77,8 @@ public:
     Image reshape(int w, int h, Allocator* allocator = 0) const;
     // reshape dim
     Image reshape(int w, int h, int c, Allocator* allocator = 0) const;
+    // allocate empty
+    void create(size_t elemsize = 4u, Allocator* allocator = 0);    
     // allocate vec
     void create(int w, size_t elemsize = 4u, Allocator* allocator = 0);
     // allocate image

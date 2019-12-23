@@ -95,6 +95,14 @@ Image ImgRead(char* file_name)
 	return img;
 }
 
+void StbFree(void* ptr)
+{
+    if (ptr)
+    {
+       stbi_image_free(ptr);
+    }
+}
+
 /*****************************************************************************
 *   Function name: ImgWrite
 *   Description  : write image to local filesystem(jpg, jpeg, bmp, png, raw...)

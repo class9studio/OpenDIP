@@ -39,5 +39,7 @@ namespace opendip {
 	//get image file type
 	OpenDIP_Image_FILE_Type_e GetImageTypeFromFile(char *filename);
 
+	//free stb-image api alloc space
+	void StbFree(void* ptr);
 }
 #endif

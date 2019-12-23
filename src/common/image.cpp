@@ -1,11 +1,13 @@
 #include <cstring>
 #include "image.h"
+#include "common.h"
 
 namespace opendip {
 
-  Image::Image()
+  Image::Image(size_t _elemsize, Allocator* _allocator)
 	: data(0), refcount(0), elemsize(0), elempack(0), allocator(0), dims(0), w(0), h(0), c(0), cstep(0)
 {
+	create(_elemsize, _allocator);
 }
 
   Image::Image(int _w, size_t _elemsize, Allocator* _allocator)
@@ -282,6 +284,36 @@ template <typename T>
 	return m;
 }
 
+ void Image::create(size_t _elemsize, Allocator* _allocator)
+{
+	if (dims == 1 && w == 1 && elemsize == _elemsize && elempack == 1 && allocator == _allocator)
+		return;
+
+	release();
+
+	elemsize = _elemsize;
+	elempack = 1;
+	allocator = _allocator;
+
+	dims = 1;
+	w = 1;
+	h = 1;
+	c = 1;
+
+	cstep = w;
+
+	if (total() > 0)
+	{
+		size_t totalsize = alignSize(total() * elemsize, 4);
+		if (allocator)
+			data = allocator->fastMalloc(totalsize + (int)sizeof(*refcount));
+		else
+			data = fastMalloc(totalsize + (int)sizeof(*refcount));
+		refcount = (int*)(((unsigned char*)data) + totalsize);
+		*refcount = 1;
+	}
+}
+
   void Image::create(int _w, size_t _elemsize, Allocator* _allocator)
 {
 	if (dims == 1 && w == _w && elemsize == _elemsize && elempack == 1 && allocator == _allocator)
@@ -485,7 +517,7 @@ template <typename T>
 	    if (allocator)
 	        allocator->fastFree(data);
 	    else
-	        fastFree(data);
+			fastFree(data);  
 	}
 
 
