@@ -5,6 +5,7 @@
 //#include <opencv2/opencv.hpp>
 #include "common.h"
 #include "image.h"
+#include "algorithm.h"
 
 #define CATCH_CONFIG_MAIN          //catch2的main函数
 #include "catch2.h"
@@ -49,7 +50,7 @@ TEST_CASE("opencv")
     waitKey(5000);
     REQUIRE( 0 == 0 );
 } 
-#endif
+
 
 TEST_CASE("image read")
 {
@@ -76,5 +77,26 @@ TEST_CASE("image read")
 	ImgWrite((char*)dst_img.c_str(), src);
  
 	REQUIRE(true);
+}
+#endif
+
+
+TEST_CASE("algorithm")
+{
+	#if _WIN32
+		std::string img_path = "../../data/test_image/cat.jpg";
+		std::string dst_img = "../../data/output_image/windows/cat_copy.jpg";
+	#else
+		std::string img_path = "../data/test_image/cat.jpg";
+		std::string dst_img = "../data/output_image/linux/cat_interpolation.jpg";
+	#endif	
+	
+	Image src = ImgRead((char*)img_path.c_str());
+	
+	Image dst = LinearInterpolation(src, 800, 600);
+
+	ImgWrite((char*)dst_img.c_str(), dst);
+std::cout << "algorithm" << std::endl;
+	 REQUIRE( true);
 }
 

@@ -6,7 +6,23 @@
 
 namespace opendip {
 
-Image LinearInterpolation(Image &src_image, size_t resize_w, size_t resize_h)
+
+/*****************************************************************************
+*   Function name: LinearInterpolation
+*   Description  : 最邻近插值法(Nearest Interpolation)
+                   根据目的和源图尺寸，计算宽高比率，然后计算目的像素点对应于源像素点的位置
+*   Parameters   : src_image            Source image name
+*                  resize_w             width to resize
+*                  resize_h             height to resize
+*   Return Value : Image Type.
+*   Spec         :
+*   History:
+*
+*       1.  Date         : 2019-12-23
+*           Author       : YangLin
+*           Modification : Created function
+*****************************************************************************/
+Image LinearInterpolation(Image &src_image, int resize_w, int resize_h)
 {
     if(resize_w == 0 || resize_h == 0)
     {
@@ -14,6 +30,7 @@ Image LinearInterpolation(Image &src_image, size_t resize_w, size_t resize_h)
         Image res_image;
         return res_image;
     }
+    
     Image dst_image(resize_w, resize_h, src_image.c);
     size_t src_i = 0, src_j = 0;
     float ratio_w = (float) resize_w / (float) src_image.w;

@@ -161,6 +161,9 @@ public:
 
 	//image file type
 	OpenDIP_Image_FILE_Type_e ftype;
+
+    // stb-image or not
+    bool is_stbimage;
 };
 
 

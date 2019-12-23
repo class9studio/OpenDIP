@@ -90,17 +90,11 @@ Image ImgRead(char* file_name)
 
 	img.cstep = img.w;
 	img.ftype = GetImageTypeFromFile(file_name);
+
+	img.is_stbimage = true;
 	img.data =(unsigned char*) data;
 
 	return img;
-}
-
-void StbFree(void* ptr)
-{
-    if (ptr)
-    {
-       stbi_image_free(ptr);
-    }
 }
 
 /*****************************************************************************
@@ -119,9 +113,9 @@ void StbFree(void* ptr)
 int ImgWrite(char* file_name, Image &img)
 {
 	int ret = 0;
-	OpenDIP_Image_FILE_Type_e type = img.ftype;
+	img.ftype = GetImageTypeFromFile(file_name);
 
-	switch (type)
+	switch (img.ftype)
 	{
 	case OPENDIP_IMAGE_JPG:
 		stbi_write_jpg(file_name, img.w, img.h, img.c, img.data, img.w * img.c);
@@ -203,5 +197,24 @@ OpenDIP_Image_FILE_Type_e GetImageTypeFromFile(char *filename)
 	return image_type;
 }
 
+/*****************************************************************************
+*   Function name: StbFree
+*   Description  : free stb-image data space
+*   Parameters   : ptr           pointer to free
+*   Return Value : void
+*   Spec         : 
+*   History:
+*
+*       1.  Date         : 2019-12-23
+*           Author       : YangLin
+*           Modification : function draft
+*****************************************************************************/
+void StbFree(void* ptr)
+{
+    if (ptr)
+    {
+       stbi_image_free(ptr);
+    }
+}
 
 }  //namespace opendip

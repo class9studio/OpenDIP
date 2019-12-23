@@ -4,7 +4,7 @@
 
 namespace opendip {
 
-    Image LinearInterpolation(Image &src_image, size_t resize_row, size_t resize_col);
+    Image LinearInterpolation(Image &src_image, int resize_row, int resize_col);
 
 } 
 

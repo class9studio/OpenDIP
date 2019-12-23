@@ -1,53 +1,55 @@
 #include <cstring>
+#include <iostream>
 #include "image.h"
 #include "common.h"
 
 namespace opendip {
 
   Image::Image(size_t _elemsize, Allocator* _allocator)
-	: data(0), refcount(0), elemsize(0), elempack(0), allocator(0), dims(0), w(0), h(0), c(0), cstep(0)
+	: data(0), refcount(0), elemsize(0), elempack(0), allocator(0), dims(0), w(0), h(0), c(0), cstep(0), ftype(OPENDIP_IMAGE_UNKOWN), is_stbimage(false)
 {
 	create(_elemsize, _allocator);
 }
 
   Image::Image(int _w, size_t _elemsize, Allocator* _allocator)
-	: data(0), refcount(0), elemsize(0), elempack(0), allocator(0), dims(0), w(0), h(0), c(0), cstep(0)
+	: data(0), refcount(0), elemsize(0), elempack(0), allocator(0), dims(0), w(0), h(0), c(0), cstep(0), ftype(OPENDIP_IMAGE_UNKOWN), is_stbimage(false)
 {
 	create(_w, _elemsize, _allocator);
 }
 
   Image::Image(int _w, int _h, size_t _elemsize, Allocator* _allocator)
-	: data(0), refcount(0), elemsize(0), elempack(0), allocator(0), dims(0), w(0), h(0), c(0), cstep(0)
+	: data(0), refcount(0), elemsize(0), elempack(0), allocator(0), dims(0), w(0), h(0), c(0), cstep(0), ftype(OPENDIP_IMAGE_UNKOWN), is_stbimage(false)
 {
 	create(_w, _h, _elemsize, _allocator);
 }
 
   Image::Image(int _w, int _h, int _c, size_t _elemsize, Allocator* _allocator)
-	: data(0), refcount(0), elemsize(0), elempack(0), allocator(0), dims(0), w(0), h(0), c(0), cstep(0)
+	: data(0), refcount(0), elemsize(0), elempack(0), allocator(0), dims(0), w(0), h(0), c(0), cstep(0), ftype(OPENDIP_IMAGE_UNKOWN), is_stbimage(false)
 {
 	create(_w, _h, _c, _elemsize, _allocator);
 }
 
   Image::Image(int _w, size_t _elemsize, int _elempack, Allocator* _allocator)
-	: data(0), refcount(0), elemsize(0), elempack(0), allocator(0), dims(0), w(0), h(0), c(0), cstep(0)
+	: data(0), refcount(0), elemsize(0), elempack(0), allocator(0), dims(0), w(0), h(0), c(0), cstep(0), ftype(OPENDIP_IMAGE_UNKOWN), is_stbimage(false)
 {
 	create(_w, _elemsize, _elempack, _allocator);
 }
 
   Image::Image(int _w, int _h, size_t _elemsize, int _elempack, Allocator* _allocator)
-	: data(0), refcount(0), elemsize(0), elempack(0), allocator(0), dims(0), w(0), h(0), c(0), cstep(0)
+	: data(0), refcount(0), elemsize(0), elempack(0), allocator(0), dims(0), w(0), h(0), c(0), cstep(0), ftype(OPENDIP_IMAGE_UNKOWN), is_stbimage(false)
 {
 	create(_w, _h, _elemsize, _elempack, _allocator);
 }
 
   Image::Image(int _w, int _h, int _c, size_t _elemsize, int _elempack, Allocator* _allocator)
-	: data(0), refcount(0), elemsize(0), elempack(0), allocator(0), dims(0), w(0), h(0), c(0), cstep(0)
+	: data(0), refcount(0), elemsize(0), elempack(0), allocator(0), dims(0), w(0), h(0), c(0), cstep(0), ftype(OPENDIP_IMAGE_UNKOWN), is_stbimage(false)
 {
 	create(_w, _h, _c, _elemsize, _elempack, _allocator);
 }
 
 inline Image::Image(const Image& m)
-	: data(m.data), refcount(m.refcount), elemsize(m.elemsize), elempack(m.elempack), allocator(m.allocator), dims(m.dims), w(m.w), h(m.h), c(m.c), cstep(m.cstep),ftype(m.ftype)
+	: data(m.data), refcount(m.refcount), elemsize(m.elemsize), elempack(m.elempack), allocator(m.allocator), dims(m.dims), w(m.w), h(m.h), c(m.c), \
+	 cstep(m.cstep),ftype(m.ftype),is_stbimage(m.is_stbimage)
 {
 	if (refcount)
 		OPENDIP_XADD(refcount, 1);
@@ -109,6 +111,8 @@ inline Image::Image(int _w, int _h, int _c, void* _data, size_t _elemsize, Alloc
 	elemsize = m.elemsize;
 	elempack = m.elempack;
 	allocator = m.allocator;
+	ftype = m.ftype;
+	is_stbimage = m.is_stbimage;
 
 	dims = m.dims;
 	w = m.w;
@@ -514,12 +518,18 @@ template <typename T>
 {
 	if (refcount && OPENDIP_XADD(refcount, -1) == 1)
 	{
-	    if (allocator)
-	        allocator->fastFree(data);
-	    else
-			fastFree(data);  
+		if(is_stbimage)
+		{
+			StbFree(data);
+		}
+		else
+		{
+			if (allocator)
+				allocator->fastFree(data);
+			else
+				fastFree(data);  
+		}
 	}
-
 
 	data = 0;
 
