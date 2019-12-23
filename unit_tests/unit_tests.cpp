@@ -81,22 +81,23 @@ TEST_CASE("image read")
 #endif
 
 
-TEST_CASE("algorithm")
+TEST_CASE("algorithm-interpolation")
 {
 	#if _WIN32
 		std::string img_path = "../../data/test_image/cat.jpg";
 		std::string dst_img = "../../data/output_image/windows/cat_copy.jpg";
 	#else
 		std::string img_path = "../data/test_image/cat.jpg";
-		std::string dst_img = "../data/output_image/linux/cat_interpolation.jpg";
+		std::string dst_img_linar = "../data/output_image/linux/cat_linar.jpg";
+		std::string dst_img_Bilinear = "../data/output_image/linux/cat_bilinear.jpg";
 	#endif	
 	
 	Image src = ImgRead((char*)img_path.c_str());
-	
-	Image dst = LinearInterpolation(src, 800, 600);
+	Image dst_linear = LinearInterpolation(src, 800, 600);
+	Image dst_bilinear = BilinearInterpolation(src, 800, 600);
 
-	ImgWrite((char*)dst_img.c_str(), dst);
-std::cout << "algorithm" << std::endl;
+	ImgWrite((char*)dst_img_linar.c_str(), dst_linear);
+	ImgWrite((char*)dst_img_Bilinear.c_str(), dst_bilinear);
 	 REQUIRE( true);
 }
 
