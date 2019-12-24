@@ -217,4 +217,84 @@ void StbFree(void* ptr)
     }
 }
 
+/*****************************************************************************
+*   Function name: Split
+*   Description  : sperate one channel from image
+*   Parameters   : src           source image
+*                  channel       channel to get(RGB->012)
+*   Return Value : Image         channel image
+*   Spec         : 
+*   History:
+*
+*       1.  Date         : 2019-12-23
+*           Author       : YangLin
+*           Modification : function draft
+*****************************************************************************/
+Image Split(Image &src, OpenDIP_Channel_Type channel)
+{
+	if(src.data == NULL || src.w <= 1 || src.h <= 1 || src.h < channel)
+	{
+		Image res_img;
+		return res_img;
+	}
+
+	Image img_c(src.w, src.h, 1);
+	unsigned char* p_src_data =(unsigned char*) src.data;
+	unsigned char* p_dst_data =(unsigned char*) img_c.data;
+    for(size_t j = 0; j < src.h; j++)
+    {
+        for(size_t i = 0; i < src.w; i++)
+        {
+			p_dst_data[j * img_c.c * img_c.w + img_c.c*i] = p_src_data[j * src.c * src.w + src.c*i + channel];
+        }
+    }
+
+	return img_c;
+}
+
+/*****************************************************************************
+*   Function name: Split
+*   Description  : sperate channels from image
+*   Parameters   : src           source image
+*    
+*   Return Value : vector<Image>   channels image
+*   Spec         : 
+*   History:
+*
+*       1.  Date         : 2019-12-23
+*           Author       : YangLin
+*           Modification : function draft
+*****************************************************************************/
+vector<Image> Split(Image &src)
+{
+	if(src.data == NULL || src.w <= 1 || src.h <= 1 || src.c < 1)
+	{
+		vector<Image> res_img;
+		return res_img;
+	}
+	vector<Image> channels;
+	for(size_t c = 0; c < src.c; c++)
+	{
+		Image img_tmp(src.w, src.h, 1);
+		channels.push_back(img_tmp);
+	}
+
+	unsigned char* p_src_data =(unsigned char*) src.data;
+	unsigned char* p_dst_data = NULL;
+
+    for(size_t j = 0; j < src.h; j++)
+    {
+        for(size_t i = 0; i < src.w; i++)
+        {
+			for(size_t z = 0;  z < src.c; z++)
+			{
+				p_dst_data =(unsigned char*) (channels[z].data);
+				p_dst_data[j * channels[z].c * channels[z].w + channels[z].c*i] = p_src_data[j * src.c * src.w + src.c*i + z];
+			}
+        }
+    }
+
+	return channels;
+}
+
 }  //namespace opendip

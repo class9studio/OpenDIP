@@ -26,6 +26,13 @@ enum OpenDIP_Image_Type
     OPENDIP_IMAGE_RGBA      = 4,
 };
 
+enum OpenDIP_Channel_Type
+{
+    OPENDIP_CHANNEL_R = 0,
+    OPENDIP_CHANNEL_G,
+    OPENDIP_CHANNEL_B,
+    OPENDIP_CHANNEL_NUM,
+};
 
 class Image
 {

@@ -18,8 +18,9 @@
 
 #ifndef _OPENDIP_COMMON_H_
 #define _OPENDIP_COMMON_H_
-
+#include <vector>
 #include "image.h"
+using namespace std;
 
 namespace opendip {
 	void ShowDebugInfo();
@@ -41,5 +42,12 @@ namespace opendip {
 
 	//free stb-image api alloc space
 	void StbFree(void* ptr);
+
+	// sperate one channel from image
+	Image Split(Image &src, OpenDIP_Channel_Type channel);
+
+	// sperate channels from image
+	vector<Image> Split(Image &src);
+
 }
 #endif

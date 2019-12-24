@@ -20,6 +20,7 @@ using namespace Eigen;
 using namespace opendip;
 //using namespace cv;
 
+#if 0
 TEST_CASE( "simple" )
 {
     REQUIRE( OPENDIP_IMAGE_PNG == GetImageTypeFromFile((char *)"yanglin.png") );
@@ -42,7 +43,7 @@ TEST_CASE("eigen")
 }
 
 
-#if 0
+
 TEST_CASE("opencv")
 {       
     Mat picture = imread("../data/test_image/cat.jpg");
@@ -78,8 +79,6 @@ TEST_CASE("image read")
  
 	REQUIRE(true);
 }
-#endif
-
 
 TEST_CASE("algorithm-interpolation")
 {
@@ -100,4 +99,27 @@ TEST_CASE("algorithm-interpolation")
 	ImgWrite((char*)dst_img_Bilinear.c_str(), dst_bilinear);
 	 REQUIRE( true);
 }
+#endif
 
+TEST_CASE("algorithm-splice")
+{
+	#if _WIN32
+		std::string img_path = "../../data/test_image/cat.jpg";
+		std::string dst_img = "../../data/output_image/windows/cat_copy.jpg";
+	#else
+		std::string img_path = "../data/test_image/lena.jpg";
+		std::string dst_img_channel0 = "../data/output_image/linux/cat_R.jpg";
+		std::string dst_img_channel1 = "../data/output_image/linux/cat_G.jpg";
+		std::string dst_img_channel2 = "../data/output_image/linux/cat_B.jpg";
+	#endif	
+	
+	Image src = ImgRead((char*)img_path.c_str());
+	vector<Image> dst = Split(src);
+
+
+	ImgWrite((char*)dst_img_channel0.c_str(),dst[0]);
+	ImgWrite((char*)dst_img_channel1.c_str(),dst[1]);
+	ImgWrite((char*)dst_img_channel2.c_str(),dst[2]);
+
+	 REQUIRE( true);
+}
