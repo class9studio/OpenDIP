@@ -5,7 +5,7 @@
 
 namespace opendip{
 
-typedef enum OpenDIP_Image_FILE_Type_s
+enum OpenDIP_Image_FILE_Type
 {
     OPENDIP_IMAGE_UNKOWN = 0x0,
     OPENDIP_IMAGE_RAW,
@@ -16,7 +16,7 @@ typedef enum OpenDIP_Image_FILE_Type_s
     OPENDIP_IMAGE_GIP,
     OPENDIP_IMAGE_ICO,
     OPENDIP_IMAGE_NUM,
-}OpenDIP_Image_FILE_Type_e;
+};
 
 enum OpenDIP_Image_Type
 {
@@ -32,6 +32,13 @@ enum OpenDIP_Channel_Type
     OPENDIP_CHANNEL_G,
     OPENDIP_CHANNEL_B,
     OPENDIP_CHANNEL_NUM,
+};
+
+enum OpenDIP_ColorCvtGray_Type
+{
+    OPENDIP_COLORCVTGRAY_MAXMIN = 0,   //  最大最小平均法
+    OPENDIP_COLORCVTGRAY_AVERAGE,      //  平均值
+    OPENDIP_COLORCVTGRAY_WEIGHTED,     //  加权平均法
 };
 
 class Image
@@ -167,7 +174,7 @@ public:
     size_t cstep;
 
 	//image file type
-	OpenDIP_Image_FILE_Type_e ftype;
+	OpenDIP_Image_FILE_Type ftype;
 
     // stb-image or not
     bool is_stbimage;

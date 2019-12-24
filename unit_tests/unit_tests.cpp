@@ -112,6 +112,7 @@ TEST_CASE("algorithm-splice")
 		std::string dst_img_channel1 = "../data/output_image/linux/cat_G.jpg";
 		std::string dst_img_channel2 = "../data/output_image/linux/cat_B.jpg";
 		std::string dst_img_merge = "../data/output_image/linux/cat_merge.jpg";
+		std::string dst_img_cvt = "../data/output_image/linux/cat_cvt.jpg";
 	#endif	
 	
 	Image src = ImgRead((char*)img_path.c_str());
@@ -124,6 +125,9 @@ TEST_CASE("algorithm-splice")
 
 	Image dst_merge = Merge(dst, 3);
 	ImgWrite((char*)dst_img_merge.c_str(),dst_merge);
+
+	Image cvt_dst = ColorCvtGray(src, OPENDIP_COLORCVTGRAY_AVERAGE);
+	ImgWrite((char*)dst_img_cvt.c_str(),cvt_dst);
 
 	 REQUIRE( true);
 }

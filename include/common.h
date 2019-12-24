@@ -38,7 +38,7 @@ namespace opendip {
 	int ImgWrite(char* file_name, Image &img);
 
 	//get image file type
-	OpenDIP_Image_FILE_Type_e GetImageTypeFromFile(char *filename);
+	OpenDIP_Image_FILE_Type GetImageTypeFromFile(char *filename);
 
 	//free stb-image api alloc space
 	void StbFree(void* ptr);
@@ -51,5 +51,8 @@ namespace opendip {
 
 	// merge channels to image
 	Image Merge(vector<Image> &channels, int num);
+
+	// color to grayscale conversion
+	Image ColorCvtGray(Image &src, OpenDIP_ColorCvtGray_Type cvt_type);
 }
 #endif

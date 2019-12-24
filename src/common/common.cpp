@@ -142,9 +142,9 @@ int ImgWrite(char* file_name, Image &img)
 *           Author       : kingLCH
 *           Modification : Created function
 *****************************************************************************/
-OpenDIP_Image_FILE_Type_e GetImageTypeFromFile(char *filename)
+OpenDIP_Image_FILE_Type GetImageTypeFromFile(char *filename)
 {
-	OpenDIP_Image_FILE_Type_e  image_type = OPENDIP_IMAGE_UNKOWN;
+	OpenDIP_Image_FILE_Type  image_type = OPENDIP_IMAGE_UNKOWN;
 	unsigned char file_size = 0;
 	unsigned char index = 0;
 	char suffix[64] = { 0 };
@@ -295,6 +295,19 @@ vector<Image> Split(Image &src)
 	return channels;
 }
 
+/*****************************************************************************
+*   Function name: Merge
+*   Description  : merge channels to image
+*   Parameters   : channels         channels image
+*    			   num              channels numbers
+*   Return Value : Image            dst image
+*   Spec         : 
+*   History:
+*
+*       1.  Date         : 2019-12-24
+*           Author       : YangLin
+*           Modification : function draft
+*****************************************************************************/
 Image Merge(vector<Image> &channels, int num)
 {
 	if(num != channels.size())
@@ -319,8 +332,73 @@ Image Merge(vector<Image> &channels, int num)
 			}
 		}
 	}
-	
+
 	return dst;
+}
+
+/*****************************************************************************
+*   Function name: ColorCvtGray
+*   Description  : color to grayscale conversion
+*   Parameters   : src              source image
+*    			   cvt_type         convert methods
+*   Return Value : Image            dst image
+*   Spec         : 
+*   History:
+*
+*       1.  Date         : 2019-12-24
+*           Author       : YangLin
+*           Modification : function draft
+*****************************************************************************/
+Image ColorCvtGray(Image &src, OpenDIP_ColorCvtGray_Type cvt_type)
+{
+	if(src.c != 3)
+	{
+		return Image();
+	}
+
+	Image img_cvt(src.w, src.h, 1);
+	unsigned char* p_src_data =(unsigned char*) src.data;
+	unsigned char* p_dst_data =(unsigned char*) img_cvt.data;
+    for(size_t j = 0; j < src.h; j++)
+    {
+        for(size_t i = 0; i < src.w; i++)
+        {
+			unsigned char mix_gray = 0;
+			unsigned char rValue = p_src_data[j * src.c * src.w + src.c*i + 0];
+            unsigned char gValue = p_src_data[j * src.c * src.w + src.c*i + 1];
+            unsigned char bValue = p_src_data[j * src.c * src.w + src.c*i + 2];
+			switch(cvt_type)
+			{
+				case OPENDIP_COLORCVTGRAY_MAXMIN:
+				{
+					unsigned char maxValue;
+					unsigned char minValue;
+					
+					maxValue = max(rValue,gValue);
+					maxValue = max(bValue,maxValue);
+					
+					minValue = min(rValue,gValue);
+					minValue = min(bValue,minValue);
+
+					p_dst_data[j * img_cvt.c * img_cvt.w + img_cvt.c*i] = (unsigned char) ((maxValue + minValue ) / 2.0);
+					break;
+				}
+				case OPENDIP_COLORCVTGRAY_AVERAGE:
+					p_dst_data[j * img_cvt.c * img_cvt.w + img_cvt.c*i] = (unsigned char) ((rValue + gValue + bValue) / 3.0);
+					break;
+				case OPENDIP_COLORCVTGRAY_WEIGHTED:
+					p_dst_data[j * img_cvt.c * img_cvt.w + img_cvt.c*i] = (unsigned char) (0.3 * rValue + 0.59 * gValue+ 0.11 * bValue);
+					break;
+				default:
+					p_dst_data[j * img_cvt.c * img_cvt.w + img_cvt.c*i] = (unsigned char) (0.3 * rValue + 0.59 * gValue+ 0.11 * bValue);
+					break; 				
+			}
+        }
+    }
+
+	return img_cvt;
+
+
 }
 
 }  //namespace opendip
