@@ -111,6 +111,7 @@ TEST_CASE("algorithm-splice")
 		std::string dst_img_channel0 = "../data/output_image/linux/cat_R.jpg";
 		std::string dst_img_channel1 = "../data/output_image/linux/cat_G.jpg";
 		std::string dst_img_channel2 = "../data/output_image/linux/cat_B.jpg";
+		std::string dst_img_merge = "../data/output_image/linux/cat_merge.jpg";
 	#endif	
 	
 	Image src = ImgRead((char*)img_path.c_str());
@@ -120,6 +121,9 @@ TEST_CASE("algorithm-splice")
 	ImgWrite((char*)dst_img_channel0.c_str(),dst[0]);
 	ImgWrite((char*)dst_img_channel1.c_str(),dst[1]);
 	ImgWrite((char*)dst_img_channel2.c_str(),dst[2]);
+
+	Image dst_merge = Merge(dst, 3);
+	ImgWrite((char*)dst_img_merge.c_str(),dst_merge);
 
 	 REQUIRE( true);
 }

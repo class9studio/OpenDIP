@@ -49,5 +49,7 @@ namespace opendip {
 	// sperate channels from image
 	vector<Image> Split(Image &src);
 
+	// merge channels to image
+	Image Merge(vector<Image> &channels, int num);
 }
 #endif

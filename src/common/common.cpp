@@ -234,8 +234,7 @@ Image Split(Image &src, OpenDIP_Channel_Type channel)
 {
 	if(src.data == NULL || src.w <= 1 || src.h <= 1 || src.h < channel)
 	{
-		Image res_img;
-		return res_img;
+		return Image();
 	}
 
 	Image img_c(src.w, src.h, 1);
@@ -269,8 +268,7 @@ vector<Image> Split(Image &src)
 {
 	if(src.data == NULL || src.w <= 1 || src.h <= 1 || src.c < 1)
 	{
-		vector<Image> res_img;
-		return res_img;
+		return vector<Image>();
 	}
 	vector<Image> channels;
 	for(size_t c = 0; c < src.c; c++)
@@ -295,6 +293,34 @@ vector<Image> Split(Image &src)
     }
 
 	return channels;
+}
+
+Image Merge(vector<Image> &channels, int num)
+{
+	if(num != channels.size())
+	{
+		return Image();
+	}
+	int w = channels[0].w;
+	int h = channels[0].h;
+	Image dst(w, h, num);
+
+	unsigned char* p_src_data = NULL;
+	unsigned char* p_dst_data =(unsigned char*) dst.data;
+
+	for(size_t j = 0; j < h; j++)
+	{
+		for(size_t i = 0; i < w; i++)
+		{
+			for(size_t z = 0; z < num; z++)
+			{
+				p_src_data =(unsigned char*) channels[z].data;
+				p_dst_data[j * dst.c * dst.w + dst.c*i + z] = p_src_data[j * channels[z].c * channels[z].w + channels[z].c*i];
+			}
+		}
+	}
+	
+	return dst;
 }
 
 }  //namespace opendip
