@@ -19,6 +19,7 @@
 #ifndef _OPENDIP_COMMON_H_
 #define _OPENDIP_COMMON_H_
 #include <vector>
+#include <string>
 #include "image.h"
 #include "point.h"
 using namespace std;
@@ -33,13 +34,13 @@ namespace opendip {
 	int WriteImage(char* file_name, unsigned char* p_image_data, long int image_size);
 
 	//read image and return Image class
-	Image ImgRead(char* file_name);
+	Image ImgRead(string file_name);
 
 	//read image and return Image class
-	int ImgWrite(char* file_name, Image &img);
+	int ImgWrite(string file_name, Image &img);
 
 	//get image file type
-	OpenDIP_Image_FILE_Type GetImageTypeFromFile(char *filename);
+	OpenDIP_Image_FILE_Type GetImageTypeFromFile(const char *filename);
 
 	//free stb-image api alloc space
 	void StbFree(void* ptr);
@@ -57,7 +58,7 @@ namespace opendip {
 	Image ColorCvtGray(Image &src, OpenDIP_ColorCvtGray_Type cvt_type);
 
 	// mean and stddev in one channel image
-	void MeanStddev(Image &src, unsigned char *mean, double *stddev); 
+	void MeanStddev(Image &src, double *mean, double *stddev); 
 
 	// max and min gray in one channel image
 	void MinMaxLoc(Image &src, unsigned char *min, unsigned char *max, Point &min_loc, Point &max_loc);

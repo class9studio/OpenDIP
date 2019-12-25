@@ -76,12 +76,12 @@ int WriteImage(char* file_name, unsigned char* p_image_data, long int image_size
 *           Author       : kingLCH
 *           Modification : Created function
 *****************************************************************************/
-Image ImgRead(char* file_name)
+Image ImgRead(string file_name)
 {
 	Image img;
 	unsigned char* data;
 
-	data = stbi_load(file_name, &img.w, &img.h, &img.c, 0);
+	data = stbi_load(file_name.c_str(), &img.w, &img.h, &img.c, 0);
 	if (data == NULL)
 	{
 		printf("image load fail\n");
@@ -89,7 +89,7 @@ Image ImgRead(char* file_name)
 	}
 
 	img.cstep = img.w;
-	img.ftype = GetImageTypeFromFile(file_name);
+	img.ftype = GetImageTypeFromFile(file_name.c_str());
 
 	img.is_stbimage = true;
 	img.data =(unsigned char*) data;
@@ -110,18 +110,18 @@ Image ImgRead(char* file_name)
 *           Author       : kingLCH
 *           Modification : function draft
 *****************************************************************************/
-int ImgWrite(char* file_name, Image &img)
+int ImgWrite(string file_name, Image &img)
 {
 	int ret = 0;
-	img.ftype = GetImageTypeFromFile(file_name);
+	img.ftype = GetImageTypeFromFile(file_name.c_str());
 
 	switch (img.ftype)
 	{
 	case OPENDIP_IMAGE_JPG:
-		stbi_write_jpg(file_name, img.w, img.h, img.c, img.data, img.w * img.c);
+		stbi_write_jpg(file_name.c_str(), img.w, img.h, img.c, img.data, img.w * img.c);
 		break;
 	case OPENDIP_IMAGE_PNG:
-		stbi_write_png(file_name, img.w, img.h, img.c, img.data, img.w * img.c);
+		stbi_write_png(file_name.c_str(), img.w, img.h, img.c, img.data, img.w * img.c);
 		break;
 	default:
 		ret = -1;
@@ -142,7 +142,7 @@ int ImgWrite(char* file_name, Image &img)
 *           Author       : kingLCH
 *           Modification : Created function
 *****************************************************************************/
-OpenDIP_Image_FILE_Type GetImageTypeFromFile(char *filename)
+OpenDIP_Image_FILE_Type GetImageTypeFromFile(const char *filename)
 {
 	OpenDIP_Image_FILE_Type  image_type = OPENDIP_IMAGE_UNKOWN;
 	unsigned char file_size = 0;
@@ -413,16 +413,16 @@ Image ColorCvtGray(Image &src, OpenDIP_ColorCvtGray_Type cvt_type)
 *           Author       : YangLin
 *           Modification : function draft
 *****************************************************************************/
-void MeanStddev(Image &src, unsigned char *mean, double *stddev)
+void MeanStddev(Image &src, double *mean, double *stddev)
 {
 	if(src.c !=1 || mean == NULL || stddev == NULL)
 	{
 		std::cout << "invalid param" << std::endl;
 		return;
 	}
-	unsigned char mean_res = 0;
+	double mean_res = 0.0;
 	double stddev_res = 0.0;
-	unsigned char *hist = new unsigned char[256]();
+	unsigned int *hist = new unsigned int[256]();
 	double *hist_p = new double[256]();
 	unsigned char *p_src_data = (unsigned char *)src.data;  
 	for(size_t j = 0; j < src.h; j++)
@@ -435,8 +435,8 @@ void MeanStddev(Image &src, unsigned char *mean, double *stddev)
 
 	for(size_t i = 0; i < 256; i++)
 	{
-		hist_p[i] = (double)hist[i] / (double)256;
-		mean_res += i * hist_p[i];
+		hist_p[i] =(double) hist[i] / (src.w*src.h);
+		mean_res +=  i*hist_p[i];
 	}
 
 	for(size_t i = 0; i < 256; i++)
@@ -445,7 +445,7 @@ void MeanStddev(Image &src, unsigned char *mean, double *stddev)
 	}
 
 	*mean = mean_res;
-	*stddev = stddev_res;
+	*stddev = std::sqrt(stddev_res);
 }
 
 /*****************************************************************************

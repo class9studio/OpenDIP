@@ -99,7 +99,6 @@ TEST_CASE("algorithm-interpolation")
 	ImgWrite((char*)dst_img_Bilinear.c_str(), dst_bilinear);
 	 REQUIRE( true);
 }
-#endif
 
 TEST_CASE("algorithm-splice")
 {
@@ -130,4 +129,52 @@ TEST_CASE("algorithm-splice")
 	ImgWrite((char*)dst_img_cvt.c_str(),cvt_dst);
 
 	 REQUIRE( true);
+}
+
+
+TEST_CASE("opencv")
+{       
+    Mat src = imread("../data/output_image/linux/cat_R.jpg", IMREAD_GRAYSCALE);
+    if (src.empty()) {
+        printf("could not load image...\n");
+		REQUIRE( false );
+    }
+    namedWindow("input", WINDOW_AUTOSIZE);
+    imshow("input", src);
+
+    double minVal; double maxVal; cv::Point minLoc; cv::Point maxLoc; // 先定义
+    minMaxLoc(src, &minVal, &maxVal, &minLoc, &maxLoc, Mat()); // 通过引用对变量写入值
+    printf("min: %.2f, max: %.2f \n", minVal, maxVal);
+    printf("min loc: (%d, %d) \n", minLoc.x, minLoc.y);
+    printf("max loc: (%d, %d)\n", maxLoc.x, maxLoc.y);
+
+    // 彩色图像 三通道的 均值与方差
+    src = imread("../data/test_image/lena.jpg");
+    Mat means, stddev; // 均值和方差不是一个值。对彩色图像是三行一列的mat
+    meanStdDev(src, means, stddev);
+    printf("blue channel->> mean: %.2f, stddev: %.2f\n", means.at<double>(0, 0), stddev.at<double>(0, 0));
+    printf("green channel->> mean: %.2f, stddev: %.2f\n", means.at<double>(1, 0), stddev.at<double>(1, 0));
+    printf("red channel->> mean: %.2f, stddev: %.2f\n", means.at<double>(2, 0), stddev.at<double>(2, 0));
+
+    REQUIRE(true);
+} 
+#endif
+
+TEST_CASE("OpenDIP")
+{
+	Image src = ImgRead("../data/test_image/lena.jpg");
+	vector<Image> dst = Split(src);
+
+	unsigned char min = 0,max = 0;
+	opendip::Point min_loc;
+	opendip::Point max_loc;
+	MinMaxLoc(dst[0], &min, &max, min_loc, max_loc);
+
+	double mean = 0;
+	double stddev = 0.0;
+	MeanStddev(dst[0], &mean, &stddev);
+
+	printf("mean: %.2f, stddev: %.2f \n", mean, stddev);
+
+	REQUIRE(true);
 }
