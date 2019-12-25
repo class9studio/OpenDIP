@@ -20,6 +20,7 @@
 #define _OPENDIP_COMMON_H_
 #include <vector>
 #include "image.h"
+#include "point.h"
 using namespace std;
 
 namespace opendip {
@@ -54,5 +55,11 @@ namespace opendip {
 
 	// color to grayscale conversion
 	Image ColorCvtGray(Image &src, OpenDIP_ColorCvtGray_Type cvt_type);
+
+	// mean and stddev in one channel image
+	void MeanStddev(Image &src, unsigned char *mean, double *stddev); 
+
+	// max and min gray in one channel image
+	void MinMaxLoc(Image &src, unsigned char *min, unsigned char *max, Point &min_loc, Point &max_loc);
 }
 #endif

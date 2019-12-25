@@ -397,8 +397,107 @@ Image ColorCvtGray(Image &src, OpenDIP_ColorCvtGray_Type cvt_type)
     }
 
 	return img_cvt;
+}
 
+/*****************************************************************************
+*   Function name: MeanStddev
+*   Description  : mean and stddev in one channel image
+*   Parameters   : src              source image
+*    			   mean             均值
+*                  stddev           方差
+*   Return Value : None
+*   Spec         : 
+*   History:
+*
+*       1.  Date         : 2019-12-25
+*           Author       : YangLin
+*           Modification : function draft
+*****************************************************************************/
+void MeanStddev(Image &src, unsigned char *mean, double *stddev)
+{
+	if(src.c !=1 || mean == NULL || stddev == NULL)
+	{
+		std::cout << "invalid param" << std::endl;
+		return;
+	}
+	unsigned char mean_res = 0;
+	double stddev_res = 0.0;
+	unsigned char *hist = new unsigned char[256]();
+	double *hist_p = new double[256]();
+	unsigned char *p_src_data = (unsigned char *)src.data;  
+	for(size_t j = 0; j < src.h; j++)
+    {
+        for(size_t i = 0; i < src.w; i++)
+        {
+			hist[p_src_data[j * src.c * src.w + src.c*i]] += 1;
+        }
+    }
 
+	for(size_t i = 0; i < 256; i++)
+	{
+		hist_p[i] = (double)hist[i] / (double)256;
+		mean_res += i * hist_p[i];
+	}
+
+	for(size_t i = 0; i < 256; i++)
+	{
+		stddev_res += (i - mean_res)*(i - mean_res)*hist_p[i];
+	}
+
+	*mean = mean_res;
+	*stddev = stddev_res;
+}
+
+/*****************************************************************************
+*   Function name: MinMaxLoc
+*   Description  : max and min gray in one channel image
+*   Parameters   : src              source image
+*    			   min              最小灰度值
+*                  max              最大灰度值
+*                  min_loc          最小灰度值坐标
+*                  max_loc          最大灰度值坐标
+*   Return Value : None
+*   Spec         : 
+*   History:
+*
+*       1.  Date         : 2019-12-25
+*           Author       : YangLin
+*           Modification : function draft
+*****************************************************************************/
+void MinMaxLoc(Image &src, unsigned char *min, unsigned char *max, Point &min_loc, Point &max_loc)
+{
+	if(src.c != 1 || min == NULL || max == NULL)
+	{
+		std::cout << "invalid param" << std::endl;
+		return;
+	}
+	unsigned char *p_src_data =(unsigned char *)src.data ;
+	unsigned char min_res = p_src_data[0];
+	unsigned char max_res = p_src_data[0];
+	unsigned char value = 0;
+	for(size_t j = 0; j < src.h; j++)
+	{
+		for(size_t i = 0; i < src.w; i++)
+		{
+			value = p_src_data[j * src.c * src.w + src.c*i];
+			if(value < min_res)
+			{
+				min_res = value;
+				min_loc.x = i;
+				min_loc.y = j;
+			}
+
+			if(value > max_res)
+			{
+				max_res = value;
+				max_loc.x = i;
+				max_loc.y = j;
+			}
+		}
+	}
+
+	*min = min_res;
+	*max = max_res;
 }
 
 }  //namespace opendip
