@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <iostream>
+#include <math.h>
 #include "common.h"
 
 #define STB_IMAGE_WRITE_IMPLEMENTATION
@@ -445,7 +446,7 @@ void MeanStddev(Image &src, double *mean, double *stddev)
 	}
 
 	*mean = mean_res;
-	*stddev = std::sqrt(stddev_res);
+	*stddev = sqrt(stddev_res);
 }
 
 /*****************************************************************************
@@ -498,6 +499,30 @@ void MinMaxLoc(Image &src, unsigned char *min, unsigned char *max, Point &min_lo
 
 	*min = min_res;
 	*max = max_res;
+}
+
+/*****************************************************************************
+*   Function name: ImageCvtMap
+*   Function name: ImageCvtMapConst    ---read only, could't change date
+*   Description  : single channel image convert to Mat format
+*   Parameters   : src              image to Map
+*
+*   Return Value : Map              Map of image
+*   Spec         : 
+*   History:
+*
+*       1.  Date         : 2019-12-26
+*           Author       : YangLin
+*           Modification : function draft
+*****************************************************************************/
+MapType ImageCvtMap(Image &src)
+{
+	return MapType((unsigned char *)src.data, src.h, src.w);
+}
+
+MapTypeConst ImageCvtMapConst(Image &src)
+{
+	return MapTypeConst((unsigned char *)src.data, src.h, src.w);
 }
 
 }  //namespace opendip
