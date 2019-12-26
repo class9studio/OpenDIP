@@ -7,6 +7,9 @@ project (OpenDIP)
 # Use c++11, to build catch2 
 set(CMAKE_CXX_STANDARD 11)
 
+# Set Options
+option(WITH_OPENCV "With OpenCV Support" ON)
+
 # add the CMakeFile that defines catch2、eigen3
 add_subdirectory(3rd_party/catch2)
 
@@ -35,15 +38,15 @@ else()
 	add_subdirectory(3rd_party/eigen3)
 	set(EIGEN3_INCLUDE_DIR ${EIGEN_INCLUDE_DIRS})
 endif()
-#[[
-    # find required opencv
+
+if(WITH_OPENCV)
     find_package(OpenCV REQUIRED)
     if(OpenCV_FOUND)
         message("OpenCV found")
     else()
         message(FATAL_ERROR "cannot find OpenCV")
     endif()
-]]
+endif()
 
 #############################################
 # Unit tests
@@ -79,5 +82,15 @@ target_include_directories(OpenDIP
         ${PROJECT_SOURCE_DIR}/3rd_party/eigen3
 		${EIGEN_INCLUDE_DIRS}
 )
+
+if(WITH_OPENCV)
+    target_link_libraries(OpenDIP
+        ${OpenCV_LIBS}
+    ) 
+    target_include_directories(OpenDIP
+        PUBLIC 
+        ${OpenCV_INCLUDE_DIRS}
+    )   
+endif()
 
 

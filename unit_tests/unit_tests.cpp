@@ -169,7 +169,6 @@ TEST_CASE("opencv")
     REQUIRE(true);
 } 
 
-
 TEST_CASE("OpenDIP")
 {
 	Image src = ImgRead("../data/test_image/lena.jpg");
@@ -187,5 +186,30 @@ TEST_CASE("OpenDIP")
 	printf("mean: %.2f, stddev: %.2f \n", mean, stddev);
 
 	REQUIRE(true);
+}
+
+
+TEST_CASE("eigen")
+{       
+	MatrixXf M1(3,3);    // Column-major storage
+	M1 << 1, 2, 3,
+		4, 5, 6,
+		7, 8, 9;
+	Map<RowVectorXf> v1(M1.data(), M1.size());
+	cout << "v1:" << endl << v1 << endl;
+	Matrix<float,Dynamic,Dynamic,RowMajor> M2(M1);
+	Map<RowVectorXf> v2(M2.data(), M2.size());
+	cout << "v2:" << endl << v2 << endl;
+
+	cout << "============================================" << endl;
+	Image src = ImgRead("../data/test_image/lena.jpg");
+	vector<Image> dst = Split(src);
+	
+	MapType img_map = ImageCvtMap(dst[0]);
+	img_map = img_map*2;  //灰度增加一倍
+
+	ImgWrite("../data/output_image/linux/lena_map.jpg", dst[0]);
+
+	REQUIRE( true );
 }
 #endif

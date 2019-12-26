@@ -84,7 +84,21 @@
         "xstddef": "cpp",
         "xtr1common": "cpp",
         "xtree": "cpp",
-        "xutility": "cpp"
+        "xutility": "cpp",
+        "superlusupport": "c",
+        "*.evaluator": "c",
+        "*.traits": "c",
+        "adolcforward": "c",
+        "autodiff": "c",
+        "bvh": "c",
+        "eulerangles": "c",
+        "fft": "c",
+        "kroneckerproduct": "c",
+        "mprealsupport": "c",
+        "numericaldiff": "c",
+        "openglsupport": "c",
+        "specialfunctions": "c",
+        "splines": "c"
     },
     "cmake.configureOnOpen": true
 }

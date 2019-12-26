@@ -20,9 +20,12 @@
 #define _OPENDIP_COMMON_H_
 #include <vector>
 #include <string>
+#include <Eigen/Dense>
+
 #include "image.h"
 #include "point.h"
 using namespace std;
+using namespace Eigen;
 
 namespace opendip {
 	void ShowDebugInfo();
@@ -62,5 +65,14 @@ namespace opendip {
 
 	// max and min gray in one channel image
 	void MinMaxLoc(Image &src, unsigned char *min, unsigned char *max, Point &min_loc, Point &max_loc);
+
+	// image convert to Mat format
+	typedef Matrix< unsigned char , Dynamic , Dynamic, RowMajor> RowMatrixXc;
+	typedef Map<RowMatrixXc> MapType;
+	typedef Map<const RowMatrixXc> MapTypeConst;   // a read-only map
+    // 单通道图像数据映射到Map中
+	MapType ImageCvtMap(Image &src);
+	MapTypeConst ImageCvtMapConst(Image &src);
+
 }
 #endif
