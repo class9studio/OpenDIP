@@ -2,6 +2,7 @@
 # Build
 #--------
 /build/
+/Build/
 /data/
 /.vscode/
 /Windows/.vs/

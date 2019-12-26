@@ -6,6 +6,7 @@
 #include "common.h"
 #include "image.h"
 #include "algorithm.h"
+#include "timing.h"
 
 #define CATCH_CONFIG_MAIN          //catch2的main函数
 #include "catch2.h"
@@ -79,6 +80,7 @@ TEST_CASE("image read")
  
 	REQUIRE(true);
 }
+#endif
 
 TEST_CASE("algorithm-interpolation")
 {
@@ -92,14 +94,22 @@ TEST_CASE("algorithm-interpolation")
 	#endif	
 	
 	Image src = ImgRead((char*)img_path.c_str());
+	double startTime = now();
 	Image dst_linear = LinearInterpolation(src, 800, 600);
+	double nDetectTime = calcElapsed(startTime, now());
+    printf("LinearInterpolation time: %d ms.\n ", (int)(nDetectTime * 1000));
+
+	startTime = now();
 	Image dst_bilinear = BilinearInterpolation(src, 800, 600);
+	nDetectTime = calcElapsed(startTime, now());
+    printf("BilinearInterpolation time: %d ms.\n ", (int)(nDetectTime * 1000));
 
 	ImgWrite((char*)dst_img_linar.c_str(), dst_linear);
 	ImgWrite((char*)dst_img_Bilinear.c_str(), dst_bilinear);
 	 REQUIRE( true);
 }
 
+#if 0
 TEST_CASE("algorithm-splice")
 {
 	#if _WIN32
@@ -158,7 +168,7 @@ TEST_CASE("opencv")
 
     REQUIRE(true);
 } 
-#endif
+
 
 TEST_CASE("OpenDIP")
 {
@@ -178,3 +188,4 @@ TEST_CASE("OpenDIP")
 
 	REQUIRE(true);
 }
+#endif

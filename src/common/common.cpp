@@ -445,7 +445,7 @@ void MeanStddev(Image &src, double *mean, double *stddev)
 	}
 
 	*mean = mean_res;
-	*stddev = std::sqrt(stddev_res);
+	*stddev = sqrt(stddev_res);
 }
 
 /*****************************************************************************

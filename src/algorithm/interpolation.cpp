@@ -42,8 +42,8 @@ Image LinearInterpolation(Image &src_image, int resize_w, int resize_h)
     {
         for(size_t i = 0; i < dst_image.w; i++)
         {
-            src_i = std::round(i / ratio_h);
-            src_j = std::round(j / ratio_w); 
+            src_i = std::round(i / ratio_w);
+            src_j = std::round(j / ratio_h); 
             
             for(size_t z = 0; z < src_image.c; z++)
             {
@@ -92,8 +92,8 @@ Image BilinearInterpolation(Image &src_image, int resize_w, int resize_h)
     {
         for(size_t i = 0; i < dst_image.w; i++)
         {
-            mapped_i = i / ratio_h;
-            mapped_j = j / ratio_w;
+            mapped_i = i / ratio_w;
+            mapped_j = j / ratio_h;
 
             src_i = std::floor(mapped_i);
             src_j = std::floor(mapped_j); 
