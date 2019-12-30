@@ -28,6 +28,15 @@ using namespace std;
 using namespace Eigen;
 
 namespace opendip {
+	enum Thresh_Binary_Type
+	{
+		THRESH_BINARY     = 0x0,
+		THRESH_BINARY_INV,
+		THRESH_TRUNC,
+		THRESH_TOZERO,
+		THRESH_TOZERO_INV,
+	};
+
 	void ShowDebugInfo();
 
 	//read image data
@@ -74,5 +83,9 @@ namespace opendip {
 	MapType ImageCvtMap(Image &src);
 	MapTypeConst ImageCvtMapConst(Image &src);
 
+	// Ostu计算阈值
+	unsigned char GetOstu(Image &src);
+	// Image Binarization
+	Image Threshold(Image &src, Thresh_Binary_Type type, double threshold, double max_value, bool auto_threshold);
 }
-#endif
+#endif 

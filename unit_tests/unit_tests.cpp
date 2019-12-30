@@ -80,7 +80,7 @@ TEST_CASE("image read")
  
 	REQUIRE(true);
 }
-#endif
+
 
 TEST_CASE("algorithm-interpolation")
 {
@@ -106,9 +106,10 @@ TEST_CASE("algorithm-interpolation")
 
 	ImgWrite((char*)dst_img_linar.c_str(), dst_linear);
 	ImgWrite((char*)dst_img_Bilinear.c_str(), dst_bilinear);
-	 REQUIRE( true);
+	REQUIRE( true);
 }
 
+#endif
 #if 0
 TEST_CASE("algorithm-splice")
 {
@@ -213,3 +214,16 @@ TEST_CASE("eigen")
 	REQUIRE( true );
 }
 #endif
+
+
+TEST_CASE("OpenDIP")
+{
+	Image src = ImgRead("../data/test_image/lena.jpg");
+	vector<Image> dst = Split(src);
+	unsigned char val = GetOstu(dst[0]);
+	printf("value: %d\n", val);
+
+	Image dst_img = Threshold(dst[0], THRESH_BINARY, 125, 255, false);
+	ImgWrite("../data/output_image/linux/lena_ostu.jpg", dst_img);
+	REQUIRE(true);
+}

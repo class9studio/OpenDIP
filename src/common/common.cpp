@@ -233,7 +233,7 @@ void StbFree(void* ptr)
 *****************************************************************************/
 Image Split(Image &src, OpenDIP_Channel_Type channel)
 {
-	if(src.data == NULL || src.w <= 1 || src.h <= 1 || src.h < channel)
+	if(src.data == NULL || src.w <= 1 || src.h <= 1 || src.c < channel)
 	{
 		return Image();
 	}
@@ -523,6 +523,146 @@ MapType ImageCvtMap(Image &src)
 MapTypeConst ImageCvtMapConst(Image &src)
 {
 	return MapTypeConst((unsigned char *)src.data, src.h, src.w);
+}
+
+/*****************************************************************************
+*   Function name: GetOstu
+*   Description  : OSTU（大津算法）
+*   Parameters   : src              source image 
+*
+*   Return Value : 阈值灰度
+*   Spec         : 
+*   History:
+*
+*       1.  Date         : 2019-12-30
+*           Author       : YangLin
+*           Modification : function draft
+*****************************************************************************/
+unsigned char GetOstu(Image &src)
+{
+	unsigned int *histogram = new unsigned int[256]();
+	unsigned char *p_src_data = (unsigned char *)src.data;  
+	for(size_t j = 0; j < src.h; j++)
+    {
+        for(size_t i = 0; i < src.w; i++)
+        {
+			histogram[p_src_data[j * src.c * src.w + src.c*i]] += 1;
+        }
+    }
+	long size = src.w * src.h;
+	unsigned char threshold;      
+	long sum0 = 0, sum1 = 0; //存储前景的灰度总和及背景灰度总和  
+	long cnt0 = 0, cnt1 = 0; //前景的总个数及背景的总个数  
+	double w0 = 0, w1 = 0; //前景及背景所占整幅图像的比例  
+	double u0 = 0, u1 = 0;  //前景及背景的平均灰度  
+	double variance = 0; //最大类间方差
+	double maxVariance = 0;  
+	for(int i = 1; i < 256; i++) //一次遍历每个像素  
+	{    
+		sum0 = 0;  
+		sum1 = 0;   
+		cnt0 = 0;  
+		cnt1 = 0;  
+		w0 = 0;  
+		w1 = 0;  
+		for(int j = 0; j < i; j++)  
+		{  
+			cnt0 += histogram[j];  
+			sum0 += j * histogram[j];  
+		}  
+ 
+		u0 = (double)sum0 /  cnt0;   
+		w0 = (double)cnt0 / size;  
+ 
+		for(int j = i ; j <= 255; j++)  
+		{  
+			cnt1 += histogram[j];  
+			sum1 += j * histogram[j];  
+		}  
+ 
+		u1 = (double)sum1 / cnt1;  
+		w1 = 1 - w0; // (double)cnt1 / size;  
+ 
+		variance =  w0 * w1 *  (u0 - u1) * (u0 - u1);  
+		if(variance > maxVariance)   
+		{    
+			maxVariance = variance;    
+			threshold = i;    
+		}   
+	}    
+
+	return threshold;
+}
+
+/*****************************************************************************
+*   Function name: Threshold
+*   Description  : Image Binarization
+*   Parameters   : src              image to Map
+*                  type             binarization type
+*                  threshold        二值化的阈值
+*                  max_value        二值化过程中的最大值
+*                  auto_threshold   自动阈值标志
+*   Return Value : Map              Map of image
+*   Spec         : 
+*   History:
+*
+*       1.  Date         : 2019-12-30
+*           Author       : YangLin
+*           Modification : function draft
+*****************************************************************************/
+Image Threshold(Image &src, Thresh_Binary_Type type, double threshold, double max_value, bool auto_threshold)
+{
+	if(auto_threshold)
+	{
+		// update threshold
+		threshold =(unsigned char) GetOstu(src);
+	}
+
+	if(src.data == NULL || src.w <= 1 || src.h <= 1 || src.c != 1)
+	{
+		return Image();
+	}
+
+	Image img_dst(src.w, src.h, 1);
+	unsigned char* p_src_data =(unsigned char*) src.data;
+	unsigned char* p_dst_data =(unsigned char*) img_dst.data;
+	unsigned char gray = 0;
+    for(size_t j = 0; j < src.h; j++)
+    {
+        for(size_t i = 0; i < src.w; i++)
+        {
+			gray = p_src_data[j * src.c * src.w + src.c*i];
+			switch(type)
+			{
+				case THRESH_BINARY:
+					if(gray > threshold)
+						p_dst_data[j * img_dst.c * img_dst.w + img_dst.c*i] = max_value;
+					else
+						p_dst_data[j * img_dst.c * img_dst.w + img_dst.c*i] = 0;
+					break;
+				case THRESH_BINARY_INV:
+					if(gray > threshold)
+						p_dst_data[j * img_dst.c * img_dst.w + img_dst.c*i] = 0;
+					else
+						p_dst_data[j * img_dst.c * img_dst.w + img_dst.c*i] = max_value;
+					break;
+				case THRESH_TRUNC:
+					if(gray > threshold)
+						p_dst_data[j * img_dst.c * img_dst.w + img_dst.c*i] = threshold;
+					break;
+				case THRESH_TOZERO:
+					if(gray <= threshold)
+						p_dst_data[j * img_dst.c * img_dst.w + img_dst.c*i] = max_value;
+					break;
+				case THRESH_TOZERO_INV:
+					if(gray > threshold)
+						p_dst_data[j * img_dst.c * img_dst.w + img_dst.c*i] = max_value;					
+					break;
+			}
+        }
+    }
+
+	return img_dst;	
 }
 
 }  //namespace opendip
