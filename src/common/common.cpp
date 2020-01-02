@@ -665,4 +665,92 @@ Image Threshold(Image &src, Thresh_Binary_Type type, double threshold, double ma
 	return img_dst;	
 }
 
+/*****************************************************************************
+*   Function name: GetRotationMatrix2D
+*   Description  : 通过旋转角度和旋转中心，返回图像旋转矩阵2x3
+*   Parameters   : center            图像旋转的中心位置
+*                  angle             图像旋转的角度，单位为度，正值为逆时针旋转。
+*                  scale             两个轴的比例因子，可以实现旋转过程中的图像缩放，不缩放输入1
+*   Return Value : Matrix            2*3的旋转矩阵
+*   Spec         : 
+*   History:
+*
+*       1.  Date         : 2019-12-31
+*           Author       : YangLin
+*           Modification : function draft
+*****************************************************************************/
+Matrix<double, 2, 3> GetRotationMatrix2D (Point2f center, double angle, double scale)
+{
+	Matrix<double, 2, 3> m;
+	angle *= OPENDIP_PI/180;
+	double alpha = scale * cos(angle);
+	double beta = scale * sin(angle);
+	m(0,0) = alpha;
+	m(0,1) = beta;
+	m(0,2) = (1-alpha)*center.x - beta*center.y;
+	m(1,0) = -beta;
+	m(1,1) = alpha;
+	m(1,2) = beta*center.x + (1 - alpha)*center.y;
+
+	return m;
+}
+
+/*****************************************************************************
+*   Function name: WarpAffine
+*   Description  : 仿射变换
+*   Parameters   : src：			 输入图像      
+*                  transform         2×3的变换矩阵
+*   Return Value : Image             输出图像
+*   Spec         : 
+*   History:
+*
+*       1.  Date         : 2020-1-3
+*           Author       : YangLin
+*           Modification : function draft
+*****************************************************************************/
+Image WarpAffine(Image &src, Matrix<double, 2, 3> transform)
+{
+	if(src.data == NULL || src.w <= 1 || src.h <= 1 || src.c < 1)
+	{
+		return Image();
+	}
+
+	Matrix3d Mat1;
+    Mat1 << transform(0,0), transform(0,1), transform(0,2),
+        	transform(1,0), transform(1,1), transform(1,2),
+        	0, 0, 1;
+	Matrix3d Mat1_inv = Mat1.inverse();
+	Image img_c(src.w, src.h, src.c);
+	Vector3d dst_m;
+	Vector3d src_m;
+	unsigned char* p_src_data =(unsigned char*) src.data;
+	unsigned char* p_dst_data =(unsigned char*) img_c.data;
+    for(size_t j = 0; j < src.h; j++)
+    {
+        for(size_t i = 0; i < src.w; i++)
+        {
+			dst_m(0) = i;
+			dst_m(1) = j;
+			dst_m(2) = 1;
+			
+			src_m = Mat1_inv * dst_m;
+			if(src_m(0) > src.w)
+			{
+				src_m(0) = src.w;
+			}
+			if(src_m(1) > src.h)
+			{
+				src_m(1) = src.h;
+			}
+
+			for(size_t z = 0; z < src.c; z++)
+			{
+				p_dst_data[j * img_c.c * img_c.w + img_c.c*i + z] = p_src_data[(int)src_m(1) * src.c * src.w + src.c*(int)src_m(0) + z];
+			}
+        }
+    }
+
+	return img_c;
+}
+
 }  //namespace opendip

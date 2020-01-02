@@ -2,7 +2,7 @@
 #include <string>
 
 #include <Eigen/Dense>
-//#include <opencv2/opencv.hpp>
+#include <opencv2/opencv.hpp>
 #include "common.h"
 #include "image.h"
 #include "algorithm.h"
@@ -18,8 +18,9 @@
 //#include "stb_image.h"
 
 using namespace Eigen;
+using namespace std;
 using namespace opendip;
-//using namespace cv;
+using namespace cv;
 
 #if 0
 TEST_CASE( "simple" )
@@ -213,8 +214,6 @@ TEST_CASE("eigen")
 
 	REQUIRE( true );
 }
-#endif
-
 
 TEST_CASE("OpenDIP")
 {
@@ -225,5 +224,47 @@ TEST_CASE("OpenDIP")
 
 	Image dst_img = Threshold(dst[0], THRESH_BINARY, 125, 255, false);
 	ImgWrite("../data/output_image/linux/lena_ostu.jpg", dst_img);
+	REQUIRE(true);
+}
+#endif
+
+
+TEST_CASE("OpenDIP")
+{
+    Mat img = imread("../data/test_image/lena.jpg");
+
+    Mat rotation0, rotation1, img_warp0, img_warp1;
+    double angle = 30; //设置图像旋转的角度
+    Size dst_size(img.rows, img.cols); //设置输出图像的尺寸
+
+    cv::Point2f center(img.rows / 2.0, img.cols / 2.0); //设置图像的旋转中心
+    rotation0 = getRotationMatrix2D(center, angle, 1); //计算放射变换矩阵
+
+	cout << "rotation0=\n" << rotation0 << endl;
+    warpAffine(img, img_warp0, rotation0, dst_size); //进行仿射变换
+    imshow("img_warp0", img_warp0);
+    //根据定义的三个点进行仿射变换
+    cv::Point2f src_points[3];
+    cv::Point2f dst_points[3];
+    src_points[0] = cv::Point2f(0, 0); //原始图像中的三个点
+    src_points[1] = cv::Point2f(0, (float)(img.cols - 1));
+    src_points[2] = cv::Point2f((float)(img.rows - 1), (float)(img.cols - 1));
+
+    waitKey(0);
+    
+	REQUIRE(true);
+}
+
+TEST_CASE("eigen")
+{
+	Image src = ImgRead("../data/test_image/lena.jpg");
+
+	opendip::Point2f center(src.h / 2, src.w / 2);
+	Matrix<double, 2, 3, RowMajor> rotation =  GetRotationMatrix2D(center, 30,  1);
+	cout << "rotation=\n" << rotation << endl;
+
+	Image dst = WarpAffine(src, rotation);
+	ImgWrite("../data/output_image/linux/lena_affain.jpg", dst);
+
 	REQUIRE(true);
 }

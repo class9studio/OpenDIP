@@ -27,8 +27,7 @@ Image LinearInterpolation(Image &src_image, int resize_w, int resize_h)
     if(resize_w == 0 || resize_h == 0)
     {
         ShowDebugInfo();
-        Image res_image;
-        return res_image;
+        return Image();
     }
     
     Image dst_image(resize_w, resize_h, src_image.c);
@@ -76,8 +75,7 @@ Image BilinearInterpolation(Image &src_image, int resize_w, int resize_h)
     if(resize_w == 0 || resize_h == 0)
     {
         ShowDebugInfo();
-        Image res_image;
-        return res_image;
+        return Image();
     } 
     Image dst_image(resize_w, resize_h, src_image.c);
     size_t src_i = 0, src_j = 0;
