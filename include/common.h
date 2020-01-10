@@ -96,5 +96,8 @@ Matrix<double, 2, 3> GetRotationMatrix2D(Point2f center, double angle, double sc
 // 仿射变换
 Image WarpAffine(Image &src, Matrix<double, 2, 3> transform);
 
+//彩色图像的直方图均衡
+Image HistEqualization(Image &src);
+
 }; // namespace opendip
 #endif

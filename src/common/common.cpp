@@ -753,4 +753,96 @@ Image WarpAffine(Image &src, Matrix<double, 2, 3> transform)
 	return img_c;
 }
 
+/*****************************************************************************
+*   Function name: HistEqualazition
+*   Description  : 彩色图像的直方图均衡
+*                  如果一个图像的直方图都集中在一个区域，则整体图像的对比度比较小，不便于图像中纹理的识别
+*                  将图像中灰度值的范围扩大，增加原来两个灰度值之间的差值，就可以提高图像的对比度，进而将图像中的纹理突出显现出来
+*   Parameters   : src：			 输入图像      
+*                  transform         2×3的变换矩阵
+*   Return Value : Image             输出图像
+*   Spec         : 
+*   History:
+*
+*       1.  Date         : 2020-1-3
+*           Author       : YangLin
+*           Modification : function draft
+*****************************************************************************/
+Image HistEqualazition(Image &src)
+{
+	if(src.data == NULL || src.w <= 1 || src.h <= 1 || src.c != 3)
+	{
+		return Image();
+	}
+	Image dst_image(src.w, src.h, src.c);
+	unsigned int *hist_r = new unsigned int [256]();
+	unsigned int *hist_g = new unsigned int [256]();
+	unsigned int *hist_b = new unsigned int [256]();
+	
+	float *hist_tmp_r = new float [256]();
+    float *hist_tmp_g = new float [256]();
+    float *hist_tmp_b = new float [256]();
+	
+	//Calculate Histograms of original image
+	unsigned char *p_src_data = (unsigned char *)src.data;  
+	unsigned char *p_dst_data = (unsigned char *)dst_image.data;  
+	for(size_t j = 0; j < src.h; j++)
+    {
+        for(size_t i = 0; i < src.w; i++)
+        {
+			hist_r[p_src_data[j * src.c * src.w + src.c*i + 0]] += 1;
+			hist_g[p_src_data[j * src.c * src.w + src.c*i + 1]] += 1;
+			hist_b[p_src_data[j * src.c * src.w + src.c*i + 2]] += 1;
+        }
+    }
+
+    // Calculate normalized histogram
+    for(size_t i = 0; i < 256; i++)
+	{
+        hist_tmp_r[i] = hist_r[i] / (((float)(src.h))*((float)(src.w)));
+        hist_tmp_g[i] = hist_g[i] / (((float)(src.h))*((float)(src.w)));
+        hist_tmp_b[i] = hist_b[i] / (((float)(src.h))*((float)(src.w)));
+    }
+
+    // Calculate cdf
+    for(int i = 0; i < 256; i++) 
+	{
+        if(i == 0) {
+            hist_tmp_r[i] = hist_tmp_r[i];
+            hist_tmp_g[i] = hist_tmp_g[i];
+            hist_tmp_g[i] = hist_tmp_b[i];
+        }
+        else{
+            hist_tmp_r[i] = hist_tmp_r[i] + hist_tmp_r[i-1];
+            hist_tmp_g[i] = hist_tmp_g[i] + hist_tmp_g[i-1];
+            hist_tmp_g[i] = hist_tmp_g[i] + hist_tmp_g[i-1];
+        }
+    }
+
+    float scalingFactor = 255.0;
+    for(int i = 0; i < 256; i++) 
+	{
+		hist_tmp_r[i] = hist_tmp_r[i] * scalingFactor;
+		hist_tmp_g[i] = hist_tmp_g[i] * scalingFactor;
+		hist_tmp_g[i] = hist_tmp_b[i] * scalingFactor;
+    }
+
+    for(size_t j = 0; j < dst_image.h; j++)
+    {
+        for(size_t i = 0; i < dst_image.w; i++)
+        {
+			unsigned int rPixel = p_src_data[j * src.c * src.w + src.c*i + 0];
+            p_dst_data[j * dst_image.c * dst_image.w + dst_image.c*i + 0] = (unsigned char)floor(hist_tmp_r[rPixel]);
+
+			unsigned int gPixel = p_src_data[j * src.c * src.w + src.c*i + 1];
+            p_dst_data[j * dst_image.c * dst_image.w + dst_image.c*i + 1] = (unsigned char)floor(hist_tmp_r[rPixel]);
+
+			unsigned int bPixel = p_src_data[j * src.c * src.w + src.c*i + 2];
+            p_dst_data[j * dst_image.c * dst_image.w + dst_image.c*i + 2] = (unsigned char)floor(hist_tmp_r[rPixel]);
+        }
+    }
+
+	return dst_image;
+}
+
 }  //namespace opendip

@@ -226,9 +226,8 @@ TEST_CASE("OpenDIP")
 	ImgWrite("../data/output_image/linux/lena_ostu.jpg", dst_img);
 	REQUIRE(true);
 }
-#endif
 
-
+//测试仿射变换
 TEST_CASE("OpenDIP")
 {
     Mat img = imread("../data/test_image/lena.jpg");
@@ -267,4 +266,11 @@ TEST_CASE("eigen")
 	ImgWrite("../data/output_image/linux/lena_affain.jpg", dst);
 
 	REQUIRE(true);
+}
+
+#endif
+
+TEST_CASE("opencv")
+{
+
 }
