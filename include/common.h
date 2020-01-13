@@ -99,5 +99,11 @@ Image WarpAffine(Image &src, Matrix<double, 2, 3> transform);
 //彩色图像的直方图均衡
 Image HistEqualization(Image &src);
 
+//灰度图像的直方图均衡
+Image HistEqualizationGray(Image &src);
+
+//灰度图像的直方图配准
+Image HistRegistration(Image &src);
+
 }; // namespace opendip
 #endif
