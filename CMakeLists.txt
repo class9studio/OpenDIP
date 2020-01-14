@@ -21,6 +21,7 @@ set(COMMON_SOURCE
 
 set(ALGORITHM_SOURCE
     src/algorithm/interpolation.cpp 
+    src/algorithm/spatial_filter.cpp 
 )
 
 add_library(OpenDIP STATIC
