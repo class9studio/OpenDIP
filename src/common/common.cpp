@@ -12,7 +12,7 @@
 
 namespace opendip{
 
-void ShowDebugInfo()
+void ShowDebugInfo(void)
 {
     std::cout<< "[File]: " << __FILE__ << std::endl;
 	std::cout<< "[Line]: " << __LINE__ << std::endl;
@@ -842,6 +842,152 @@ Image HistEqualazition(Image &src)
         }
     }
 
+	return dst_image;
+}
+
+Image HistEqualizationGray(Image &src)
+{
+	if(src.data == NULL || src.w <= 1 || src.h <= 1 || src.c != 1)
+	{
+		return Image();
+	}
+	Image dst_image(src.w, src.h, src.c);
+	unsigned int *hist = new unsigned int [256]();
+	float *hist_tmp = new float [256]();
+
+	//Calculate Histograms of original image
+	unsigned char *p_src_data = (unsigned char *)src.data;  
+	unsigned char *p_dst_data = (unsigned char *)dst_image.data;  
+	for(size_t j = 0; j < src.h; j++)
+    {
+        for(size_t i = 0; i < src.w; i++)
+        {
+			hist[p_src_data[j * src.c * src.w + src.c*i]] += 1;
+        }
+    }
+
+    // Calculate normalized histogram
+    for(size_t i = 0; i < 256; i++)
+	{
+        hist_tmp[i] = hist[i] / (((float)(src.h))*((float)(src.w)));
+    }	
+
+    // Calculate cdf
+    for(int i = 0; i < 256; i++) 
+	{
+        if(i == 0) {
+            hist_tmp[i] = hist_tmp[i];
+        }
+        else{
+            hist_tmp[i] = hist_tmp[i] + hist_tmp[i-1];
+        }
+    }
+
+    float scalingFactor = 255.0;			
+    for(int i = 0; i < 256; i++) 
+	{
+		hist_tmp[i] = hist_tmp[i] * scalingFactor;
+    }
+
+    for(size_t j = 0; j < dst_image.h; j++)
+    {
+        for(size_t i = 0; i < dst_image.w; i++)
+        {
+			unsigned int rPixel = p_src_data[j * src.c * src.w + src.c*i];
+            p_dst_data[j * dst_image.c * dst_image.w + dst_image.c*i] = (unsigned char)floor(hist_tmp[rPixel]);
+        }
+    }
+
+	return dst_image;
+}
+
+Image HistRegistration(Image &src1, Image &src2)
+{
+	if(src1.data == NULL || src1.w <= 1 || src1.h <= 1 || src1.c != 1 || src2.data == NULL || src2.c != 1)
+	{
+		return Image();
+	}
+	Image dst_image(src1.w, src1.h, src1.c);
+	unsigned int *hist_src1 = new unsigned int [256]();
+	float *hist_tmp_src1 = new float [256]();
+	unsigned int *hist_src2 = new unsigned int [256]();
+	float *hist_tmp_src2 = new float [256]();
+
+	//Calculate Histograms of original image
+	unsigned char *p_src1_data = (unsigned char *)src1.data;  
+	unsigned char *p_src2_data = (unsigned char *)src2.data;  
+	unsigned char *p_dst_data = (unsigned char *)dst_image.data;  
+	for(size_t j = 0; j < src1.h; j++)
+    {
+        for(size_t i = 0; i < src1.w; i++)
+        {
+			hist_src1[p_src1_data[j * src1.c * src1.w + src1.c * i]] += 1;
+        }
+    }
+
+	for(size_t j = 0; j < src2.h; j++)
+	{
+		for(size_t i = 0; i < src2.w; i++)
+		{
+			hist_src2[p_src2_data[j * src2.c * src2.w + src2.c * i]] += 1;
+		}
+	}
+
+    // Calculate normalized histogram
+    for(size_t i = 0; i < 256; i++)
+	{
+        hist_tmp_src1[i] = hist_src1[i] / (((float)(src1.h))*((float)(src1.w)));
+        hist_tmp_src2[i] = hist_src2[i] / (((float)(src2.h))*((float)(src2.w)));
+    }	
+
+    // Calculate cdf
+    for(int i = 0; i < 256; i++) 
+	{
+        if(i == 0) {
+            hist_tmp_src1[i] = hist_tmp_src1[i];
+            hist_tmp_src2[i] = hist_tmp_src2[i];
+        }
+        else{
+            hist_tmp_src1[i] = hist_tmp_src1[i] + hist_tmp_src1[i-1];
+            hist_tmp_src2[i] = hist_tmp_src2[i] + hist_tmp_src2[i-1];
+        }
+    }
+
+	//构建累积概率误差矩阵
+	float diff_cdf[256][256];
+	for (int i = 0; i < 256; i++)
+	{
+		for (int j = 0; j < 256; j++)
+		{
+			diff_cdf[i][j] = fabs(hist_tmp_src1[i] - hist_tmp_src2[j]);
+		}
+	}
+
+	unsigned char *lut = new unsigned char[256]();
+	unsigned char index = 0;
+	for(int i = 0; i < 256; i++)
+	{
+		float min = diff_cdf[i][0];
+		//寻找每一列中最小值
+		for(size_t j = 0; j < 256; j++)
+		{
+			if(min > diff_cdf[i][j])
+			{
+				index = j;
+				min = diff_cdf[i][j];
+			}
+		}
+		lut[i] = index;
+	}
+
+    for(size_t j = 0; j < dst_image.h; j++)
+    {
+        for(size_t i = 0; i < dst_image.w; i++)
+        {
+			unsigned int rPixel = p_src1_data[j * src1.c * src1.w + src1.c*i];
+            p_dst_data[j * dst_image.c * dst_image.w + dst_image.c*i] = (unsigned char)lut[rPixel];
+        }
+    }	
 	return dst_image;
 }
 

@@ -61,7 +61,5 @@ namespace opendip
 		THRESH_TOZERO,
 		THRESH_TOZERO_INV,
 	};
-
-	void ShowDebugInfo();
 }; // namespace opendip
 #endif

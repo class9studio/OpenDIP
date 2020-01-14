@@ -37,8 +37,12 @@ namespace opendip {
     // 仿射变换
     Image WarpAffine(Image &src, Matrix<double, 2, 3> transform);
 
-    //彩色图像的直方图均衡
-    Image HistEqualization(Image &src);
+    //图像的直方图均衡
+    Image HistEqualizationGray(Image &src);  //灰度图像
+    Image HistEqualization(Image &src);      //灰度或者彩色图像
+
+	//灰度图像的直方图配准
+	Image HistRegistration(Image &src);
 
     // 最邻近插值法(Nearest Interpolation)
     Image LinearInterpolation(Image &src_image, int resize_row, int resize_col);
@@ -47,8 +51,8 @@ namespace opendip {
     Image BilinearInterpolation(Image &src_image, int resize_w, int resize_h);
 
     // 图像的卷积
-    Image Filter2D(Image &src, Matrix3d &kernel);
-
+    Image Filter2D_Gray(Image &src, Matrix3d &kernel);  
+    Image Filter2D(Image &src, Matrix3d &kernel);  
 } 
 
 #endif //___OPENDIP_ALGORITHM_H_

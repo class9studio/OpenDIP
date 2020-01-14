@@ -267,10 +267,8 @@ TEST_CASE("仿射变换")
 
 	REQUIRE(true);
 }
-
-
-
-TEST_CASE("opencv")
+#endif
+TEST_CASE("opencv-图像卷积")
 {
 	//待卷积矩阵
 	uchar points[25] = { 1,2,3,4,5,
@@ -299,16 +297,16 @@ TEST_CASE("opencv")
     }
     Mat lena_fillter;
     filter2D(lena, lena_fillter, -1, kernel_norm, cv::Point(-1, -1), 2, BORDER_CONSTANT);
-    //imshow("lena_fillter", lena_fillter);
-    //imshow("lena", lena);
-    //waitKey(0);	
+    imshow("lena_fillter", lena_fillter);
+    imshow("lena", lena);
+    waitKey(0);	
 
 	REQUIRE(true);
 }
-#endif
-TEST_CASE("图像卷积")
+
+TEST_CASE("opendip-图像卷积")
 {
-	Image src = ImgRead("../data/test_image/aloeGT.png");
+	Image src = ImgRead("../data/test_image/lena.jpg");
 	Matrix3d m;
 	m <<  1, 2, 1,
 		  2, 0, 2,
@@ -316,7 +314,7 @@ TEST_CASE("图像卷积")
 	m = m/12;
 
 	Image dst = Filter2D(src, m);
-	ImgWrite("../data/output_image/linux/lena_conva.jpg", dst);
+	ImgWrite("../data/output_image/linux/lena_conva_color.jpg", dst);
 
 	REQUIRE(true);
 }

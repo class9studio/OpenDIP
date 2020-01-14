@@ -9,11 +9,11 @@
 using namespace std;
 using namespace Eigen;
 namespace opendip {
-    Image Filter2D(Image &src, Matrix3d &kernel)
+    Image Filter2D_Gray(Image &src, Matrix3d &kernel)
     {
         if(src.data == NULL || src.w < 1 ||  src.h < 1 || src.c != 1 || kernel.size() != 9)
         {
-            cout << "source image invalid" <<  kernel.size() << src.c  << endl;
+            cout << "source image invalid" << endl;
             return Image();
         }
         Matrix3d src_m;
@@ -22,9 +22,7 @@ namespace opendip {
         kernel_m << kernel(2,2) , kernel(2,1), kernel(2,0),
                     kernel(1,2) , kernel(1,1), kernel(1,0),
                     kernel(0,2) , kernel(0,1), kernel(0,0);
-        cout << "kernel-m" << endl;
-        cout << src.h << src.w<< endl;
-        cout << kernel_m << endl;
+
         Image dst(src.w, src.h, src.c);
         Image dst_bound(src.w+2, src.h+2, src.c);
         unsigned char *p_src_data = (unsigned char*)src.data;
@@ -63,4 +61,64 @@ namespace opendip {
 
         return dst;
     }
+
+    Image Filter2D(Image &src, Matrix3d &kernel)
+    {
+        if(src.data == NULL || src.w < 1 ||  src.h < 1 || kernel.size() != 9)
+        {
+            cout << "source image invalid"<< endl;
+            return Image();
+        }
+        Matrix3d src_m;
+        //卷积核旋转180
+        Matrix3d kernel_m;
+        kernel_m << kernel(2,2) , kernel(2,1), kernel(2,0),
+                    kernel(1,2) , kernel(1,1), kernel(1,0),
+                    kernel(0,2) , kernel(0,1), kernel(0,0);
+
+        Image dst(src.w, src.h, src.c);
+        Image dst_bound(src.w+2*src.c, src.h+2*src.c, src.c);
+        unsigned char *p_src_data = (unsigned char*)src.data;
+        unsigned char *p_dst_data = (unsigned char*)dst.data;
+        unsigned char *p_dst_bound_data = (unsigned char*)dst_bound.data;
+        int value = 0;
+        //拓宽边缘
+        memset(p_dst_bound_data, 0, src.w*src.h*src.c);
+        for(int j = 0; j < src.h; j++)
+        {
+            for(int i = 0; i < src.w; i++)
+            {
+                for(int z = 0; z < src.c; z++)
+                {
+                    p_dst_bound_data[(j+1)*dst_bound.c*dst_bound.w + (i+1)*dst_bound.c + z] = p_src_data[j*src.c*src.w + i*src.c + z];
+                }
+            }
+        }
+
+        for(int j = 1; j < dst_bound.h - 1; j++)
+        {
+            for(int i = 1; i < dst_bound.w - 1; i++)
+            {
+                for(int z = 0; z < src.c; z++)
+                {
+                    src_m(0,0) = p_dst_bound_data[(j-1)*dst_bound.c*dst_bound.w + (i-1)*dst_bound.c + z];
+                    src_m(0,1) = p_dst_bound_data[(j-1)*dst_bound.c*dst_bound.w + i*dst_bound.c + z];
+                    src_m(0,2) = p_dst_bound_data[(j-1)*dst_bound.c*dst_bound.w + (i+1)*dst_bound.c + z];
+                    src_m(1,0) = p_dst_bound_data[j*dst_bound.c*dst_bound.w + (i-1)*dst_bound.c + z];
+                    src_m(1,1) = p_dst_bound_data[j*dst_bound.c*dst_bound.w + i*dst_bound.c + z];
+                    src_m(1,2) = p_dst_bound_data[j*dst_bound.c*dst_bound.w + (i+1)*dst_bound.c + z];
+                    src_m(2,0) = p_dst_bound_data[(j+1)*dst_bound.c*dst_bound.w + (i-1)*dst_bound.c + z];
+                    src_m(2,1) = p_dst_bound_data[(j+1)*dst_bound.c*dst_bound.w + i*dst_bound.c + z];
+                    src_m(2,2) = p_dst_bound_data[(j+1)*dst_bound.c*dst_bound.w + (i+1)*dst_bound.c + z];
+                    
+                    value = src_m(0,0)*kernel_m(0,0) + src_m(0,1)*kernel_m(0,1) + src_m(0,2)*kernel_m(0,2) + src_m(1,0)*kernel_m(1,0) + src_m(1,1)*kernel_m(1,1)  \
+                            + src_m(1,2)*kernel_m(1,2) + src_m(2,0)*kernel_m(2,0) + src_m(2,1)*kernel_m(2,1) + src_m(2,2)*kernel_m(2,2);    //矩阵标量乘法
+                    p_dst_data[(j-1)*dst.c*dst.w + (i-1)*dst.c + z] = value;                    
+                }
+            }
+        }
+
+        return dst;
+    }
+
 } //namespace opendip
