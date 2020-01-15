@@ -9,6 +9,19 @@
 using namespace std;
 using namespace Eigen;
 namespace opendip {
+    /*****************************************************************************
+    *   Function name: Filter2D_Gray
+    *   Description  : 灰度图像卷积
+    *   Parameters   : src                  Source image name
+    *                  kernel               3x3卷积核
+    *   Return Value : Image Type.
+    *   Spec         :
+    *   History:
+    *
+    *       1.  Date         : 2020-1-15
+    *           Author       : YangLin
+    *           Modification : Created function
+    *****************************************************************************/
     Image Filter2D_Gray(Image &src, Matrix3d &kernel)
     {
         if(src.data == NULL || src.w < 1 ||  src.h < 1 || src.c != 1 || kernel.size() != 9)
@@ -61,8 +74,20 @@ namespace opendip {
 
         return dst;
     }
-
-    Image Filter2D(Image &src, Matrix3d &kernel)
+    /*****************************************************************************
+    *   Function name: Filter2D_3M
+    *   Description  : 图像卷积  --支持识别通道
+    *   Parameters   : src                  Source image name
+    *                  kernel               3x3卷积核
+    *   Return Value : Image Type
+    *   Spec         :
+    *   History:
+    *
+    *       1.  Date         : 2020-1-15
+    *           Author       : YangLin
+    *           Modification : Created function
+    *****************************************************************************/
+    Image Filter2D_3M(Image &src, Matrix3d &kernel)
     {
         if(src.data == NULL || src.w < 1 ||  src.h < 1 || kernel.size() != 9)
         {
@@ -121,4 +146,106 @@ namespace opendip {
         return dst;
     }
 
+    /*****************************************************************************
+    *   Function name: MatRotate180
+    *   Description  : n*n矩阵逆时针旋转180
+    *   Parameters   : m                    待旋转矩阵
+    *   Return Value : MatrixXd             旋转后矩阵
+    *   Spec         :
+    *   History:
+    *
+    *       1.  Date         : 2020-1-15
+    *           Author       : YangLin
+    *           Modification : Created function
+    *****************************************************************************/    
+    MatrixXd MatRotate180(MatrixXd m) 
+    {
+        int len = m.rows();
+        MatrixXd res_m(len, len);
+
+        int k = 0;
+        for(int i = 0; i < len; i++)
+        {   
+            for(int j = 0; j < len; j++)
+            {
+                k = len - 1 - i;
+                res_m(k, len-1-j) = m(i, j);
+            }
+        }
+        return res_m;    
+    }
+
+    /*****************************************************************************
+    *   Function name: Filter2D
+    *   Description  : 图像卷积  --支持识别通道,不同核尺寸(3,5,7...)
+    *   Parameters   : src                  Source image name
+    *                  kernel               不同尺寸卷积核(3,5,7...)
+    *   Return Value : Image Type           经过filter后的图像
+    *   Spec         :
+    *   History:
+    *
+    *       1.  Date         : 2020-1-15
+    *           Author       : YangLin
+    *           Modification : Created function
+    *****************************************************************************/
+    Image Filter2D(Image &src, MatrixXd &kernel)
+    {
+        if(src.data == NULL || src.w < 1 ||  src.h < 1 || kernel.size() < 1)
+        {
+            cout << "source image invalid"<< endl;
+            return Image();
+        } 
+
+        int len = kernel.rows();
+        MatrixXd src_m(len, len);
+        MatrixXd src_n(len, len);
+        //卷积核旋转180
+        MatrixXd kernel_m = MatRotate180(kernel);
+
+        Image dst(src.w, src.h, src.c);
+        Image dst_bound(src.w + (len-1)*src.c, src.h+(len-1)*src.c, src.c);
+        unsigned char *p_src_data = (unsigned char*)src.data;
+        unsigned char *p_dst_data = (unsigned char*)dst.data;
+        unsigned char *p_dst_bound_data = (unsigned char*)dst_bound.data;
+        int value = 0;
+        int offset = len / 2;
+
+        //拓宽边缘
+        memset(p_dst_bound_data, 0, src.w*src.h*src.c);
+        for(int j = 0; j < src.h; j++)
+        {
+            for(int i = 0; i < src.w; i++)
+            {
+                for(int z = 0; z < src.c; z++)
+                {
+                    p_dst_bound_data[(j+offset)*dst_bound.c*dst_bound.w + (i+offset)*dst_bound.c + z] = p_src_data[j*src.c*src.w + i*src.c + z];
+                }
+            }
+        }
+
+        //扫描矩阵
+        for(int j = offset; j < dst_bound.h - offset; j++)
+        {
+            for(int i = offset; i < dst_bound.w - offset; i++)
+            {
+                for(int z = 0; z < src.c; z++)
+                {
+                    //对每一个像素点进行卷积操作
+                    for(int m = 0; m < len; m++)
+                    {
+                        for(int n = 0;n < len; n++)
+                        {
+                            src_m(m, n) = p_dst_bound_data[(j-offset+m)*dst_bound.c*dst_bound.w + (i-offset+n)*dst_bound.c + z];
+                        }
+                    }
+
+                    src_n = src_m.array() * kernel_m.array();  //矩阵标量乘法
+                    value = src_n.sum();   
+                    p_dst_data[(j-offset)*dst.c*dst.w + (i-offset)*dst.c + z] = value;                    
+                }
+            }
+        }
+
+        return dst;
+    }
 } //namespace opendip

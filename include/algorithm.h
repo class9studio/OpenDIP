@@ -50,10 +50,13 @@ namespace opendip {
     // 双线性插值法(Bilinear Interpolation)
     Image BilinearInterpolation(Image &src_image, int resize_w, int resize_h);
 
+    //n*n矩阵逆时针旋转180
+    MatrixXd MatRotate180(MatrixXd m);
     // 图像的卷积
     Image Filter2D_Gray(Image &src, Matrix3d &kernel);  
-    Image Filter2D(Image &src, Matrix3d &kernel);  
-
+    Image Filter2D_3M(Image &src, Matrix3d &kernel);  
+    Image Filter2D(Image &src, MatrixXd &kernel);
+    
     //椒盐噪声函数
     void SaltAndPepper(Image &src, int n);
     

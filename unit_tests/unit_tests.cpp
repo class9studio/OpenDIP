@@ -339,7 +339,6 @@ TEST_CASE("opendip-图像卷积")
 }
 
 
-
 TEST_CASE("opendip-椒盐噪声")
 {
 	Image src = ImgRead("../data/test_image/lena.jpg");
@@ -348,7 +347,7 @@ TEST_CASE("opendip-椒盐噪声")
 	ImgWrite("../data/output_image/linux/lena_noise.jpg", src);
 	REQUIRE(true);
 }
-#endif
+
 TEST_CASE("opendio-高斯噪声")
 {
 	//灰度图像高斯
@@ -360,6 +359,52 @@ TEST_CASE("opendio-高斯噪声")
 	Image src1 = ImgRead("../data/test_image/lena.jpg");
 	GussianNoiseImg(src1, 0, 5);
 	ImgWrite("../data/output_image/linux/lena_gussian_noise.jpg", src1);
+
+	REQUIRE(true);
+}
+
+TEST_CASE("opendip-Rotate Matrix")
+{
+	Matrix3d m;
+	m <<  1, 2, 3,
+		  4, 0, 2,
+		  7, 8, 9;
+	
+	MatrixXd m1 = MatRotate180(m);
+	cout << m1 << endl;
+
+	REQUIRE(true);
+}
+
+
+TEST_CASE("opendip-Rotate Matrix")
+{
+	MatrixXd m(3,3);
+	m <<  1, 2, 3,
+		  4, 0, 2,
+		  7, 8, 9;
+	
+	MatrixXd m1(3,3);
+	m1 << 1,2,3,
+		  4,5,6,
+		  7,8,9;
+
+	MatrixXd res = m.array() * m1.array();	
+	cout << res << endl;
+	cout << "sum: " << res.sum() << endl;
+	REQUIRE(true);
+}
+#endif
+
+TEST_CASE("opendip-图像卷积")
+{
+	Image src = ImgRead("../data/test_image/lena.jpg");
+	MatrixXd m = MatrixXd::Ones(3,3);
+	int value = m.sum();
+	m = m/value;
+
+	Image dst = Filter2D(src, m);
+	ImgWrite("../data/output_image/linux/lena_conva_color1.jpg", dst);
 
 	REQUIRE(true);
 }
