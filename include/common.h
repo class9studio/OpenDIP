@@ -27,9 +27,9 @@
 using namespace std;
 using namespace Eigen;
 
-#define OPENDIP_PI   3.1415926535897932384626433832795
 namespace opendip
 {
+	#define OPENDIP_PI   3.1415926535897932384626433832795
 	// image convert to Mat format
     typedef Matrix<unsigned char, Dynamic, Dynamic, RowMajor> RowMatrixXc;
     typedef Map<RowMatrixXc> MapType;

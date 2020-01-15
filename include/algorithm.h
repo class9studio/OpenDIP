@@ -53,6 +53,9 @@ namespace opendip {
     // 图像的卷积
     Image Filter2D_Gray(Image &src, Matrix3d &kernel);  
     Image Filter2D(Image &src, Matrix3d &kernel);  
+
+    //盐噪声函数
+    void SaltAndPepper(Image &src, int n);
 } 
 
 #endif //___OPENDIP_ALGORITHM_H_

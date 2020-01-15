@@ -227,6 +227,25 @@ TEST_CASE("OpenDIP")
 	REQUIRE(true);
 }
 
+
+TEST_CASE("opendip-验证map函数")
+{
+	unsigned char ary1[4] = {1,2,3,4};
+	unsigned char ary2[4] = {10,20,30,40};
+	cout << "opendip-map" << endl;
+	MapType src_m1 = MapType((unsigned char *)ary1, 2, 2);
+	MapType src_m2 = MapType((unsigned char *)ary2, 2, 2);
+	src_m1 = src_m1 + src_m2;
+
+	for(int i = 0; i < 4; i++)
+	{
+		//cout << ary1[i] << endl;
+		printf("value: %d.\n", ary1[i]);
+	}
+
+	REQUIRE(true);
+}
+
 //测试仿射变换
 TEST_CASE("OpenDIP")
 {
@@ -267,7 +286,7 @@ TEST_CASE("仿射变换")
 
 	REQUIRE(true);
 }
-#endif
+
 TEST_CASE("opencv-图像卷积")
 {
 	//待卷积矩阵
@@ -316,5 +335,16 @@ TEST_CASE("opendip-图像卷积")
 	Image dst = Filter2D(src, m);
 	ImgWrite("../data/output_image/linux/lena_conva_color.jpg", dst);
 
+	REQUIRE(true);
+}
+
+#endif
+
+TEST_CASE("opendip-椒盐噪声")
+{
+	Image src = ImgRead("../data/test_image/lena.jpg");
+	SaltAndPepper(src, 10000);
+
+	ImgWrite("../data/output_image/linux/lena_noise.jpg", src);
 	REQUIRE(true);
 }
