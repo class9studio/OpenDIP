@@ -54,8 +54,14 @@ namespace opendip {
     Image Filter2D_Gray(Image &src, Matrix3d &kernel);  
     Image Filter2D(Image &src, Matrix3d &kernel);  
 
-    //盐噪声函数
+    //椒盐噪声函数
     void SaltAndPepper(Image &src, int n);
+    
+    //高斯分布随机数生成
+    double RandomGuassinGen(double mean, double sigma);
+    //高斯噪声函数
+    void GussianNoiseImg_Gray(Image &src, double mean, double sigma);
+    void GussianNoiseImg(Image &src, double mean, double sigma);
 } 
 
 #endif //___OPENDIP_ALGORITHM_H_

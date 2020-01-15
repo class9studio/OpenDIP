@@ -1,5 +1,7 @@
 #include <iostream>
 #include <cmath>
+#include <random>
+#include <chrono>
 
 #include "common.h"
 #include "algorithm.h"
@@ -870,6 +872,102 @@ void SaltAndPepper(Image &src, int n)
             else
             {
                 cout << "Image size invalid when add black noise" << endl;
+            }
+        }
+    }
+}
+
+/*****************************************************************************
+*   Function name: RandomGuassinGen
+*   Description  : 生产高斯(正态)分布随机数
+*   Parameters   : mean：			  正态分布均值
+*                  sigma:             正态分布标准差     
+*   Return Value : double             返回正态分布随机数            
+*   History:
+*
+*       1.  Date         : 2020-1-15
+*           Author       : YangLin
+*           Modification : function draft
+*****************************************************************************/
+double RandomGuassinGen(double mean, double sigma)    
+{
+    // construct a random generator engine from a time-based seed
+    unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
+    std::default_random_engine gen(seed);
+    std::normal_distribution<double> dis(mean,sigma);
+  
+    return dis(gen);
+}
+/*****************************************************************************
+*   Function name: GussianNoise
+*   Description  : 高斯噪声函数-灰度图像
+*   Parameters   : image：			 输出高斯噪声图像(与原图像大小相同)      
+*   Return Value : void              
+*   Spec         :   高斯噪声可能出现在图像的所有位置，所以需要用叠加的方式产生新图像
+*                    图像的叠加使用Engin的Map映射成矩阵 直接进行矩阵加和
+*   History:
+*
+*       1.  Date         : 2020-1-15
+*           Author       : YangLin
+*           Modification : function draft
+*****************************************************************************/
+void GussianNoiseImg_Gray(Image &src, double mean, double sigma)
+{
+    if(src.data == NULL || src.w < 1 || src.h < 1 || src.c < 0)
+    {
+        cout << "src image invalid" << endl;
+        return;
+    }
+    //产生噪声图像
+    Image gussain_noise(src.w, src.h, src.c);
+    unsigned char *p_gus_noise = (unsigned char *)gussain_noise.data;
+    for(int j = 0; j < gussain_noise.h; j++)
+    {   
+        for(int i = 0; i < gussain_noise.w; i++)
+        {
+            for(int z = 0; z < src.c; z++)
+            {
+                p_gus_noise[j*gussain_noise.w*gussain_noise.c + i*gussain_noise.c] = (unsigned char)RandomGuassinGen(mean, sigma);
+            }
+        }
+    }
+
+    //将image映射成Map的matrix
+    MapType src_m1 = ImageCvtMap(src);
+    MapType src_m2 = ImageCvtMap(gussain_noise);
+    // map的加和操作会修改data的数据
+    src_m1 = src_m1 + src_m2;
+}
+
+/*****************************************************************************
+*   Function name: GussianNoise
+*   Description  : 高斯噪声函数-自动识别通道
+*   Parameters   : image：			 输出高斯噪声图像(与原图像大小相同)      
+*   Return Value : void              
+*   Spec         : 
+*   History:
+*
+*       1.  Date         : 2020-1-15
+*           Author       : YangLin
+*           Modification : function draft
+*****************************************************************************/
+void GussianNoiseImg(Image &src, double mean, double sigma)
+{
+    if(src.data == NULL || src.w < 1 || src.h < 1 || src.c < 0)
+    {
+        cout << "src image invalid" << endl;
+        return;
+    }
+	unsigned char rng = 0;
+    unsigned char *p_src_data = (unsigned char *)src.data;
+    for(int j = 0; j < src.h; j++)
+    {   
+        for(int i = 0; i < src.w; i++)
+        {
+			rng = (unsigned char)RandomGuassinGen(mean, sigma);
+            for(int z = 0; z < src.c; z++)
+            {
+                p_src_data[j*src.w*src.c + i*src.c] += rng;
             }
         }
     }

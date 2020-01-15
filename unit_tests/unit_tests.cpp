@@ -338,7 +338,7 @@ TEST_CASE("opendip-图像卷积")
 	REQUIRE(true);
 }
 
-#endif
+
 
 TEST_CASE("opendip-椒盐噪声")
 {
@@ -346,5 +346,20 @@ TEST_CASE("opendip-椒盐噪声")
 	SaltAndPepper(src, 10000);
 
 	ImgWrite("../data/output_image/linux/lena_noise.jpg", src);
+	REQUIRE(true);
+}
+#endif
+TEST_CASE("opendio-高斯噪声")
+{
+	//灰度图像高斯
+	Image src = ImgRead("../data/test_image/aloeGT.png");	
+	GussianNoiseImg_Gray(src, 15, 30);
+	ImgWrite("../data/output_image/linux/aloeGT_gussian_noise.jpg", src);
+
+	//彩色图像高斯
+	Image src1 = ImgRead("../data/test_image/lena.jpg");
+	GussianNoiseImg(src1, 0, 5);
+	ImgWrite("../data/output_image/linux/lena_gussian_noise.jpg", src1);
+
 	REQUIRE(true);
 }
