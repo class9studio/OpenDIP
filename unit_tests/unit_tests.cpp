@@ -396,15 +396,17 @@ TEST_CASE("opendip-Rotate Matrix")
 }
 #endif
 
-TEST_CASE("opendip-图像卷积")
+TEST_CASE("opendip-均值滤波")
 {
 	Image src = ImgRead("../data/test_image/lena.jpg");
-	MatrixXd m = MatrixXd::Ones(3,3);
-	int value = m.sum();
-	m = m/value;
 
-	Image dst = Filter2D(src, m);
-	ImgWrite("../data/output_image/linux/lena_conva_color1.jpg", dst);
+	Image dst = Blur(src, 3);
+	ImgWrite("../data/output_image/linux/lena_blur_3.jpg", dst);
 
+	Image dst1 = Blur(src, 5);
+	ImgWrite("../data/output_image/linux/lena_blur_5.jpg", dst1);
+
+	Image dst2 = Blur(src, 9);
+	ImgWrite("../data/output_image/linux/lena_blur_9.jpg", dst2);
 	REQUIRE(true);
 }

@@ -65,6 +65,10 @@ namespace opendip {
     //高斯噪声函数
     void GussianNoiseImg_Gray(Image &src, double mean, double sigma);
     void GussianNoiseImg(Image &src, double mean, double sigma);
+
+    //均值滤波
+    Image Blur(Image &src, int ksize);
+
 } 
 
 #endif //___OPENDIP_ALGORITHM_H_

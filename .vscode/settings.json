@@ -98,7 +98,8 @@
         "numericaldiff": "c",
         "openglsupport": "c",
         "specialfunctions": "c",
-        "splines": "c"
+        "splines": "c",
+        "*.expression": "cpp"
     },
     "cmake.configureOnOpen": true
 }

@@ -248,4 +248,40 @@ namespace opendip {
 
         return dst;
     }
+
+     /*****************************************************************************
+    *   Function name: Blur
+    *   Description  : 均值滤波  
+    *   Parameters   : src                  Source image name
+    *                  ksize                卷积核尺寸(3,5,7...)
+    *   Return Value : Image Type           经过均值滤波后的图像
+    *   Spec         :
+    *       均值滤波的优点是在像素值变换趋势一致的情况下，可以将受噪声影响而突然变化的像素值修正到接近周围像素值变化的一致性下;
+    *   丢失细节信息,变得更加模糊，滤波器范围越大，变模糊的效果越明显
+    *   History:
+    *
+    *       1.  Date         : 2020-1-15
+    *           Author       : YangLin
+    *           Modification : Created function
+    *****************************************************************************/   
+    Image Blur(Image &src, int ksize)
+    {
+        if(src.data == NULL || src.w < 1 || src.h < 1 || src.c < 1  || ksize%2 != 1)
+        {
+            cout << "source image invalid"<< endl;
+            return Image();
+        }         
+        MatrixXd kernel = MatrixXd::Ones(ksize, ksize);
+        int sum  = kernel.sum();
+        if(sum == 0)
+        {   
+            cout << "blur kernel generate fail." << endl;
+            return Image();
+        }
+        else
+            kernel = kernel/sum;
+
+        return Filter2D(src, kernel);
+    }
+
 } //namespace opendip
