@@ -394,7 +394,6 @@ TEST_CASE("opendip-Rotate Matrix")
 	cout << "sum: " << res.sum() << endl;
 	REQUIRE(true);
 }
-#endif
 
 TEST_CASE("opendip-均值滤波")
 {
@@ -410,3 +409,19 @@ TEST_CASE("opendip-均值滤波")
 	ImgWrite("../data/output_image/linux/lena_blur_9.jpg", dst2);
 	REQUIRE(true);
 }
+#endif
+TEST_CASE("opendip-高斯滤波器")
+{
+	MatrixXd m = GetGaussianKernel(3, 1);
+	cout << "kernel gaussian: " << endl;
+	//cout << m << endl;
+
+	Image src = ImgRead("../data/test_image/lena.jpg");
+	Image dst = GaussianBlur(src, 3, 1);
+	ImgWrite("../data/output_image/linux/lena_gau_blur.jpg", dst);
+
+	Image dst9 = GaussianBlur(src, 9, 1);
+	ImgWrite("../data/output_image/linux/lena_gau_blur9.jpg", dst9);
+	REQUIRE(true);
+}
+

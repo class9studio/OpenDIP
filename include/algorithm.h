@@ -69,6 +69,11 @@ namespace opendip {
     //均值滤波
     Image Blur(Image &src, int ksize);
 
+    //二阶高斯滤波器
+    MatrixXd GetGaussianKernel(int  ksize, double  sigma);
+    //高斯滤波
+    Image GaussianBlur(Image &src, int ksize, double sigma);
+
 } 
 
 #endif //___OPENDIP_ALGORITHM_H_

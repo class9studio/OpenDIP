@@ -249,7 +249,7 @@ namespace opendip {
         return dst;
     }
 
-     /*****************************************************************************
+    /*****************************************************************************
     *   Function name: Blur
     *   Description  : 均值滤波  
     *   Parameters   : src                  Source image name
@@ -282,6 +282,82 @@ namespace opendip {
             kernel = kernel/sum;
 
         return Filter2D(src, kernel);
+    }
+
+    /*****************************************************************************
+    *   Function name: GetGaussianKernel
+    *   Description  : 二阶高斯滤波器 
+    *   Parameters   : ksize                卷积核尺寸(3,5,7...)
+    *                  sigma                标准差
+    *   Return Value : MatrixXd             高斯卷积核
+    *   Spec         :
+    *       高斯滤波器考虑了像素离滤波器中心距离的影响，以滤波器中心位置为高斯分布的均值，根据高斯分布公式和每个像素离中心位置的距离计算出滤波器内每个位置的数值，
+    *   从而形成高斯滤波器
+    *   History:
+    *
+    *       1.  Date         : 2020-1-16
+    *           Author       : YangLin
+    *           Modification : Created function
+    *****************************************************************************/    
+    MatrixXd GetGaussianKernel(int  ksize, double sigma)
+    {
+        MatrixXd gaussian_kernel(ksize, ksize);
+        if(ksize % 2 != 1)
+        {
+            cout << "gaussian blur ksize invalid" << endl;
+            return MatrixXd();
+        }
+
+        double sigmaX = sigma > 0 ? sigma : ((ksize-1)*0.5 - 1)*0.3 + 0.8;
+
+        int center = ksize / 2;
+        double sum = 0;
+
+        for(int i = 0; i < ksize; i++)
+        {
+            for(int j = 0; j < ksize; j++)
+            {
+                gaussian_kernel(i,j) = (1/(2*OPENDIP_PI*sigmaX*sigmaX))*exp(-((i-center)*(i-center)+(j-center)*(j-center))/(2*sigmaX*sigmaX));
+                sum += gaussian_kernel(i,j);
+            }
+        }
+
+        for(int i = 0; i < ksize; i++)
+        {
+            for(int j = 0; j < ksize; j++)
+            {
+                gaussian_kernel(i,j) /= sum;
+            }
+        }
+
+        return gaussian_kernel;
+    }
+
+     /*****************************************************************************
+    *   Function name: GaussianBlur
+    *   Description  : 高斯滤波  
+    *   Parameters   : src                  Source image name
+    *                  ksize                卷积核尺寸(3,5,7...)
+    *                  sigma                高斯分布标准差
+    *   Return Value : Image Type           经过高斯滤波后的图像
+    *   Spec         :
+    * 
+    *   History:
+    *
+    *       1.  Date         : 2020-1-16
+    *           Author       : YangLin
+    *           Modification : Created function
+    *****************************************************************************/   
+    Image GaussianBlur(Image &src, int ksize, double sigma)
+    {
+        if(src.data == NULL || src.w < 1 || src.h < 1 || src.c < 1  || ksize%2 != 1)
+        {
+            cout << "source image invalid"<< endl;
+            return Image();
+        }        
+        MatrixXd gaussian_kernel = GetGaussianKernel(ksize, sigma);
+        cout << gaussian_kernel << endl;
+        return Filter2D(src, gaussian_kernel);
     }
 
 } //namespace opendip
