@@ -74,6 +74,9 @@ namespace opendip {
     //高斯滤波
     Image GaussianBlur(Image &src, int ksize, double sigma);
 
+    //边缘检测
+    Image EdgeDetection(Image &src, MatrixXd &kernel);                     //单方向边缘检测滤波器
+    Image EdgeDetection(Image &src, MatrixXd &kernelX, MatrixXd &kernelY); //两个方向边缘结果相加得到整幅图像的边缘信息
 } 
 
 #endif //___OPENDIP_ALGORITHM_H_

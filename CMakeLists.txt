@@ -23,6 +23,7 @@ set(ALGORITHM_SOURCE
     src/algorithm/interpolation.cpp 
     src/algorithm/spatial_filter.cpp 
     src/algorithm/algorithm.cpp
+    src/algorithm/edge_detection.cpp 
 )
 
 add_library(OpenDIP STATIC

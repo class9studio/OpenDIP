@@ -409,7 +409,7 @@ TEST_CASE("opendip-均值滤波")
 	ImgWrite("../data/output_image/linux/lena_blur_9.jpg", dst2);
 	REQUIRE(true);
 }
-#endif
+
 TEST_CASE("opendip-高斯滤波器")
 {
 	MatrixXd m = GetGaussianKernel(3, 1);
@@ -424,4 +424,20 @@ TEST_CASE("opendip-高斯滤波器")
 	ImgWrite("../data/output_image/linux/lena_gau_blur9.jpg", dst9);
 	REQUIRE(true);
 }
+#endif
+
+TEST_CASE("opendip-边缘检测")
+{
+	Image src = ImgRead("../data/test_image/lena_gray.jpg");
+	MatrixXd mX(1,3);
+	mX << 1, 0, -1;
+	MatrixXd mY(3,1);
+	mY << 1, 0, -1;
+
+	Image dst = EdgeDetection(src, mX, mY); 
+	ImgWrite("../data/output_image/linux/lena_edg_whole.jpg", dst);
+
+	REQUIRE(true);
+}
+
 
