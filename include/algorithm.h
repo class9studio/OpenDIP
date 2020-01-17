@@ -77,6 +77,11 @@ namespace opendip {
     //边缘检测
     Image EdgeDetection(Image &src, MatrixXd &kernel);                     //单方向边缘检测滤波器
     Image EdgeDetection(Image &src, MatrixXd &kernelX, MatrixXd &kernelY); //两个方向边缘结果相加得到整幅图像的边缘信息
+
+    //Sobel算子构造
+    void GetSobel(int n, MatrixXd &sobX, MatrixXd &sobY);
+    //Sobel算子 边缘检测
+	Image EdgSobel(Image &src, int ksize = 3);
 } 
 
 #endif //___OPENDIP_ALGORITHM_H_

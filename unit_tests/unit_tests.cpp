@@ -424,7 +424,7 @@ TEST_CASE("opendip-高斯滤波器")
 	ImgWrite("../data/output_image/linux/lena_gau_blur9.jpg", dst9);
 	REQUIRE(true);
 }
-#endif
+
 
 TEST_CASE("opendip-边缘检测")
 {
@@ -439,5 +439,26 @@ TEST_CASE("opendip-边缘检测")
 
 	REQUIRE(true);
 }
+#endif
 
+TEST_CASE("opendip-sobel")
+{
+	MatrixXd sobX(5,5), sobY(5,5);
+	GetSobel(5, sobX, sobY);
+	cout << "sobelX: " << endl;
+	cout << sobX << endl;
+	cout << "sobelY: " << endl;
+	cout << sobY << endl;
+	
+	REQUIRE(true);
+}
+
+TEST_CASE("opendip-图像卷积")
+{
+	Image src = ImgRead("../data/test_image/lena_gray.jpg");
+	Image dst = EdgSobel(src, 3);
+
+	ImgWrite("../data/output_image/linux/lena_sobel.jpg", dst);
+	REQUIRE(true);
+}
 
