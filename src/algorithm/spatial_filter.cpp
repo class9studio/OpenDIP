@@ -68,6 +68,15 @@ namespace opendip {
                 
                 value = src_m(0,0)*kernel_m(0,0) + src_m(0,1)*kernel_m(0,1) + src_m(0,2)*kernel_m(0,2) + src_m(1,0)*kernel_m(1,0) + src_m(1,1)*kernel_m(1,1)  \
                         + src_m(1,2)*kernel_m(1,2) + src_m(2,0)*kernel_m(2,0) + src_m(2,1)*kernel_m(2,1) + src_m(2,2)*kernel_m(2,2);    //矩阵标量乘法
+                //处理卷积后的像素值可能超出[0~255]范围
+                if(value > 255 || value < -255)
+                {
+                    value =  255;
+                }  
+                else
+                {
+                    value = abs(value);
+                }
                 p_dst_data[(j-1)*dst.c*dst.w + (i-1)*dst.c] = value;
             }
         }
@@ -138,6 +147,15 @@ namespace opendip {
                     
                     value = src_m(0,0)*kernel_m(0,0) + src_m(0,1)*kernel_m(0,1) + src_m(0,2)*kernel_m(0,2) + src_m(1,0)*kernel_m(1,0) + src_m(1,1)*kernel_m(1,1)  \
                             + src_m(1,2)*kernel_m(1,2) + src_m(2,0)*kernel_m(2,0) + src_m(2,1)*kernel_m(2,1) + src_m(2,2)*kernel_m(2,2);    //矩阵标量乘法
+                    //处理卷积后的像素值可能超出[0~255]范围
+                    if(value > 255 || value < -255)
+                    {
+                        value =  255;
+                    }  
+                    else
+                    {
+                        value = abs(value);
+                    }        
                     p_dst_data[(j-1)*dst.c*dst.w + (i-1)*dst.c + z] = value;                    
                 }
             }
@@ -148,7 +166,7 @@ namespace opendip {
 
     /*****************************************************************************
     *   Function name: MatRotate180
-    *   Description  : n*n矩阵逆时针旋转180
+    *   Description  : 任意矩阵逆时针旋转180
     *   Parameters   : m                    待旋转矩阵
     *   Return Value : MatrixXd             旋转后矩阵
     *   Spec         :
@@ -160,16 +178,17 @@ namespace opendip {
     *****************************************************************************/    
     MatrixXd MatRotate180(MatrixXd m) 
     {
-        int len = m.rows();
-        MatrixXd res_m(len, len);
+        int row = m.rows();
+        int col = m.cols();
+        MatrixXd res_m(row, col);
 
         int k = 0;
-        for(int i = 0; i < len; i++)
+        for(int i = 0; i < row; i++)
         {   
-            for(int j = 0; j < len; j++)
+            for(int j = 0; j < col; j++)
             {
-                k = len - 1 - i;
-                res_m(k, len-1-j) = m(i, j);
+                k = row - 1 - i;
+                res_m(k, col-1-j) = m(i, j);
             }
         }
         return res_m;    
@@ -196,52 +215,63 @@ namespace opendip {
             return Image();
         } 
 
-        int len = kernel.rows();
-        MatrixXd src_m(len, len);
-        MatrixXd src_n(len, len);
+        int row = kernel.rows();
+        int col = kernel.cols();
+        MatrixXd src_m(row, col);
+        MatrixXd src_n(row, col);
         //卷积核旋转180
         MatrixXd kernel_m = MatRotate180(kernel);
 
         Image dst(src.w, src.h, src.c);
-        Image dst_bound(src.w + (len-1)*src.c, src.h+(len-1)*src.c, src.c);
+        Image dst_bound(src.w + (col-1)*src.c, src.h+(row-1)*src.c, src.c);
         unsigned char *p_src_data = (unsigned char*)src.data;
         unsigned char *p_dst_data = (unsigned char*)dst.data;
         unsigned char *p_dst_bound_data = (unsigned char*)dst_bound.data;
         int value = 0;
-        int offset = len / 2;
+        int offset_row = row / 2;
+        int offset_col = col / 2;
 
         //拓宽边缘
-        memset(p_dst_bound_data, 0, src.w*src.h*src.c);
+        memset(p_dst_bound_data, 0, dst_bound.w*dst_bound.h*dst_bound.c);
         for(int j = 0; j < src.h; j++)
         {
             for(int i = 0; i < src.w; i++)
             {
                 for(int z = 0; z < src.c; z++)
                 {
-                    p_dst_bound_data[(j+offset)*dst_bound.c*dst_bound.w + (i+offset)*dst_bound.c + z] = p_src_data[j*src.c*src.w + i*src.c + z];
+                    p_dst_bound_data[(j+offset_row)*dst_bound.c*dst_bound.w + (i+offset_col)*dst_bound.c + z] = p_src_data[j*src.c*src.w + i*src.c + z];
                 }
             }
         }
 
         //扫描矩阵
-        for(int j = offset; j < dst_bound.h - offset; j++)
+        for(int j = offset_row; j < dst_bound.h - offset_row; j++)
         {
-            for(int i = offset; i < dst_bound.w - offset; i++)
+            for(int i = offset_col; i < dst_bound.w - offset_col; i++)
             {
                 for(int z = 0; z < src.c; z++)
                 {
                     //对每一个像素点进行卷积操作
-                    for(int m = 0; m < len; m++)
+                    for(int m = 0; m < row; m++)
                     {
-                        for(int n = 0;n < len; n++)
+                        for(int n = 0;n < col; n++)
                         {
-                            src_m(m, n) = p_dst_bound_data[(j-offset+m)*dst_bound.c*dst_bound.w + (i-offset+n)*dst_bound.c + z];
+                            src_m(m, n) = p_dst_bound_data[(j-offset_row+m)*dst_bound.c*dst_bound.w + (i-offset_col+n)*dst_bound.c + z];
                         }
                     }
 
                     src_n = src_m.array() * kernel_m.array();  //矩阵标量乘法
-                    value = src_n.sum();   
-                    p_dst_data[(j-offset)*dst.c*dst.w + (i-offset)*dst.c + z] = value;                    
+                    value = src_n.sum(); 
+                    //处理卷积后的像素值可能超出[0~255]范围
+                    if(value > 255 || value < -255)
+                    {
+                        value =  255;
+                    }  
+                    else
+                    {
+                        value = abs(value);
+                    }
+                    p_dst_data[(j-offset_row)*dst.c*dst.w + (i-offset_col)*dst.c + z] = value;                    
                 }
             }
         }
