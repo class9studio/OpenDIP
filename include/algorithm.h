@@ -81,7 +81,10 @@ namespace opendip {
     //Sobel算子构造
     void GetSobel(int n, MatrixXd &sobX, MatrixXd &sobY);
     //Sobel算子 边缘检测
-	Image EdgSobel(Image &src, int ksize = 3);
+	Image Sobel(Image &src, int ksize = 3);
+
+    //Scharr算子
+    Image Scharr(Image &src);
 } 
 
 #endif //___OPENDIP_ALGORITHM_H_

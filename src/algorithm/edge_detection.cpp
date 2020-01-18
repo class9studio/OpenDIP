@@ -71,11 +71,24 @@ namespace opendip {
         Image dstX = Filter2D(src, kernelX);
         Image dstY = Filter2D(src, kernelY);
 
-        //将图像map到Matrix
-        MapType dstX_m = ImageCvtMap(dstX);
-        MapType dstY_m = ImageCvtMap(dstY);
-        dstX_m = dstX_m + dstY_m;
-        return dstX;
+        Image dst(src.w, src.h, src.c);
+        unsigned char *p_srcX_data = (unsigned char *)dstX.data;
+        unsigned char *p_srcY_data = (unsigned char *)dstY.data;
+        unsigned char *p_dst_data = (unsigned char *)dst.data;
+        int  value = 0;
+        for(int j = 0; j < src.h; j++)
+        {
+            for(int i = 0; i < src.w; i++)
+            {
+                for(int z = 0; z < src.c; z++)
+                {
+                    value = p_srcX_data[j*dstX.w*dstX.c + i*dstX.c] + p_srcY_data[j*dstY.w*dstY.c + i*dstY.c];
+                    p_dst_data[j*dst.w*dst.c + i*dst.c] = (value > 255 ? 255 : value);
+                }
+            }
+        }
+
+        return dst;
     }
 
     /*****************************************************************************
@@ -124,7 +137,7 @@ namespace opendip {
     }
 
     /*****************************************************************************
-    *   Function name: EdgSobel
+    *   Function name: Sobel
     *   Description  : Sobel算子-边缘检测
     *   Parameters   : src                   输入原始图像
     *                  ksize                 Sobel算子维度n*n
@@ -142,7 +155,7 @@ namespace opendip {
     *           Author       : YangLin
     *           Modification : Created function
     *****************************************************************************/
-    Image EdgSobel(Image &src, int ksize)
+    Image Sobel(Image &src, int ksize)
     {
         if(src.data == NULL || src.w < 1 || src.h < 1 || src.c < 1 || ksize < 0)
         {
@@ -156,11 +169,82 @@ namespace opendip {
         Image dstX = Filter2D(src, sobX);
         Image dstY = Filter2D(src, sobY);
 
-        //将图像map到Matrix
-        MapType dstX_m = ImageCvtMap(dstX);
-        MapType dstY_m = ImageCvtMap(dstY);
-        dstX_m = dstX_m + dstY_m;
-        return dstX;
+        Image dst(src.w, src.h, src.c);
+        unsigned char *p_srcX_data = (unsigned char *)dstX.data;
+        unsigned char *p_srcY_data = (unsigned char *)dstY.data;
+        unsigned char *p_dst_data = (unsigned char *)dst.data;
+        int  value = 0;
+        for(int j = 0; j < src.h; j++)
+        {
+            for(int i = 0; i < src.w; i++)
+            {
+                for(int z = 0; z < src.c; z++)
+                {
+                    value = p_srcX_data[j*dstX.w*dstX.c + i*dstX.c] + p_srcY_data[j*dstY.w*dstY.c + i*dstY.c];
+                    p_dst_data[j*dst.w*dst.c + i*dst.c] = (value > 255 ? 255 : value);
+                }
+            }
+        }
+
+        return dst;
     }
 
+    /*****************************************************************************
+    *   Function name: Scharr
+    *   Description  : Scharr算子
+    *   Parameters   : src                   输入原始图像
+    *   Return Value : Image Type.           输出图像
+    * 
+    *   Spec         :
+    *                Scharr算子是对Sobel算子差异性的增强,通过将滤波器中的权重系数放大来增大像素值间的差异
+    *                X:  [                                          Y:  [
+    *                       -3, 0, 3,                                       -3, -10, -3,
+    *                       -10,0,10,                                        0,  0 , 0,
+    *                       -3, 0, 3,                                        3,  10, 3,
+    *                    ]                                              ]
+    * 
+    *   History:
+    *
+    *       1.  Date         : 2020-1-18
+    *           Author       : YangLin
+    *           Modification : Created function
+    *****************************************************************************/
+    Image Scharr(Image &src)
+    {
+        if(src.data == NULL || src.w < 1 || src.h < 1 || src.c < 1)
+        {
+            cout << "source image invalid." << endl;
+            return Image();
+        }
+        MatrixXd Scharr_mX(3,3);
+        Scharr_mX <<  -3, 0 , 3,
+                      -10,0 ,10,
+                      -3, 0 , 3;
+        MatrixXd Scharr_mY(3,3);
+        Scharr_mY <<  -3, -10 , -3,
+                       0,  0 ,  0,
+                       3,  10 , 3;  
+                          
+        Image dstX = Filter2D(src, Scharr_mX);
+        Image dstY = Filter2D(src, Scharr_mY);
+
+        Image dst(src.w, src.h, src.c);
+        unsigned char *p_srcX_data = (unsigned char *)dstX.data;
+        unsigned char *p_srcY_data = (unsigned char *)dstY.data;
+        unsigned char *p_dst_data = (unsigned char *)dst.data;
+        int  value = 0;
+        for(int j = 0; j < src.h; j++)
+        {
+            for(int i = 0; i < src.w; i++)
+            {
+                for(int z = 0; z < src.c; z++)
+                {
+                    value = p_srcX_data[j*dstX.w*dstX.c + i*dstX.c] + p_srcY_data[j*dstY.w*dstY.c + i*dstY.c];
+                    p_dst_data[j*dst.w*dst.c + i*dst.c] = (value > 255 ? 255 : value);
+                }
+            }
+        }
+
+        return dst;
+    }
 } // namespce opendip

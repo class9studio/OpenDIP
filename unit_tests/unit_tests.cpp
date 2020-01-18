@@ -439,7 +439,6 @@ TEST_CASE("opendip-边缘检测")
 
 	REQUIRE(true);
 }
-#endif
 
 TEST_CASE("opendip-sobel")
 {
@@ -452,13 +451,37 @@ TEST_CASE("opendip-sobel")
 	
 	REQUIRE(true);
 }
+#endif
+TEST_CASE("opendip-边缘检测")
+{
+	Image src = ImgRead("../data/test_image/lena_gray.jpg");
+	MatrixXd mX(1,3);
+	mX << 1, 0, -1;
+	MatrixXd mY(3,1);
+	mY << 1, 0, -1;
+
+	Image dst = EdgeDetection(src, mX, mY); 
+	ImgWrite("../data/output_image/linux/lena_edg.jpg", dst);
+
+	REQUIRE(true);
+}
 
 TEST_CASE("opendip-图像卷积")
 {
 	Image src = ImgRead("../data/test_image/lena_gray.jpg");
-	Image dst = EdgSobel(src, 3);
+	Image dst = Sobel(src, 3);
 
 	ImgWrite("../data/output_image/linux/lena_sobel.jpg", dst);
+	REQUIRE(true);
+}
+
+
+TEST_CASE("opendip-Schaar")
+{
+	Image src = ImgRead("../data/test_image/lena_gray.jpg");
+	Image dst = Scharr(src);
+
+	ImgWrite("../data/output_image/linux/lena_scharr.jpg", dst);
 	REQUIRE(true);
 }
 
