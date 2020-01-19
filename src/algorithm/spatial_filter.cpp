@@ -386,7 +386,6 @@ namespace opendip {
             return Image();
         }        
         MatrixXd gaussian_kernel = GetGaussianKernel(ksize, sigma);
-        cout << gaussian_kernel << endl;
         return Filter2D(src, gaussian_kernel);
     }
 

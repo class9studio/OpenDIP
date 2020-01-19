@@ -85,6 +85,10 @@ namespace opendip {
 
     //Scharr算子
     Image Scharr(Image &src);
+
+    //Laplacian算子
+	Image Laplacian(Image &src);
+
 } 
 
 #endif //___OPENDIP_ALGORITHM_H_

@@ -451,7 +451,7 @@ TEST_CASE("opendip-sobel")
 	
 	REQUIRE(true);
 }
-#endif
+
 TEST_CASE("opendip-边缘检测")
 {
 	Image src = ImgRead("../data/test_image/lena_gray.jpg");
@@ -482,6 +482,17 @@ TEST_CASE("opendip-Schaar")
 	Image dst = Scharr(src);
 
 	ImgWrite("../data/output_image/linux/lena_scharr.jpg", dst);
+	REQUIRE(true);
+}
+#endif
+
+TEST_CASE("opendip-lapcian")
+{
+	Image src = ImgRead("../data/test_image/lena_gray.jpg");
+	Image dst = GaussianBlur(src, 3, 1);
+
+	Image dst_lap = Laplacian(dst);
+	ImgWrite("../data/output_image/linux/lena_lanp0.jpg", dst_lap);
 	REQUIRE(true);
 }
 

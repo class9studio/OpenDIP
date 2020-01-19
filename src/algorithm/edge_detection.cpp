@@ -247,4 +247,38 @@ namespace opendip {
 
         return dst;
     }
+
+    /*****************************************************************************
+    *   Function name: Laplacian
+    *   Description  : Laplacian算子
+    *   Parameters   : src                   输入原始图像
+    *   Return Value : Image Type.           输出图像
+    * 
+    *   Spec         :
+    *        Laplacian算子是一种二阶导数算子，对噪声比较敏感，因此常需要配合高斯滤波一起使用
+    *        一阶微分:  df(x,y)/dx = f(x) - f(x -1)
+    *        二阶微分:  d2f(x,y)/d2x = f(x+1) + f(x-1)-2f(x)
+    *                  d2f(x,y)/d2x + d2f(x,y)/d2y = f(x, y-1) + f(x, y+1) + f(x-1,y) + f(x+1,y) -4f(x,y)
+    * 
+    *   History:
+    *
+    *       1.  Date         : 2020-1-19
+    *           Author       : YangLin
+    *           Modification : Created function
+    *****************************************************************************/    
+    Image Laplacian(Image &src)
+    {
+        if(src.data == NULL || src.w < 1 || src.h < 1 || src.c < 1)   
+        {
+            cout << "source image invalid" << endl;
+            return Image();
+        }
+
+        MatrixXd lap_m(3, 3);
+        lap_m << 0,  1, 0,
+                 1, -4, 1, 
+                 0, 1,  0;
+        return Filter2D(src, lap_m);
+    }
+
 } // namespce opendip
