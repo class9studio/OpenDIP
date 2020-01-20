@@ -89,6 +89,9 @@ namespace opendip {
     //Laplacian算子
 	Image Laplacian(Image &src);
 
+    //图像连通域-二值图像
+    int ConnectedComponents(Image &image, Image &labels);
+
 } 
 
 #endif //___OPENDIP_ALGORITHM_H_

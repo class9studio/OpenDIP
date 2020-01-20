@@ -484,7 +484,6 @@ TEST_CASE("opendip-Schaar")
 	ImgWrite("../data/output_image/linux/lena_scharr.jpg", dst);
 	REQUIRE(true);
 }
-#endif
 
 TEST_CASE("opendip-lapcian")
 {
@@ -493,6 +492,21 @@ TEST_CASE("opendip-lapcian")
 
 	Image dst_lap = Laplacian(dst);
 	ImgWrite("../data/output_image/linux/lena_lanp0.jpg", dst_lap);
+	REQUIRE(true);
+}
+#endif
+
+TEST_CASE("OpenDIP-连通域")
+{
+	Image src = ImgRead("../data/test_image/rice.png");
+	Image dst_img = Threshold(src,  opendip::THRESH_BINARY, 125, 255, false);
+	ImgWrite("../data/output_image/linux/rice_binary.jpg", dst_img);
+
+	Image labels(dst_img.w, dst_img.h, dst_img.c);
+	int num = ConnectedComponents(dst_img, labels);
+	cout << "connect components numbers: " << num << endl;
+	ImgWrite("../data/output_image/linux/rice_lianton.jpg", labels);
+
 	REQUIRE(true);
 }
 
