@@ -118,13 +118,20 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\include\algorithm.h" />
     <ClInclude Include="..\..\include\allocator.h" />
     <ClInclude Include="..\..\include\common.h" />
     <ClInclude Include="..\..\include\image.h" />
+    <ClInclude Include="..\..\include\point.h" />
+    <ClInclude Include="..\..\include\timing.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\src\common.cpp" />
-    <ClCompile Include="..\..\src\image.cpp" />
+    <ClCompile Include="..\..\src\algorithm\algorithm.cpp" />
+    <ClCompile Include="..\..\src\algorithm\edge_detection.cpp" />
+    <ClCompile Include="..\..\src\algorithm\interpolation.cpp" />
+    <ClCompile Include="..\..\src\algorithm\spatial_filter.cpp" />
+    <ClCompile Include="..\..\src\common\common.cpp" />
+    <ClCompile Include="..\..\src\common\image.cpp" />
     <ClCompile Include="..\..\unit_tests\unit_tests.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

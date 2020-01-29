@@ -16,6 +16,12 @@
     <Filter Include="unittest">
       <UniqueIdentifier>{b5e3eb33-6d40-47ee-b985-78e0ece1e0a3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\algorithm">
+      <UniqueIdentifier>{ebe96f1c-8d53-4726-bc4a-bd1822691dc0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\common">
+      <UniqueIdentifier>{f8dc582d-0b8b-436b-ada7-d0fa0b4c1a3e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\include\allocator.h">
@@ -27,16 +33,37 @@
     <ClInclude Include="..\..\include\image.h">
       <Filter>include</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\algorithm.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\point.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\timing.h">
+      <Filter>include</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\src\common.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\image.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\unit_tests\unit_tests.cpp">
       <Filter>unittest</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\algorithm\algorithm.cpp">
+      <Filter>src\algorithm</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\algorithm\edge_detection.cpp">
+      <Filter>src\algorithm</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\algorithm\interpolation.cpp">
+      <Filter>src\algorithm</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\algorithm\spatial_filter.cpp">
+      <Filter>src\algorithm</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\common\common.cpp">
+      <Filter>src\common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\common\image.cpp">
+      <Filter>src\common</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
