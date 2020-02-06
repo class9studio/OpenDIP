@@ -223,7 +223,7 @@ namespace opendip {
         MatrixXd kernel_m = MatRotate180(kernel);
 
         Image dst(src.w, src.h, src.c);
-        Image dst_bound(src.w + (col-1)*src.c, src.h+(row-1)*src.c, src.c);
+        Image dst_bound(src.w + col - 1, src.h + row - 1, src.c);
         unsigned char *p_src_data = (unsigned char*)src.data;
         unsigned char *p_dst_data = (unsigned char*)dst.data;
         unsigned char *p_dst_bound_data = (unsigned char*)dst_bound.data;

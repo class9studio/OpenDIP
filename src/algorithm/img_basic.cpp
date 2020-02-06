@@ -19,13 +19,14 @@ namespace opendip {
 *           Author       : YangLin
 *           Modification : Created function
 *****************************************************************************/
-void ImgShow(Image &src)
+void ImgShow(Image &src, string title)
 {
 	assert(src.c == 1 || src.c == 3);
 	const unsigned char* buff = (unsigned char *)src.data;
 	int h = src.h;
 	int w = src.w;
 	int channels = src.c;
+	plt::title(title);
 	if(src.c == 1)
 	{
 		std::map<std::string, std::string> keywords;

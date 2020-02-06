@@ -504,12 +504,48 @@ TEST_CASE("OpenDIP-连通域")
 
 	REQUIRE(true);
 }
-#endif
 
 TEST_CASE("opendip-matplot测试")
 {
 	Image src = ImgRead("../data/test_image/lena.jpg");
 	ImgShow(src);
 
+	REQUIRE(true);
+}
+
+TEST_CASE("opendip-图像卷积")
+{
+	Image src = ImgRead("../data/test_image/lena.jpg");
+	MatrixXd m(3,3);
+	m <<  1, 2, 1,
+		  2, 0, 2,
+		  1, 2, 1;
+	m = m/12;
+
+	Image dst = Filter2D(src, m);
+	ImgShow(dst, "lena");
+	ImgWrite("../data/output_image/linux/lena_conva_color1.jpg", dst);
+
+	REQUIRE(true);
+}
+#endif
+
+TEST_CASE("opendip-腐蚀")
+{
+	Image src(6,6,1);
+	
+	MapType img_m = ImageCvtMap(src);
+	img_m <<    0, 0, 0, 0, 255, 0,
+				0, 255, 255, 255, 255, 255,
+				0, 255, 255, 255, 255, 0,
+				0, 255, 255, 255, 255, 0,
+				0, 255, 255, 255, 255, 0,
+				0, 0, 0, 0, 0, 0;
+	//ImgShow(src, "My Demo");
+	
+	MatrixXd m = GetStructuringElement(1, 3);
+	cout << m << endl;
+	Image dst = Dilate(src, m);
+	ImgShow(dst, "My Dilate");
 	REQUIRE(true);
 }

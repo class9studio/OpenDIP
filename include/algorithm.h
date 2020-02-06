@@ -6,8 +6,8 @@
 namespace opendip {
     /* 数字图像基础 */
     // 显示图像
-    void ImgShow(Image &src);
-    
+    void ImgShow(Image &src, string title);
+
     // 最邻近插值法(Nearest Interpolation)
     Image LinearInterpolation(Image &src_image, int resize_row, int resize_col);
 
@@ -100,6 +100,14 @@ namespace opendip {
     //图像连通域-二值图像
     int ConnectedComponents(Image &image, Image &labels);
 
+    // 获取结构元素形状
+    MatrixXd GetStructuringElement(int shape, int ksize);
+
+    // 腐蚀
+    Image Erode(Image &src, MatrixXd kernel, int padding = 0);
+
+    // 膨胀
+    Image Dilate(Image &src, MatrixXd kernel, int padding = 0);
 } 
 
 #endif //___OPENDIP_ALGORITHM_H_
