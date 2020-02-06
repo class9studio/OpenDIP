@@ -3,9 +3,41 @@
 
 #include "common.h"
 #include "algorithm.h"
+#include "matplotlibcpp.h"
+namespace plt = matplotlibcpp;    //图库matplotlib-cpp头文件
 
 namespace opendip {
-
+/*****************************************************************************
+*   Function name: ImgShow
+*   Description  : 显示图像
+*   Parameters   : src_image            Source image name
+*   Return Value : None
+*   Spec         :
+*   History:
+*
+*       1.  Date         : 2020-2-6
+*           Author       : YangLin
+*           Modification : Created function
+*****************************************************************************/
+void ImgShow(Image &src)
+{
+	assert(src.c == 1 || src.c == 3);
+	const unsigned char* buff = (unsigned char *)src.data;
+	int h = src.h;
+	int w = src.w;
+	int channels = src.c;
+	if(src.c == 1)
+	{
+		std::map<std::string, std::string> keywords;
+		keywords["cmap"] = "gray";
+		plt::imshow(buff, h, w, channels, keywords);
+	}
+	else
+	{
+		plt::imshow(buff, h, w, channels);
+	}
+	plt::show();
+}
 
 /*****************************************************************************
 *   Function name: LinearInterpolation

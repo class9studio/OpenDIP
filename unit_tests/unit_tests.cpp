@@ -508,7 +508,8 @@ TEST_CASE("OpenDIP-连通域")
 
 TEST_CASE("opendip-matplot测试")
 {
-    plt::plot({1,3,2,4});
-    plt::show();
+	Image src = ImgRead("../data/test_image/lena.jpg");
+	ImgShow(src);
+
 	REQUIRE(true);
 }

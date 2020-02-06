@@ -5,6 +5,9 @@
 
 namespace opendip {
     /* 数字图像基础 */
+    // 显示图像
+    void ImgShow(Image &src);
+    
     // 最邻近插值法(Nearest Interpolation)
     Image LinearInterpolation(Image &src_image, int resize_row, int resize_col);
 
