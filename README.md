@@ -1,4 +1,5 @@
 # OpenDIP
+## 简介
 This repo is an Open source for Digital Image Processing.
 
 Contribute by @[kingLCH](https://github.com/kingLCH),@[jinbaoziyl](https://github.com/jinbaoziyl)
@@ -15,6 +16,8 @@ Instruction for each folders:
 |   include	      | head file                                |         |
 |   unit_tests    | demos for each function usage            |         |
 |   src           | source code                              |         |
+|   docs          | documents                                |         |
+
 ## Build System
  Cmake build this project. OpenDIP project have a requirement for including third party libraries, such as Catch2, Eigen or OpenCV.
  Environment Requirement for build:
@@ -49,3 +52,21 @@ sudo apt-get install python-matplotlib python-numpy python2.7-dev
  or
  $ ./unit_tests
  ```
+
+ ## 目录
+ * [简介]()
+ * [1.Build System]()
+   * [1.1 Catch2、Eigen Lib Support]
+   * [2.2 Options Lib Support]
+   * [3.3 OpenDIP Lib Build,And Test]
+ * [2.Opendip](include/algorithm.h)
+   * [2.1 OpenDip基础](docs/OpenDip基础.md)
+   * [2.2 数字图像基础](docs/数字图像基础.md)
+   * [2.3 灰度变换](docs/灰度变换.md)
+   * [2.4 空间滤波](docs/空间滤波.md)
+   * [2.5 频率滤波]()
+   * [2.6 形态学图像处理](docs/图像图形学.md)
+   * [2.7 图像分割](docs/图像分割.md)
+
+持续更新中......
+

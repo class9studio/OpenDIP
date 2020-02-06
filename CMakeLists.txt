@@ -22,10 +22,11 @@ set(COMMON_SOURCE
 )
 
 set(ALGORITHM_SOURCE
-    src/algorithm/interpolation.cpp 
-    src/algorithm/spatial_filter.cpp 
-    src/algorithm/algorithm.cpp
-    src/algorithm/edge_detection.cpp 
+    src/algorithm/img_basic.cpp
+    src/algorithm/gray_transform.cpp
+    src/algorithm/spatial_filtering.cpp 
+    src/algorithm/img_segmentation.cpp 
+    src/algorithm/img_morphology.cpp
 )
 
 add_library(OpenDIP STATIC
