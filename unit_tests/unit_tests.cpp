@@ -10,17 +10,13 @@
 
 #define CATCH_CONFIG_MAIN          //catch2的main函数
 #include "catch2.h"
-
-//#define STB_IMAGE_WRITE_IMPLEMENTATION
-//#include "stb_image_write.h"
-//
-//#define STB_IMAGE_IMPLEMENTATION
-//#include "stb_image.h"
+#include "matplotlibcpp.h"
 
 using namespace Eigen;
 using namespace std;
 using namespace opendip;
 using namespace cv;
+namespace plt = matplotlibcpp;    //图库matplotlib-cpp头文件
 
 #if 0
 TEST_CASE( "simple" )
@@ -494,7 +490,6 @@ TEST_CASE("opendip-lapcian")
 	ImgWrite("../data/output_image/linux/lena_lanp0.jpg", dst_lap);
 	REQUIRE(true);
 }
-#endif
 
 TEST_CASE("OpenDIP-连通域")
 {
@@ -509,4 +504,11 @@ TEST_CASE("OpenDIP-连通域")
 
 	REQUIRE(true);
 }
+#endif
 
+TEST_CASE("opendip-matplot测试")
+{
+    plt::plot({1,3,2,4});
+    plt::show();
+	REQUIRE(true);
+}

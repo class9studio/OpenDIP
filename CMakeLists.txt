@@ -6,9 +6,11 @@ project (OpenDIP)
 
 # Use c++11, to build catch2 
 set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # Set Options
 option(WITH_OPENCV "With OpenCV Support" ON)
+option(WITH_MATPLOTLIB_CPP "With Matplotlib-cpp Support" ON)
 
 # add the CMakeFile that defines catch2、eigen3
 add_subdirectory(3rd_party/catch2)
@@ -46,11 +48,28 @@ if(WITH_OPENCV)
     find_package(OpenCV REQUIRED)
     if(OpenCV_FOUND)
         message("OpenCV found")
+        target_link_libraries(OpenDIP
+        ${OpenCV_LIBS}) 
+        target_include_directories(OpenDIP PUBLIC 
+            ${OpenCV_INCLUDE_DIRS}) 
     else()
         message(FATAL_ERROR "cannot find OpenCV")
     endif()
 endif()
 
+if(WITH_MATPLOTLIB_CPP)
+    find_package(PythonLibs 2.7)
+    if(PythonLibs_FOUND)
+        message("PythonLibs found")
+        target_link_libraries(OpenDIP 
+            ${PYTHON_LIBRARIES})    
+        target_include_directories(OpenDIP PUBLIC 
+            ${PYTHON_INCLUDE_DIRS})
+        add_definitions(-DMATPLOTLIBCPP_PYTHON_HEADER=Python.h)
+    else()
+        message(FATAL_ERROR "cannot find PythonLibs")
+    endif()
+endif()
 #############################################
 # Unit tests
 
@@ -86,14 +105,6 @@ target_include_directories(OpenDIP
 		${EIGEN_INCLUDE_DIRS}
 )
 
-if(WITH_OPENCV)
-    target_link_libraries(OpenDIP
-        ${OpenCV_LIBS}
-    ) 
-    target_include_directories(OpenDIP
-        PUBLIC 
-        ${OpenCV_INCLUDE_DIRS}
-    )   
-endif()
+
 
 
