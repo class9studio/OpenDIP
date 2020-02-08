@@ -385,11 +385,13 @@ void MinMaxLoc(Image &src, unsigned char *min, unsigned char *max, Point &min_lo
 *****************************************************************************/
 MapType ImageCvtMap(Image &src)
 {
+	assert(src.c == 1);
 	return MapType((unsigned char *)src.data, src.h, src.w);
 }
 
 MapTypeConst ImageCvtMapConst(Image &src)
 {
+	assert(src.c == 1);
 	return MapTypeConst((unsigned char *)src.data, src.h, src.w);
 }
 

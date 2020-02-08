@@ -229,7 +229,6 @@ Image Erode(Image &src, MatrixXd kernel, int padding)
 				if(pixel_val != 0)  //只对非0像素值处理
 				{
 					flag = true;
-					//对每一个像素点进行卷积操作
 					for(m = j; m < j + row; m++)
 					{
 						for(n = i;n < i + col; n++)
@@ -276,13 +275,11 @@ Image Dilate(Image &src, MatrixXd kernel, int padding)
 	if(padding == 0)
 		padding = kernel.rows() / 2;
 
-	Image dst(src.w + padding*2, src.h + padding*2, src.c);
+	Image dst(src.w+padding*2-col+1, src.h+padding*2-row+1 , src.c);
 	Image dst_bound(src.w + padding*2, src.h + padding*2, src.c);
-	Image dst_res(src.w+padding*2-col+1, src.h+padding*2-row+1 , src.c);  //膨胀后截取原来的图像大小
 	unsigned char *p_src_data = (unsigned char*)src.data;
 	unsigned char *p_dst_data = (unsigned char*)dst.data;
 	unsigned char *p_dst_bound_data = (unsigned char*)dst_bound.data;
-	unsigned char *p_res_data = (unsigned char*)dst_res.data;
 
 	memset(p_dst_data, 0, dst.w*dst.h*dst.c);
 	memset(p_dst_bound_data, 0, dst_bound.w*dst_bound.h*dst_bound.c);	
@@ -300,7 +297,7 @@ Image Dilate(Image &src, MatrixXd kernel, int padding)
 
 	//扫描矩阵
 	int m = 0, n = 0;
-	unsigned char pixel_val = 0;
+	int pixel_val = 0;
 
 	for(int j = 0; j < dst_bound.h - row + 1; j++)
 	{
@@ -309,11 +306,10 @@ Image Dilate(Image &src, MatrixXd kernel, int padding)
 			for(int z = 0; z < dst_bound.c; z++)
 			{
 				pixel_val = p_dst_bound_data[(j+row/2)*dst_bound.c*dst_bound.w + (i+col/2)*dst_bound.c + z];
-
+				
 				if(pixel_val != 0)  //只对非0像素值处理
 				{
 					flag = true;
-					//对每一个像素点进行卷积操作
 					for(m = j; m < j + row; m++)
 					{
 						for(n = i;n < i + col; n++)
@@ -325,35 +321,29 @@ Image Dilate(Image &src, MatrixXd kernel, int padding)
 							}
 						}
 					}
-
 					if(false == flag)
 					{
-						for(m = j; m < j + row; m++)
+						for(int k = j-col/2 ; k < j+col/2 + 1; k++)
 						{
-							for(n = i;n < i + col; n++)
+							for(int l = i-row/2; l < i+row/2 + 1; l++)
 							{
-								if(kernel(m-j,n-i) == 1)
-									p_dst_data[m*dst.c*dst.w + n*dst.c + z] = pixel_val;
+								if(k>=0 && l>=0 && 1==kernel(k-j+col/2,l-i+row/2))
+								{
+									p_dst_data[k*dst.c*dst.w + l*dst.c + z] = pixel_val;
+								}
 							}
 						}
+					}
+					else
+					{
+						p_dst_data[j*dst.c*dst.w + i*dst.c + z] = pixel_val;
 					}
 				}
 			}
 		}
 	}
-	//截取原来图像大小
-	for(int j = 0; j < dst_res.h; j++)
-	{
-		for(int i = 0; i < dst_res.w; i++)
-		{
-			for(int z = 0; z < dst_res.c; z++)
-			{
-				p_res_data[j*dst_res.c*dst_res.w + i*dst_res.c + z] = p_dst_data[(j+row/2)*dst.c*dst.w + (i+col/2)*dst.c + z];
-			}
-		}
-	}	
 
-	return dst_res;
+	return dst;
 }
 
 }

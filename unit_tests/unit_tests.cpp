@@ -530,8 +530,9 @@ TEST_CASE("opendip-图像卷积")
 }
 #endif
 
-TEST_CASE("opendip-腐蚀")
+TEST_CASE("opendip-腐蚀-膨胀")
 {
+	#if 0
 	Image src(6,6,1);
 	
 	MapType img_m = ImageCvtMap(src);
@@ -541,11 +542,22 @@ TEST_CASE("opendip-腐蚀")
 				0, 255, 255, 255, 255, 0,
 				0, 255, 255, 255, 255, 0,
 				0, 0, 0, 0, 0, 0;
-	//ImgShow(src, "My Demo");
-	
+	#endif
+
+	Image src = ImgRead("../data/test_image/Morphology_Original.png");
 	MatrixXd m = GetStructuringElement(1, 3);
-	cout << m << endl;
+
+	ImgShow(src, "source");
+	double startTime = now();
 	Image dst = Dilate(src, m);
+	double nDetectTime = calcElapsed(startTime, now());
+    printf("Dilate time: %d ms.\n ", (int)(nDetectTime * 1000));
 	ImgShow(dst, "My Dilate");
+
+	startTime = now();
+	Image dst_erode = Erode(src, m);
+	nDetectTime = calcElapsed(startTime, now());
+    printf("Erode time: %d ms.\n ", (int)(nDetectTime * 1000));
+	ImgShow(dst_erode, "My Erode");
 	REQUIRE(true);
 }
