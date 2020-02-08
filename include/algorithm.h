@@ -103,10 +103,28 @@ namespace opendip {
     MatrixXd GetStructuringElement(int shape, int ksize);
 
     // 腐蚀
-    Image Erode(Image &src, MatrixXd kernel, int padding = 0);
+    Image MorphErode(Image &src, MatrixXd kernel, int padding = 0);
 
     // 膨胀
-    Image Dilate(Image &src, MatrixXd kernel, int padding = 0);
+    Image MorphDilate(Image &src, MatrixXd kernel, int padding = 0);
+
+    //开运算
+    Image MorphOpen(Image &src, MatrixXd kernel);
+
+    //关运算
+    Image MorphClose(Image &src, MatrixXd kernel);
+
+    //形态学梯度
+    Image MorphGradient(Image &src, MatrixXd kernel);
+
+    //顶帽运算
+    Image MorphTophat(Image &src, MatrixXd kernel);
+
+    //黑帽运算
+    Image MorphBlackhat(Image &src, MatrixXd kernel);
+
+    //击中击不中运算
+    Image MorphHitMiss(Image &src, MatrixXd kernel);
 } 
 
 #endif //___OPENDIP_ALGORITHM_H_

@@ -170,7 +170,7 @@ MatrixXd GetStructuringElement(int shape, int ksize)
 }
 
 /*****************************************************************************
-*   Function name: Erode
+*   Function name: MorphErode
 *   Description  : 图像腐蚀
 *   Parameters   : src			       输入的待腐蚀图像    
 *                : kernel              用于腐蚀操作的结构元素                     
@@ -182,7 +182,7 @@ MatrixXd GetStructuringElement(int shape, int ksize)
 *           Author       : YangLin
 *           Modification : function draft
 *****************************************************************************/
-Image Erode(Image &src, MatrixXd kernel, int padding)
+Image MorphErode(Image &src, MatrixXd kernel, int padding)
 {
 	assert(src.data != NULL  || src.c == 1 || src.c == 3 || src.w > 1 || src.h > 1);
 	assert(kernel.rows()==kernel.cols() || kernel.rows()%2 == 1);
@@ -201,7 +201,8 @@ Image Erode(Image &src, MatrixXd kernel, int padding)
 	unsigned char *p_dst_bound_data = (unsigned char*)dst_bound.data;
 
 	memset(p_dst_data, 0, dst.w*dst.h*dst.c);
-	memset(p_dst_bound_data, 0, dst_bound.w*dst_bound.h*dst_bound.c);	
+	// 腐蚀，边界填充1
+	memset(p_dst_bound_data, 1, dst_bound.w*dst_bound.h*dst_bound.c);	
 	//填充操作
 	for(int j = 0; j < src.h; j++)
 	{
@@ -240,8 +241,10 @@ Image Erode(Image &src, MatrixXd kernel, int padding)
 							}
 						}
 					}
+
 					if(true == flag)
 						p_dst_data[j*dst.c*dst.w + i*dst.c + z] = pixel_val;
+	
 				}
 			}
 		}
@@ -251,7 +254,7 @@ Image Erode(Image &src, MatrixXd kernel, int padding)
 }
 
 /*****************************************************************************
-*   Function name: Dilate
+*   Function name: MorphDilate
 *   Description  : 图像膨胀
 *   Parameters   : src			       输入的待膨胀图像    
 *                : kernel              用于腐蚀操作的结构元素                     
@@ -263,7 +266,7 @@ Image Erode(Image &src, MatrixXd kernel, int padding)
 *           Author       : YangLin
 *           Modification : function draft
 *****************************************************************************/
-Image Dilate(Image &src, MatrixXd kernel, int padding)
+Image MorphDilate(Image &src, MatrixXd kernel, int padding)
 {
 	assert(src.data != NULL  || src.c == 1 || src.c == 3 || src.w > 1 || src.h > 1);
 	assert(kernel.rows()==kernel.cols() || kernel.rows()%2 == 1);
@@ -345,5 +348,120 @@ Image Dilate(Image &src, MatrixXd kernel, int padding)
 
 	return dst;
 }
+
+/*****************************************************************************
+*   Function name: MorphOpen
+*   Description  : 形态学开运算
+*   Parameters   : src			       输入的待运算图像    
+*                : kernel              用于开操作的结构元素                     
+*   Return Value : Image               开运算后图像输出图像
+*   Spec         : 
+*        开运算是图像腐蚀和膨胀操作的结合，首先对图像进行腐蚀，消除图像中的噪声和较小的连通域，之后通过膨胀运算弥补较大连通域因腐蚀而造成的面积减小
+*   作用:去除图像中的噪声，消除较小连通域，保留较大连通域，同时能够在两个物体纤细的连接处将两个物体分离，并且在不明显改变较大连通域的面积的同时能够
+*        平滑连通域的边界
+*   History:
+*
+*       1.  Date         : 2020-2-8
+*           Author       : YangLin
+*           Modification : function draft
+*****************************************************************************/
+Image MorphOpen(Image &src, MatrixXd kernel)
+{
+	Image dst = MorphErode(src, kernel);
+	return MorphDilate(dst, kernel);
+}
+
+/*****************************************************************************
+*   Function name: MorphClose
+*   Description  : 形态学关运算
+*   Parameters   : src			       输入的待运算图像    
+*                : kernel              用于开操作的结构元素                     
+*   Return Value : Image               关运算后图像输出图像
+*   Spec         : 
+*        开运算是图像腐蚀和膨胀操作的结合，膨胀+腐蚀
+*   作用:  去除连通域内的小型空洞，平滑物体轮廓，连接两个临近的连通域
+*   History:
+*
+*       1.  Date         : 2020-2-8
+*           Author       : YangLin
+*           Modification : function draft
+*****************************************************************************/
+Image MorphClose(Image &src, MatrixXd kernel)
+{
+	Image dst = MorphDilate(src, kernel);
+	return MorphErode(dst, kernel);
+}
+
+/*****************************************************************************
+*   Function name: MorphGradient
+*   Description  : 形态学梯度
+*   Parameters   : src			       输入的待运算图像    
+*                : kernel              用于梯度的结构元素                     
+*   Return Value : Image               梯度后图像输出图像
+*   Spec         : 
+*   History:
+*
+*       1.  Date         : 2020-2-8
+*           Author       : YangLin
+*           Modification : function draft
+*****************************************************************************/
+Image MorphGradient(Image &src, MatrixXd kernel)
+{
+
+}
+
+//形态学梯度，轮廓发现运用
+
+/*****************************************************************************
+*   Function name: MorphTophat
+*   Description  : 顶帽操作
+*   Parameters   : src			       输入的待运算图像    
+*                : kernel              用于顶帽操作的结构元素                     
+*   Return Value : Image               顶帽操作后图像输出图像
+*   Spec         : 
+*   History:
+*
+*       1.  Date         : 2020-2-8
+*           Author       : YangLin
+*           Modification : function draft
+*****************************************************************************/
+Image MorphTophat(Image &src, MatrixXd kernel);
+
+/*****************************************************************************
+*   Function name: MorphBlackhat
+*   Description  : 黑帽操作
+*   Parameters   : src			       输入的待运算图像    
+*                : kernel              用于黑帽操作的结构元素                     
+*   Return Value : Image               黑帽操作后图像输出图像
+*   Spec         : 
+*   History:
+*
+*       1.  Date         : 2020-2-8
+*           Author       : YangLin
+*           Modification : function draft
+*****************************************************************************/
+Image MorphBlackhat(Image &src, MatrixXd kernel)
+{
+
+}
+
+/*****************************************************************************
+*   Function name: MorphHitMiss
+*   Description  : 击中击不中运算
+*   Parameters   : src			       输入的待运算图像    
+*                : kernel              用于击中击不中运算的结构元素                     
+*   Return Value : Image               击中击不中运算后图像输出图像
+*   Spec         : 
+*   History:
+*
+*       1.  Date         : 2020-2-8
+*           Author       : YangLin
+*           Modification : function draft
+*****************************************************************************/
+Image MorphHitMiss(Image &src, MatrixXd kernel)
+{
+
+}
+
 
 }

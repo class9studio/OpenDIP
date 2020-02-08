@@ -549,19 +549,19 @@ TEST_CASE("opendip-腐蚀-膨胀")
 
 	ImgShow(src, "source");
 	double startTime = now();
-	Image dst = Dilate(src, m);
+	Image dst = MorphDilate(src, m);
 	double nDetectTime = calcElapsed(startTime, now());
     printf("Dilate time: %d ms.\n ", (int)(nDetectTime * 1000));
 	ImgShow(dst, "My Dilate");
 
 	startTime = now();
-	Image dst_erode = Erode(src, m);
+	Image dst_erode = MorphErode(src, m);
 	nDetectTime = calcElapsed(startTime, now());
     printf("Erode time: %d ms.\n ", (int)(nDetectTime * 1000));
 	ImgShow(dst_erode, "My Erode");
 	REQUIRE(true);
 }
-#endif
+
 
 TEST_CASE("[test-1] opendip-图像卷积")
 {
@@ -617,6 +617,33 @@ TEST_CASE("[test-2] opendip-图像卷积")
 
 	REQUIRE(true);
 }
+#endif
+
+TEST_CASE("opendip-图形开、关运算")
+{
+	Image src(12,9,1);
+	
+	MapType src_m = ImageCvtMap(src);
+	src_m <<    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+				0, 255, 255, 255, 255, 255, 255, 255, 0, 0, 255, 0,
+				0, 255, 255, 255, 255, 255, 255, 255, 0, 0, 0, 0,
+				0, 255, 255, 255, 255, 255, 255, 255, 0, 0, 0, 0,
+				0, 255, 255, 255, 0, 255, 255, 255, 0, 0, 0, 0,
+				0, 255, 255, 255, 255, 255, 255, 255, 0, 0, 0, 0,
+				0, 255, 255, 255, 255, 255, 255, 255, 0, 0, 255, 0,
+				0, 255, 255, 255, 255, 255, 255, 255, 0, 0, 0, 0,
+				0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0;
+	ImgShow(src, "source img");
+
+	MatrixXd m = GetStructuringElement(0, 3);	
+	Image dst_open = MorphOpen(src, m);
+	ImgShow(dst_open, "dst open");
+
+	Image dst_close = MorphClose(src, m);
+	ImgShow(dst_close, "dst close");
+	REQUIRE(true);
+}
+
 
 
 

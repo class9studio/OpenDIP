@@ -100,7 +100,8 @@
         "specialfunctions": "c",
         "splines": "c",
         "*.expression": "cpp",
-        "resumable": "cpp"
+        "resumable": "cpp",
+        "xthread": "cpp"
     },
     "cmake.configureOnOpen": true
 }
