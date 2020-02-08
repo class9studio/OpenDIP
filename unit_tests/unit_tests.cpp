@@ -528,7 +528,7 @@ TEST_CASE("opendip-图像卷积")
 
 	REQUIRE(true);
 }
-#endif
+
 
 TEST_CASE("opendip-腐蚀-膨胀")
 {
@@ -561,3 +561,62 @@ TEST_CASE("opendip-腐蚀-膨胀")
 	ImgShow(dst_erode, "My Erode");
 	REQUIRE(true);
 }
+#endif
+
+TEST_CASE("[test-1] opendip-图像卷积")
+{
+	Image src(5,5,1);
+	
+	MapType img_m = ImageCvtMap(src);
+	img_m <<    1,2,3,4,5,
+				6,7,8,9,10,
+				11,12,13,14,15,
+				16,17,18,19,20,
+				21,22,23,24,25;
+
+	MatrixXd kernel(3,3);
+	kernel<< 1, 2, 1,
+			 2, 0, 2,
+			 1, 2, 1;
+
+	Image dst = Filter2D(src, kernel);
+	unsigned char* p_dst = (unsigned char*)dst.data;
+	for(int j = 0; j < dst.h; j++)
+	{
+		for(int i = 0; i < dst.w; i++)
+		{
+			int tmp = p_dst[j*dst.c*dst.w + i*dst.c];
+			cout << tmp << endl;
+		}
+	}
+
+	REQUIRE(true);
+}
+
+TEST_CASE("[test-2] opendip-图像卷积")
+{
+	Image src = ImgRead("../data/test_image/lena_gray.jpg");		
+
+	MatrixXd kernel(3,3);
+	kernel<< 1, 2, 1,
+			 2, 0, 2,
+			 1, 2, 1;
+	kernel = kernel / 12;
+	ImgShow(src, "lena");
+	double startTime = now();
+	Image dst = Filter2D(src, kernel);
+	double nDetectTime = calcElapsed(startTime, now());
+    printf("conv1 time: %d ms.\n ", (int)(nDetectTime * 1000));
+	ImgShow(dst, "My Cov1");
+
+	startTime = now();
+	Image dst1 = Filter2D_Gray(src, kernel);
+	nDetectTime = calcElapsed(startTime, now());
+    printf("conv2 time: %d ms.\n ", (int)(nDetectTime * 1000));
+	ImgShow(dst1, "My Cov2");
+
+	REQUIRE(true);
+}
+
+
+

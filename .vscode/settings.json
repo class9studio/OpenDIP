@@ -99,7 +99,8 @@
         "openglsupport": "c",
         "specialfunctions": "c",
         "splines": "c",
-        "*.expression": "cpp"
+        "*.expression": "cpp",
+        "resumable": "cpp"
     },
     "cmake.configureOnOpen": true
 }

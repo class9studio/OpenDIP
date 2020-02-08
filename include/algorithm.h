@@ -62,10 +62,9 @@ namespace opendip {
     //n*n矩阵逆时针旋转180
     MatrixXd MatRotate180(MatrixXd m);
     // 图像的卷积
-    Image Filter2D_Gray(Image &src, Matrix3d &kernel);  
-    Image Filter2D_3M(Image &src, Matrix3d &kernel);  
     Image Filter2D(Image &src, MatrixXd &kernel);
-    
+    Image Filter2D_Gray(Image &src, MatrixXd &kernel,int padding = 0);
+
     //高斯分布随机数生成
     double RandomGuassinGen(double mean, double sigma);
     //高斯噪声函数
