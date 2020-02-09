@@ -655,7 +655,6 @@ TEST_CASE("opendip-图形开、关运算")
 	
 	REQUIRE(true);
 }
-#endif
 
 TEST_CASE("opendip-图形开、关运算")
 {
@@ -663,6 +662,93 @@ TEST_CASE("opendip-图形开、关运算")
 	MatrixXd m = GetStructuringElement(0, 3);
 	Image dst_gradient = MorphGradient(src, m, MORPH_GRADIENT_BASIC);
 	ImgShow(dst_gradient, "dst gradient");
+	REQUIRE(true);
+}
+#endif
+
+TEST_CASE("[test-1] opendip-Raw Map")
+{
+	Image src(2,2,3);
+	int count = 0;
+	unsigned char *p_src = (unsigned char*)src.data;
+	for(int j = 0; j < 2; j++)
+	{
+		for(int i = 0; i < 2; i++)
+		{
+			for(int z = 0; z < 3; z++)
+			{
+				p_src[j*src.w*src.c + i*src.c + z] = count;
+				cout << count << endl;
+				count++;
+			}
+		}
+	}
+	vector<ColorImgMap> maps = ColorImgCvtMap(src);
+	int size = maps.size();
+	int pixel_val = 0;
+	for(int j = 0; j < 2; j++)
+	{
+		for(int i = 0; i < 2; i++)
+		{
+			pixel_val = maps[0](j,i);
+			cout << "channel 0: " << pixel_val << endl;
+
+			pixel_val = maps[1](j,i);
+			cout << "channel 1: " << pixel_val << endl;
+
+			pixel_val = maps[2](j,i);
+			cout << "channel 2: " << pixel_val << endl;
+		}
+	}
+
+	REQUIRE(true);
+}
+
+TEST_CASE("[test-2] opendip-Color Image Map")
+{
+	Image src = ImgRead("../data/test_image/lena.jpg");
+	vector<ColorImgMap> maps = ColorImgCvtMap(src);
+	int size = maps.size();
+	cout << "maps size: " << size << endl;
+
+	vector<Image> dst = Split(src);
+	ImgShow(dst[0], "R");	
+	ImgShow(dst[1], "G");	
+	ImgShow(dst[2], "B");	
+
+	for(int j = 0; j < src.h; j++)
+	{
+		for(int i = 0; i < src.w; i++)
+		{
+			maps[0](j,i) = 0;
+		}
+	}
+	vector<Image> dst1 = Split(src);
+	ImgWrite("../data/output_image/linux/lena_R.jpg", dst1[0]);
+	ImgShow(dst1[0], "R");	
+	ImgShow(dst1[1], "G");	
+	ImgShow(dst1[2], "B");
+	REQUIRE(true);
+}
+
+TEST_CASE("[test-2] opendip-Gray Image Map")
+{
+	Image src = ImgRead("../data/test_image/lena_gray.jpg");
+	vector<GrayImgMap> maps = GrayImgCvtMap(src);
+	int size = maps.size();
+	cout << "maps size: " << size << endl;
+	ImgShow(src, "Before");
+	for(int j = 0; j < maps[0].rows(); j++)
+	{
+		for(int i = 0; i < maps[0].cols(); i++)
+		{
+			maps[0](j,i) = 255;
+		}
+	}
+
+	ImgWrite("../data/output_image/linux/lena_R.jpg", src);
+	ImgShow(src, "After");	
+
 	REQUIRE(true);
 }
 

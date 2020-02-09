@@ -1,10 +1,12 @@
 #include <iostream>
 #include <cmath>
+#include <vector>
 
 #include "common.h"
 #include "algorithm.h"
 #include "matplotlibcpp.h"
 namespace plt = matplotlibcpp;    //图库matplotlib-cpp头文件
+using namespace std;
 
 namespace opendip {
 /*****************************************************************************
@@ -370,31 +372,100 @@ void MinMaxLoc(Image &src, unsigned char *min, unsigned char *max, Point &min_lo
 }
 
 /*****************************************************************************
-*   Function name: ImageCvtMap
-*   Function name: ImageCvtMapConst    ---read only, could't change date
-*   Description  : single channel image convert to Mat format
-*   Parameters   : src              image to Map
+*   Function name: GrayImgCvtMap
+*   Description  : image convert to Mat format, 适用于灰度图像
+*   Parameters   : src                       image to Map
 *
-*   Return Value : Map              Map of image
+*   Return Value : vector<GrayImgMap>         Vecotor of Maps, size 1
 *   Spec         : 
 *   History:
 *
-*       1.  Date         : 2019-12-26
+*       1.  Date         : 2020-2-9
 *           Author       : YangLin
-*           Modification : function draft
+*           Modification : function increased
 *****************************************************************************/
-MapType ImageCvtMap(Image &src)
+vector<GrayImgMap> GrayImgCvtMap(Image &src)
 {
 	assert(src.c == 1);
-	return MapType((unsigned char *)src.data, src.h, src.w);
+	vector<GrayImgMap> res_maps;
+	res_maps.push_back(GrayImgMap((unsigned char *)src.data, src.h, src.w));
+
+	return res_maps;
 }
 
-MapTypeConst ImageCvtMapConst(Image &src)
+/*****************************************************************************
+*   Function name: GrayImgCvtMapConst
+*   Description  : image convert to Mat format, 适用于灰度图像,只读
+*   Parameters   : src                        image to Map
+*
+*   Return Value : vector<GrayImgMap>         Vecotor of Maps, size 1
+*   Spec         : 
+*   History:
+*
+*       1.  Date         : 2020-2-9
+*           Author       : YangLin
+*           Modification : function increased
+*****************************************************************************/
+vector<GrayImgMapConst> GrayImgCvtMapConst(Image &src)
 {
 	assert(src.c == 1);
-	return MapTypeConst((unsigned char *)src.data, src.h, src.w);
+	vector<GrayImgMapConst> res_maps;
+	res_maps.push_back(GrayImgMapConst((unsigned char *)src.data, src.h, src.w));
+
+	return res_maps;
 }
 
+/*****************************************************************************
+*   Function name: ColorImgCvtMap
+*   Description  : image convert to Mat format, 适用于彩色图像
+*   Parameters   : src                        image to Map
+*
+*   Return Value : vector<GrayImgMap>         Vecotor of Maps, size 3 RGB
+*   Spec         : 
+*   History:
+*
+*       1.  Date         : 2020-2-9
+*           Author       : YangLin
+*           Modification : function increased
+*****************************************************************************/
+vector<ColorImgMap> ColorImgCvtMap(Image &src)
+{
+	assert(src.c == 3);
+	vector<ColorImgMap> res_maps;
+
+	for(int i = 0; i < src.c; i++)
+	{
+		res_maps.push_back(ColorImgMap((unsigned char *)src.data + i, src.h, src.w));
+	}
+
+	return res_maps;
+}
+
+/*****************************************************************************
+*   Function name: ColorImgCvtMapConst
+*   Description  : image convert to Mat format, 适用于彩色图像，只读
+*   Parameters   : src                        image to Map
+*
+*   Return Value : vector<GrayImgMap>         Vecotor of Maps, size 3 RGB
+*   Spec         : 
+*   History:
+*
+*       1.  Date         : 2020-2-9
+*           Author       : YangLin
+*           Modification : function increased
+*****************************************************************************/
+vector<ColorImgMapConst> ColorImgCvtMapConst(Image &src)
+{
+	assert(src.c == 3);
+	vector<ColorImgMapConst> res_maps;
+
+	for(int i = 0; i < src.c; i++)
+	{
+		res_maps.push_back(ColorImgMapConst((unsigned char *)src.data + i, src.h, src.w));
+	}
+
+	return res_maps;
+}
 /*****************************************************************************
 *   Function name: GetRotationMatrix2D
 *   Description  : 通过旋转角度和旋转中心，返回图像旋转矩阵2x3

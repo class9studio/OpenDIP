@@ -499,8 +499,8 @@ double RandomGuassinGen(double mean, double sigma)
     return dis(gen);
 }
 /*****************************************************************************
-*   Function name: GussianNoise
-*   Description  : 高斯噪声函数-灰度图像
+*   Function name: GussianNoiseImg_Maps
+*   Description  : 高斯噪声函数-Maps方式
 *   Parameters   : image：			 输出高斯噪声图像(与原图像大小相同)      
 *   Return Value : void              
 *   Spec         :   高斯噪声可能出现在图像的所有位置，所以需要用叠加的方式产生新图像
@@ -511,13 +511,10 @@ double RandomGuassinGen(double mean, double sigma)
 *           Author       : YangLin
 *           Modification : function draft
 *****************************************************************************/
-void GussianNoiseImg_Gray(Image &src, double mean, double sigma)
+void GussianNoiseImg_Maps(Image &src, double mean, double sigma)
 {
-    if(src.data == NULL || src.w < 1 || src.h < 1 || src.c < 0)
-    {
-        cout << "src image invalid" << endl;
-        return;
-    }
+    assert(src.c == 1 || src.c == 3);
+
     //产生噪声图像
     Image gussain_noise(src.w, src.h, src.c);
     unsigned char *p_gus_noise = (unsigned char *)gussain_noise.data;
@@ -533,10 +530,24 @@ void GussianNoiseImg_Gray(Image &src, double mean, double sigma)
     }
 
     //将image映射成Map的matrix
-    MapType src_m1 = ImageCvtMap(src);
-    MapType src_m2 = ImageCvtMap(gussain_noise);
-    // map的加和操作会修改data的数据
-    src_m1 = src_m1 + src_m2;
+    if(1 == src.c)
+    {
+        vector<GrayImgMap> maps = GrayImgCvtMap(src);
+        vector<GrayImgMap> maps_guss = GrayImgCvtMap(gussain_noise);
+
+        // map的加和操作会修改data的数据
+        maps[0] += maps_guss[0];
+    }
+    else if(3 == src.c)
+    {
+        vector<ColorImgMap> maps = ColorImgCvtMap(src);
+        vector<ColorImgMap> maps_guss = ColorImgCvtMap(gussain_noise);
+
+        for(int m = 0; m < maps.size(); m++)
+        {
+            maps[m] += maps_guss[m];
+        }
+    }
 }
 
 /*****************************************************************************

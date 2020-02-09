@@ -411,32 +411,65 @@ Image MorphClose(Image &src, MatrixXd kernel)
 *****************************************************************************/
 Image MorphGradient(Image &src, MatrixXd kernel, Morph_Gradient_Type type)
 {
-	assert(type <= MORPH_GRADIENT_OUTSIDE);
+	assert(type <= MORPH_GRADIENT_OUTSIDE || src.c == 1 || src.c == 3);
 
-	MapType src_m = ImageCvtMap(src);
 	switch(type)
 	{
 		case MORPH_GRADIENT_BASIC:
 		{
 			Image dst_dilate = MorphDilate(src, kernel);
 			Image dst_erode  = MorphErode(src, kernel);
-			MapType dst_dilate_m = ImageCvtMap(dst_dilate);
-			MapType dst_erode_m  = ImageCvtMap(dst_erode);
-			dst_dilate_m -= dst_erode_m;
+			if(1 == src.c)
+			{
+				vector<GrayImgMap> gray_map_dilate = GrayImgCvtMap(dst_dilate);
+				vector<GrayImgMap> gray_map_erode  = GrayImgCvtMap(dst_erode);
+				gray_map_dilate[0] += gray_map_erode[0];
+			}
+			else
+			{
+				vector<ColorImgMap> col_maps_dilate = ColorImgCvtMap(dst_dilate);
+				vector<ColorImgMap> col_maps_erode  = ColorImgCvtMap(dst_erode);
+				for(int i = 0; i < src.c; i++)
+					col_maps_dilate[i] -= col_maps_erode[i];
+			}
 			return dst_dilate;
 		}
 		case MORPH_GRADIENT_INSIDE:
 		{
 			Image dst_erode = MorphErode(src, kernel);
-			MapType dst_erode_m = ImageCvtMap(dst_erode);
-			dst_erode_m -= src_m;
+			if(src.c == 1)
+			{
+				vector<GrayImgMap> gray_map_src = GrayImgCvtMap(src);
+				vector<GrayImgMap> gray_map_erode  = GrayImgCvtMap(dst_erode);
+				gray_map_erode[0] -= gray_map_src[0];
+			}
+			else 
+			{
+				vector<ColorImgMap> col_maps_src = ColorImgCvtMap(src);
+				vector<ColorImgMap> col_maps_erode  = ColorImgCvtMap(dst_erode);
+				for(int i = 0; i < src.c; i++)
+					col_maps_erode[i] -= col_maps_src[i];
+			}
+
 			return dst_erode;
 		}
 		case MORPH_GRADIENT_OUTSIDE:
 		{
 			Image dst_dilate = MorphDilate(src, kernel);
-			MapType dst_dilate_m = ImageCvtMap(dst_dilate);
-			dst_dilate_m -= src_m;
+			if(src.c == 1)
+			{
+				vector<GrayImgMap> gray_map_dilate = GrayImgCvtMap(dst_dilate);
+				vector<GrayImgMap> gray_map_src  = GrayImgCvtMap(src);
+				gray_map_dilate[0] += gray_map_src[0];
+			}
+			else 
+			{
+				vector<ColorImgMap> col_maps_dilate = ColorImgCvtMap(dst_dilate);
+				vector<ColorImgMap> col_maps_src  = ColorImgCvtMap(src);
+				for(int i = 0; i < src.c; i++)
+					col_maps_dilate[i] -= col_maps_src[i];
+			}
+
 			return dst_dilate;
 		}
 		default:
@@ -464,9 +497,20 @@ Image MorphGradient(Image &src, MatrixXd kernel, Morph_Gradient_Type type)
 Image MorphTophat(Image &src, MatrixXd kernel)
 {
 	Image dst_open = MorphOpen(src, kernel);
-	MapType src_m = ImageCvtMap(src);
-	MapType dst_open_m = ImageCvtMap(dst_open);
-	dst_open_m -= src_m;
+	if(src.c == 1)
+	{
+		vector<GrayImgMap> gray_map_open = GrayImgCvtMap(dst_open);
+		vector<GrayImgMap> gray_map_src  = GrayImgCvtMap(src);
+		gray_map_open[0] += gray_map_src[0];
+	}
+	else 
+	{
+		vector<ColorImgMap> col_maps_open = ColorImgCvtMap(dst_open);
+		vector<ColorImgMap> col_maps_src  = ColorImgCvtMap(src);
+		for(int i = 0; i < src.c; i++)
+			col_maps_open[i] -= col_maps_src[i];
+	}	
+
 	return dst_open;
 }
 
@@ -487,9 +531,21 @@ Image MorphTophat(Image &src, MatrixXd kernel)
 Image MorphBlackhat(Image &src, MatrixXd kernel)
 {
 	Image dst_close = MorphClose(src, kernel);
-	MapType src_m = ImageCvtMap(src);
-	MapType dst_close_m = ImageCvtMap(dst_close);
-	dst_close_m -= src_m;
+
+	if(src.c == 1)
+	{
+		vector<GrayImgMap> gray_map_close = GrayImgCvtMap(dst_close);
+		vector<GrayImgMap> gray_map_src  = GrayImgCvtMap(src);
+		gray_map_close[0] += gray_map_src[0];
+	}
+	else 
+	{
+		vector<ColorImgMap> col_maps_close = ColorImgCvtMap(dst_close);
+		vector<ColorImgMap> col_maps_src  = ColorImgCvtMap(src);
+		for(int i = 0; i < src.c; i++)
+			col_maps_close[i] -= col_maps_src[i];
+	}	
+
 	return dst_close;
 }
 

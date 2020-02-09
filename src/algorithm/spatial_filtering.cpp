@@ -78,16 +78,18 @@ namespace opendip {
         memset(p_dst_data, 0, dst.w*dst.h*dst.c);
         memset(p_dst_bound_data, 0, dst_bound.w*dst_bound.h*dst_bound.c);
         //拓宽边缘
-        MapType dst_map = ImageCvtMap(src);
-        MapType dst_bound_map = ImageCvtMap(dst_bound);
-        dst_bound_map.block(offset_row,offset_col,src.h, src.w) = dst_map;
+        vector<GrayImgMap> maps = GrayImgCvtMap(src);
+        vector<GrayImgMap> maps_bound = GrayImgCvtMap(dst_bound);
+
+        // map的加和操作会修改data的数据
+        maps_bound[0].block(offset_row,offset_col,src.h, src.w) = maps[0];
         
         //扫描矩阵
         for(int j = 0; j < dst_bound.h - row + 1; j++)
         {
             for(int i = 0; i < dst_bound.w - col + 1; i++)
             {
-                src_m = dst_bound_map.block(j,i,row,col);
+                src_m = maps_bound[0].block(j,i,row,col);
                 for(int m = 0; m < row; m++)
                 {   
                     for(int n = 0; n < col; n++)

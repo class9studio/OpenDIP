@@ -30,8 +30,10 @@ namespace opendip {
     void MinMaxLoc(Image &src, unsigned char *min, unsigned char *max, Point &min_loc, Point &max_loc);
 
     // 单通道图像数据映射到Map中
-    MapType ImageCvtMap(Image &src);
-    MapTypeConst ImageCvtMapConst(Image &src); 
+    vector<GrayImgMap> GrayImgCvtMap(Image &src);
+    vector<GrayImgMapConst> GrayImgCvtMapConst(Image &src);
+    vector<ColorImgMap> ColorImgCvtMap(Image &src);
+    vector<ColorImgMapConst> ColorImgCvtMapConst(Image &src);
 
     // 通过旋转角度和旋转中心，返回图像旋转矩阵2x3
     Matrix<double, 2, 3> GetRotationMatrix2D(Point2f center, double angle, double scale);
