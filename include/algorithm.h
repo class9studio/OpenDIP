@@ -115,7 +115,7 @@ namespace opendip {
     Image MorphClose(Image &src, MatrixXd kernel);
 
     //形态学梯度
-    Image MorphGradient(Image &src, MatrixXd kernel);
+    Image MorphGradient(Image &src, MatrixXd kernel, Morph_Gradient_Type type);
 
     //顶帽运算
     Image MorphTophat(Image &src, MatrixXd kernel);

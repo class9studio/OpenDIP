@@ -61,5 +61,12 @@ namespace opendip
 		THRESH_TOZERO,
 		THRESH_TOZERO_INV,
 	};
+
+    enum Morph_Gradient_Type
+	{
+		MORPH_GRADIENT_BASIC = 0x0,
+		MORPH_GRADIENT_INSIDE,
+		MORPH_GRADIENT_OUTSIDE,
+	};
 }; // namespace opendip
 #endif

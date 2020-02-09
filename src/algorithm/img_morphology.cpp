@@ -285,7 +285,7 @@ Image MorphDilate(Image &src, MatrixXd kernel, int padding)
 	unsigned char *p_dst_bound_data = (unsigned char*)dst_bound.data;
 
 	memset(p_dst_data, 0, dst.w*dst.h*dst.c);
-	memset(p_dst_bound_data, 0, dst_bound.w*dst_bound.h*dst_bound.c);	
+	memset(p_dst_bound_data, 1, dst_bound.w*dst_bound.h*dst_bound.c);	
 	//填充操作
 	for(int j = 0; j < src.h; j++)
 	{
@@ -396,18 +396,53 @@ Image MorphClose(Image &src, MatrixXd kernel)
 *   Function name: MorphGradient
 *   Description  : 形态学梯度
 *   Parameters   : src			       输入的待运算图像    
-*                : kernel              用于梯度的结构元素                     
+*                : kernel              用于梯度的结构元素 
+*                : type                梯度类型: 基本、内部和外部                 
 *   Return Value : Image               梯度后图像输出图像
 *   Spec         : 
+*        基本梯度是原图像膨胀后图像和腐蚀后图像间的差值图像
+*        内部梯度图像是原图像和腐蚀后图像间的差值图像
+*        外部梯度是膨胀后图像和原图像间的差值图像   
 *   History:
 *
 *       1.  Date         : 2020-2-8
 *           Author       : YangLin
 *           Modification : function draft
 *****************************************************************************/
-Image MorphGradient(Image &src, MatrixXd kernel)
+Image MorphGradient(Image &src, MatrixXd kernel, Morph_Gradient_Type type)
 {
+	assert(type <= MORPH_GRADIENT_OUTSIDE);
 
+	MapType src_m = ImageCvtMap(src);
+	switch(type)
+	{
+		case MORPH_GRADIENT_BASIC:
+		{
+			Image dst_dilate = MorphDilate(src, kernel);
+			Image dst_erode  = MorphErode(src, kernel);
+			MapType dst_dilate_m = ImageCvtMap(dst_dilate);
+			MapType dst_erode_m  = ImageCvtMap(dst_erode);
+			dst_dilate_m -= dst_erode_m;
+			return dst_dilate;
+		}
+		case MORPH_GRADIENT_INSIDE:
+		{
+			Image dst_erode = MorphErode(src, kernel);
+			MapType dst_erode_m = ImageCvtMap(dst_erode);
+			dst_erode_m -= src_m;
+			return dst_erode;
+		}
+		case MORPH_GRADIENT_OUTSIDE:
+		{
+			Image dst_dilate = MorphDilate(src, kernel);
+			MapType dst_dilate_m = ImageCvtMap(dst_dilate);
+			dst_dilate_m -= src_m;
+			return dst_dilate;
+		}
+		default:
+			assert(false);
+			break;
+	}
 }
 
 //形态学梯度，轮廓发现运用
@@ -420,12 +455,20 @@ Image MorphGradient(Image &src, MatrixXd kernel)
 *   Return Value : Image               顶帽操作后图像输出图像
 *   Spec         : 
 *   History:
+*       图像顶帽运算是原图像与开运算结果之间的差值，往往用来分离比邻近点亮一些的斑块
 *
 *       1.  Date         : 2020-2-8
 *           Author       : YangLin
 *           Modification : function draft
 *****************************************************************************/
-Image MorphTophat(Image &src, MatrixXd kernel);
+Image MorphTophat(Image &src, MatrixXd kernel)
+{
+	Image dst_open = MorphOpen(src, kernel);
+	MapType src_m = ImageCvtMap(src);
+	MapType dst_open_m = ImageCvtMap(dst_open);
+	dst_open_m -= src_m;
+	return dst_open;
+}
 
 /*****************************************************************************
 *   Function name: MorphBlackhat
@@ -435,6 +478,7 @@ Image MorphTophat(Image &src, MatrixXd kernel);
 *   Return Value : Image               黑帽操作后图像输出图像
 *   Spec         : 
 *   History:
+*       黑帽运算是原图像与闭运算结果之间的差值，往往用来分离比邻近点暗一些的斑块
 *
 *       1.  Date         : 2020-2-8
 *           Author       : YangLin
@@ -442,26 +486,11 @@ Image MorphTophat(Image &src, MatrixXd kernel);
 *****************************************************************************/
 Image MorphBlackhat(Image &src, MatrixXd kernel)
 {
-
+	Image dst_close = MorphClose(src, kernel);
+	MapType src_m = ImageCvtMap(src);
+	MapType dst_close_m = ImageCvtMap(dst_close);
+	dst_close_m -= src_m;
+	return dst_close;
 }
-
-/*****************************************************************************
-*   Function name: MorphHitMiss
-*   Description  : 击中击不中运算
-*   Parameters   : src			       输入的待运算图像    
-*                : kernel              用于击中击不中运算的结构元素                     
-*   Return Value : Image               击中击不中运算后图像输出图像
-*   Spec         : 
-*   History:
-*
-*       1.  Date         : 2020-2-8
-*           Author       : YangLin
-*           Modification : function draft
-*****************************************************************************/
-Image MorphHitMiss(Image &src, MatrixXd kernel)
-{
-
-}
-
 
 }

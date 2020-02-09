@@ -617,7 +617,6 @@ TEST_CASE("[test-2] opendip-图像卷积")
 
 	REQUIRE(true);
 }
-#endif
 
 TEST_CASE("opendip-图形开、关运算")
 {
@@ -641,6 +640,29 @@ TEST_CASE("opendip-图形开、关运算")
 
 	Image dst_close = MorphClose(src, m);
 	ImgShow(dst_close, "dst close");
+
+	Image dst_gradient = MorphGradient(src, m, MORPH_GRADIENT_BASIC);
+	ImgShow(dst_gradient, "dst gradient");
+
+	Image dst_top_hat = MorphTophat(src, m);
+	ImgShow(dst_top_hat, "dst top hat");
+
+	Image dst_bla_hat = MorphBlackhat(src, m);
+	ImgShow(dst_bla_hat, "dst black hat");
+
+	Image dst_hit_miss = MorphHitMiss(src, m);
+	ImgShow(dst_hit_miss, "dst hit miss");
+	
+	REQUIRE(true);
+}
+#endif
+
+TEST_CASE("opendip-图形开、关运算")
+{
+	Image src = ImgRead("../data/test_image/lena.jpg");
+	MatrixXd m = GetStructuringElement(0, 3);
+	Image dst_gradient = MorphGradient(src, m, MORPH_GRADIENT_BASIC);
+	ImgShow(dst_gradient, "dst gradient");
 	REQUIRE(true);
 }
 

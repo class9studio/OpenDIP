@@ -101,7 +101,8 @@
         "splines": "c",
         "*.expression": "cpp",
         "resumable": "cpp",
-        "xthread": "cpp"
+        "xthread": "cpp",
+        "core": "cpp"
     },
     "cmake.configureOnOpen": true
 }
