@@ -129,9 +129,13 @@ namespace opendip {
     Image MorphHitMiss(Image &src, MatrixXd kernel);
 
     /* 空间滤波 */
-    //单变量傅里叶变换
-    void DFT_1D(double* src, Complex* dst, int size);
-    void IDFT_1D(Complex* src, Complex* dst, int size);
+    //单变量离散傅里叶变换、反变换
+    void DFT1D(double* src, Complex* dst, int size);
+    void IDFT1D(Complex* src, Complex* dst, int size);
+
+    //二维离散傅里叶变换、反变换
+    void DFT2D(double** src, Complex** dst, int w, int h);
+    void IDFT2D(Complex** src, Complex** dst, int w, int h);
 } 
 
 #endif //___OPENDIP_ALGORITHM_H_
