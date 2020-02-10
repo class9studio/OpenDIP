@@ -71,5 +71,14 @@ namespace opendip
 		MORPH_GRADIENT_INSIDE,
 		MORPH_GRADIENT_OUTSIDE,
 	};
+
+    //复数结构体
+    struct Complex 
+    {
+        double r, i;
+        Complex() { r = 0, i = 0; }
+        Complex(double real, double imag): r(real), i(imag) {}
+    };
+
 }; // namespace opendip
 #endif

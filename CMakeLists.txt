@@ -27,6 +27,7 @@ set(ALGORITHM_SOURCE
     src/algorithm/spatial_filtering.cpp 
     src/algorithm/img_segmentation.cpp 
     src/algorithm/img_morphology.cpp
+    src/algorithm/frequency_filtering.cpp
 )
 
 add_library(OpenDIP STATIC
