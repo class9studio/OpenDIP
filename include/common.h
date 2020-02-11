@@ -80,5 +80,11 @@ namespace opendip
         Complex(double real, double imag): r(real), i(imag) {}
     };
 
+    Complex operator + (Complex a, Complex b);
+    Complex operator - (Complex a, Complex b);
+    Complex operator * (Complex a, Complex b);
+    istream& operator >> (istream &in, Complex &a);
+    ostream& operator << (ostream &out, Complex &a);
+
 }; // namespace opendip
 #endif

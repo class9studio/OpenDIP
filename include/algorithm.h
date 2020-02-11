@@ -136,6 +136,14 @@ namespace opendip {
     //二维离散傅里叶变换、反变换
     void DFT2D(double** src, Complex** dst, int w, int h);
     void IDFT2D(Complex** src, Complex** dst, int w, int h);
+
+    //单变量快速傅里叶变换
+    void FFT1D(Complex* src, Complex* dst, int size);
+    void IFFT1D(Complex* src, Complex* dst, int size);  
+
+    //二维快速傅里叶变换
+    void FFT2D(double *src, Complex *dst, int size_w, int size_h);
+    void IFFT2D(Complex *src, Complex *dst, int size_n);
 } 
 
 #endif //___OPENDIP_ALGORITHM_H_

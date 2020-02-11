@@ -664,7 +664,6 @@ TEST_CASE("opendip-图形开、关运算")
 	ImgShow(dst_gradient, "dst gradient");
 	REQUIRE(true);
 }
-#endif
 
 TEST_CASE("[test-1] opendip-Raw Map")
 {
@@ -749,6 +748,21 @@ TEST_CASE("[test-2] opendip-Gray Image Map")
 	ImgWrite("../data/output_image/linux/lena_R.jpg", src);
 	ImgShow(src, "After");	
 
+	REQUIRE(true);
+}
+#endif
+
+TEST_CASE("opendip-Complex")
+{
+	opendip::Complex c1, c2, c3;
+    cin>>c1>>c2;
+
+	c3 = c1 + c2;
+    cout<<"c1 + c2 = "<<c3<<endl;
+
+	c1 = c2;
+	cout << "c1: " << c1 << endl;
+	cout << "c2: " << c2 << endl;
 	REQUIRE(true);
 }
 

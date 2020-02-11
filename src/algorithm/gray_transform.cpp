@@ -236,6 +236,14 @@ Image HistEqualazition(Image &src)
         }
     }
 
+	delete[] hist_r;
+	delete[] hist_g;
+	delete[] hist_b;
+	
+	delete[] hist_tmp_r;
+    delete[] hist_tmp_g;
+    delete[] hist_tmp_b;
+
 	return dst_image;
 }
 
@@ -304,6 +312,9 @@ Image HistEqualizationGray(Image &src)
             p_dst_data[j * dst_image.c * dst_image.w + dst_image.c*i] = (unsigned char)floor(hist_tmp[rPixel]);
         }
     }
+
+    delete[] hist;
+    delete[] hist_tmp;
 
 	return dst_image;
 }
@@ -408,6 +419,13 @@ Image HistRegistration(Image &src1, Image &src2)
             p_dst_data[j * dst_image.c * dst_image.w + dst_image.c*i] = (unsigned char)lut[rPixel];
         }
     }	
+
+	delete[] hist_src1;
+	delete[] hist_tmp_src1;
+	delete[] hist_src2;
+	delete[] hist_tmp_src2;
+    delete[] lut;
+
 	return dst_image;
 }
 
