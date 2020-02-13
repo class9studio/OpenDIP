@@ -144,6 +144,15 @@ namespace opendip {
     //二维快速傅里叶变换
     void FFT2D(double *src, Complex *dst, int size_w, int size_h);
     void IFFT2D(Complex *src, Complex *dst, int size_n);
+
+    //图像快速傅里叶变换、反变换
+    void FFT_Shift(double *src, int size_w, int size_h);
+    void ImgFFT(Image &src, Complex *dst);
+    Image ImgIFFT(Complex *src, int size_w, int);
+    //幅度谱归一化
+    void Nomalsize(double *src,double *dst,int size_w,int size_h);
+    //通过复数获取频谱图像
+    Image GetAmplitudespectrum(Complex * src,int size_w,int size_h);
 } 
 
 #endif //___OPENDIP_ALGORITHM_H_

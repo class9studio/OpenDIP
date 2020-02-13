@@ -1,6 +1,8 @@
 #include <iostream>
 #include <cmath>
 #include <vector>
+ #include<cfloat> 
+ #include<limits> 
 
 #include "common.h"
 #include "algorithm.h"
@@ -470,5 +472,197 @@ void IFFT2D(Complex *src,Complex *dst,int size_w,int size_h)
     delete[] Column;
 }
 
+/*****************************************************************************
+*   Function name: FFT_Shift
+*   Description  : 图像中心化
+*   Parameters   : src   			   图像数据(double数据类型存储)  
+*                  size_w              二维数组宽
+*                  size_h              二维数组高
+*   Return Value : void   
+*         图像傅里叶变换前，先进行平移Shift(图像高频-白色，聚集在图像中心，否则在图像的四个角落聚集)
+*         图像傅里叶反变换后，再进行图像Shift， 图像复原                   
+*   History:
+*       
+*       1.  Date         : 2020-2-13
+*           Author       : YangLin
+*           Modification : function draft
+*****************************************************************************/
+void FFT_Shift(double *src, int size_w, int size_h)
+{
+    for(int j = 0; j < size_h; j++)
+    {
+        for(int i = 0; i < size_w; i++)
+        {
+            if((i+j)%2)
+                src[j*size_w+i]=-src[j*size_w+i];
+        }
+    }
+}
+
+/*****************************************************************************
+*   Function name: ImgFFT
+*   Description  : 图像傅里叶变换
+*   Parameters   : src   			   原始图像  
+*                  dst                 生成频域复数数组
+*   Return Value : void                     
+*   History:
+*       
+*       1.  Date         : 2020-2-13
+*           Author       : YangLin
+*           Modification : function draft
+*****************************************************************************/
+void ImgFFT(Image &src, Complex *dst)
+{
+    //支持灰度图像
+    assert(src.c == 1);
+    unsigned char *src_data = (unsigned char *)src.data;
+    double *img_src = new double[src.w*src.h]();
+    for(int j = 0; j < src.h; j++)
+    {
+        for(int i = 0; i < src.w; i++)
+        {
+            img_src[j*src.w*src.c+i*src.c] = src_data[j*src.w*src.c+i*src.c];
+        }
+    }
+    FFT_Shift(img_src, src.w, src.h);
+    FFT2D(img_src, dst, src.w, src.h);
+
+    delete[] img_src;
+}
+
+/*****************************************************************************
+*   Function name: ImgIFFT
+*   Description  : 图像傅里叶反变换
+*   Parameters   : src   			   带还原频域复数数组  
+*                  size_w              频域复数数组宽长
+*                  size_h              频域复数数组高长
+*   Return Value : Image               还原图像                     
+*   History:
+*       
+*       1.  Date         : 2020-2-13
+*           Author       : YangLin
+*           Modification : function draft
+*****************************************************************************/
+Image ImgIFFT(Complex *src, int size_w, int size_h)
+{
+    Image dst(size_w, size_h, 1);
+    unsigned char *dst_data = (unsigned char *)dst.data;
+
+    Complex *temp_c = new Complex[size_w*size_h]();
+    if(temp_c == NULL)
+        exit(0);
+    for(int i = 0; i < size_w*size_h; i++)
+    {
+        temp_c[i] = src[i];
+    }
+    Complex *temp = new Complex[size_w*size_h]();
+    if(temp == NULL)
+        exit(0);
+    
+    double *temp_d = new double[size_w*size_h]();
+    if(temp_d == NULL)
+        exit(0);
+    IFFT2D(temp_c, temp, size_w, size_h);
+
+    for(int j = 0; j < size_h; j++)
+    {
+        for(int i = 0; i < size_w; i++)
+        {
+            temp_d[j*size_w+i] = temp[j*size_w+i].r;
+        }
+    }
+
+    FFT_Shift(temp_d, size_w, size_h);
+    for(int j = 0; j < size_h; j++)
+    {
+        for(int i = 0; i < size_w; i++)
+        {
+            dst_data[j*size_w+i] = temp_d[j*size_w+i];
+        }
+    }
+
+    delete[] temp;
+    delete[] temp_c;
+    delete[] temp_d;
+
+    return dst;
+}
+
+/*****************************************************************************
+*   Function name: Nomalsize
+*   Description  : 幅度谱归一化
+*   Parameters   : src   			   复数幅度数组  
+*                  dst   			   变换到[0~255]幅度数组
+*                  size_w              数组宽长
+*                  size_h              数组高长
+*   Return Value : void                     
+*   History:
+*       
+*       1.  Date         : 2020-2-13
+*           Author       : YangLin
+*           Modification : function draft
+*****************************************************************************/
+void Nomalsize(double *src,double *dst,int size_w,int size_h)
+{
+    double  max=0.0,min=DBL_MAX;
+    for(int i = 0; i < size_w*size_h; i++)
+    {
+        max = src[i]>max?src[i]:max;
+        min = src[i]<min?src[i]:min;
+    }
+    double step = 255.0/(max-min);
+
+    for(int i = 0; i < size_w*size_h; i++)
+    {
+        dst[i]=(src[i]-min)*step;
+        dst[i]*=45.9*log((double)(1+dst[i]));
+    }
+}
+
+/*****************************************************************************
+*   Function name: getAmplitudespectrum
+*   Description  : 通过复数数组得到频谱图像
+*   Parameters   : src   			   复数幅度数组  
+*                  size_w              数组宽长
+*                  size_h              数组高长
+*   Return Value : Image               生成频谱图像            
+*   History:
+*       
+*       1.  Date         : 2020-2-13
+*           Author       : YangLin
+*           Modification : function draft
+*****************************************************************************/
+Image getAmplitudespectrum(Complex *src, int size_w, int size_h)
+{
+    Image dst(size_w, size_h, 1);
+    unsigned char *p_dst_data = (unsigned char *)dst.data;
+
+    double *despe = new double[size_w*size_h]();
+    if(despe==NULL)
+        exit(0);
+    double real = 0.0;
+    double imagin = 0.0;
+
+    for(int j = 0; j < size_h; j++)
+    {
+        for(int i=0;i<size_w;i++)
+        {
+            real = src[j*size_w+i].r;
+            imagin = src[j*size_w+i].i;
+            despe[j*size_w+i] = sqrt(real*real+imagin*imagin);
+        }
+    }
+    Nomalsize(despe, despe, size_w, size_h);
+    for(int j = 0; j < size_h;j++)
+    {
+        for(int i = 0; i < size_w; i++)
+        {
+            p_dst_data[j*size_w+i] = despe[j*size_w+i];
+        }
+    }
+    delete[] despe;
+
+    return dst;
+}
 
 } // namespace opendip
