@@ -665,4 +665,107 @@ Image getAmplitudespectrum(Complex *src, int size_w, int size_h)
     return dst;
 }
 
+/*****************************************************************************
+*   Function name: IdealLPFilter
+*   Description  : 理想低通滤波器
+*   Parameters   : filter   		   滤波器内存地址  
+*                  width               宽度
+*                  height              高度
+*                  cut_off_frequency   截至频率
+*   Return Value : void                             
+*   History:
+*       
+*       1.  Date         : 2020-2-14
+*           Author       : YangLin
+*           Modification : function draft
+*****************************************************************************/
+void IdealLPFilter(double *filter, int width, int height, double cut_off_frequency)
+{
+    int center_x = width/2;
+    int center_y = height/2;
+    double distance = 0.0;
+    for(int i = 0;i < width; i++)
+    {
+        for(int j = 0;j < height; j++)
+        {
+            distance = Distance(i,j,center_x,center_y);
+            if(distance <= cut_off_frequency)
+                filter[j*width+i]=1.0;
+            else
+                filter[j*width+i]=0.0;
+        }
+    }
+}
+
+static void MultiFilter(double *src1, Complex *src2,Complex *dst,int size)
+{
+    //dst(1,1)=src1(1,1)*src2(1,1);
+    for(int i = 0; i < size; i++)
+    {
+        dst[i].r = src2[i].r*src1[i];
+        dst[i].i = src2[i].i*src1[i];
+    }
+}
+
+/*****************************************************************************
+*   Function name: FrequencyFiltering
+*   Description  : 图像频域滤波
+*   Parameters   : src   		       原始图像  
+*                  filter_type         滤波类型
+*                  param1              滤波器函数参数1
+*                  param12             滤波器函数参数2
+*   Return Value : void                             
+*   History:
+*       
+*       1.  Date         : 2020-2-14
+*           Author       : YangLin
+*           Modification : function draft
+*****************************************************************************/
+Image FrequencyFiltering(Image &src, Frequency_Filter_Type filter_type, double param1,int param2)
+{
+    assert(src.c == 1);
+    Image dst(src.w, src.h, 1);
+    unsigned char *p_src_data = (unsigned char *)src.data;
+
+    //将原图像扩充至2的幂次-4倍，并用黑色填充，防止周期缠绕
+    Image src_ex(4*src.w, 4*src.h, 1);
+    vector<GrayImgMap> src_map = GrayImgCvtMap(src);
+    vector<GrayImgMap> src_ex_map = GrayImgCvtMap(src_ex);
+    vector<GrayImgMap> dst_map = GrayImgCvtMap(dst);
+    src_ex_map[0].block(0,0,src.h,src.w) = src_map[0];
+
+    //产生滤波器
+    double *filter = new double[src.w*src.h]();
+    if(filter == NULL)
+        exit(0);
+    switch (filter_type)
+    {
+    case FRE_FILTER_ILPF:
+        IdealLPFilter(filter, 4*src.w, 4*src.h, param1);
+        break;
+    case FRE_FILTER_BLPF:
+        break;
+    case FRE_FILTER_GLPF:
+        break;
+    default:
+        break;
+    }
+    //FFT
+    Complex *temp_complex = new Complex[4*src.w*4*src.h]();
+    if(temp_complex == NULL)
+        exit(0);
+    ImgFFT(src_ex, temp_complex);
+    //滤波
+    MultiFilter(filter, temp_complex, temp_complex, 4*src.w*4*src.h);
+    //IFFT
+    ImgIFFT(temp_complex, 4*src.w, 4*src.h);
+    //还原图像
+    dst_map[0] = src_ex_map[0].block(0,0,src.h,src.w);
+
+    delete[] filter;
+    delete[] temp_complex;
+
+    return dst;
+}
+
 } // namespace opendip

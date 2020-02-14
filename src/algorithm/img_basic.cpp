@@ -554,4 +554,22 @@ Image WarpAffine(Image &src, Matrix<double, 2, 3> transform)
 	return img_c;
 }
 
+/*****************************************************************************
+*   Function name: Distance
+*   Description  : 欧式距离计算
+*   Parameters   : x,y			     起始坐标      
+*                  c_x,c_y           终点坐标
+*   Return Value : double            距离
+*   Spec         : 
+*   History:
+*
+*       1.  Date         : 2020-2-14
+*           Author       : YangLin
+*           Modification : function draft
+*****************************************************************************/
+double Distance(double x, double y, double c_x, double c_y)
+{
+    return sqrt((x-c_x)*(x-c_x)+(y-c_y)*(y-c_y));
+}
+
 }   //namespace opendip

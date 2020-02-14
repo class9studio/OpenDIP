@@ -41,6 +41,9 @@ namespace opendip {
     // 仿射变换
     Image WarpAffine(Image &src, Matrix<double, 2, 3> transform);
 
+    //欧式距离
+    double Distance(double x, double y, double c_x, double c_y);
+    
     /* 灰度变换 */
     // color to grayscale conversion
     Image ColorCvtGray(Image &src, OpenDIP_ColorCvtGray_Type cvt_type);
@@ -153,6 +156,11 @@ namespace opendip {
     void Nomalsize(double *src,double *dst,int size_w,int size_h);
     //通过复数获取频谱图像
     Image GetAmplitudespectrum(Complex * src,int size_w,int size_h);
+    
+    //滤波器
+    void IdealLPFilter(double *Filter, int width, int height, double cut_off_frequency);
+    //频域滤波函数
+    Image FrequencyFiltering(Image &src, Frequency_Filter_Type filter_type, double param1,int param2);
 } 
 
 #endif //___OPENDIP_ALGORITHM_H_

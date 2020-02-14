@@ -86,5 +86,11 @@ namespace opendip
     istream& operator >> (istream &in, Complex &a);
     ostream& operator << (ostream &out, Complex &a);
 
+    enum Frequency_Filter_Type
+    {
+        FRE_FILTER_ILPF = 0x0,   //理想低通滤波器
+        FRE_FILTER_BLPF,         //布特沃斯低通滤波器
+        FRE_FILTER_GLPF,         //高斯低通滤波器
+    };
 }; // namespace opendip
 #endif
