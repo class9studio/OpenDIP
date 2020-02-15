@@ -67,6 +67,7 @@ sudo apt-get install python-matplotlib python-numpy python2.7-dev
    * [2.5 频率滤波](docs/频域滤波.md)
    * [2.6 形态学图像处理](docs/图像图形学.md)
    * [2.7 图像分割](docs/图像分割.md)
+   * [2.8 特征提取](docs/特征提取.md)
 
 持续更新中......
 
