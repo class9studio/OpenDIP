@@ -28,6 +28,7 @@ set(ALGORITHM_SOURCE
     src/algorithm/img_segmentation.cpp 
     src/algorithm/img_morphology.cpp
     src/algorithm/frequency_filtering.cpp
+    src/algorithm/features_extraction/harris_opencv.cpp
 )
 
 add_library(OpenDIP STATIC

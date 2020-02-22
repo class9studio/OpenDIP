@@ -3,6 +3,7 @@
 
 #include <Eigen/Dense>
 #include <opencv2/opencv.hpp>
+#include <opencv2/highgui/highgui_c.h>
 #include "common.h"
 #include "image.h"
 #include "algorithm.h"
@@ -39,8 +40,6 @@ TEST_CASE("eigen")
 	
 	REQUIRE( 0 == 0 );
 }
-
-
 
 TEST_CASE("opencv")
 {       
@@ -750,7 +749,6 @@ TEST_CASE("[test-2] opendip-Gray Image Map")
 
 	REQUIRE(true);
 }
-#endif
 
 TEST_CASE("opendip-Complex")
 {
@@ -765,6 +763,15 @@ TEST_CASE("opendip-Complex")
 	cout << "c2: " << c2 << endl;
 	REQUIRE(true);
 }
+#endif
+
+TEST_CASE("opencv-harris corner detector")
+{
+	string filename = "../data/test_image/lena.jpg";
+	harris_cornel_detector(filename);
+	REQUIRE(true);
+}
+
 
 
 

@@ -161,6 +161,11 @@ namespace opendip {
     void IdealLPFilter(double *Filter, int width, int height, double cut_off_frequency);
     //频域滤波函数
     Image FrequencyFiltering(Image &src, Frequency_Filter_Type filter_type, double param1,int param2);
+
+    /* 模式识别 */
+    /* 特征提取算子 */
+    // harris角点检测-opencv
+    int harris_cornel_detector(string filename);
 } 
 
 #endif //___OPENDIP_ALGORITHM_H_
