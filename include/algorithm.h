@@ -84,6 +84,9 @@ namespace opendip {
     //高斯滤波
     Image GaussianBlur(Image &src, int ksize, double sigma);
 
+    //双边滤波
+    Image BilateralFilter(Image &src, int ksize, double sigma_distance, double sigma_pixel);
+    
     /* 图像分割 */
     //边缘检测
     Image EdgeDetection(Image &src, MatrixXd &kernel);                     //单方向边缘检测滤波器

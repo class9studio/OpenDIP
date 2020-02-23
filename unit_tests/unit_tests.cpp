@@ -763,12 +763,24 @@ TEST_CASE("opendip-Complex")
 	cout << "c2: " << c2 << endl;
 	REQUIRE(true);
 }
-#endif
 
 TEST_CASE("opencv-harris corner detector")
 {
 	string filename = "../data/test_image/lena.jpg";
 	harris_cornel_detector(filename);
+	REQUIRE(true);
+}
+#endif
+
+TEST_CASE("opendip-BilateralFilter")
+{
+	Image src = ImgRead("../data/test_image/baboon.jpg");
+	ImgShow(src, "Before Color");
+	Image src_gray = ColorCvtGray(src, OPENDIP_COLORCVTGRAY_AVERAGE);
+
+	ImgShow(src_gray, "Before");
+	Image dst = BilateralFilter(src_gray, 17, 2, 50);
+	ImgShow(dst, "After");
 	REQUIRE(true);
 }
 
