@@ -86,7 +86,7 @@ namespace opendip {
 
     //双边滤波
     Image BilateralFilter(Image &src, int ksize, double sigma_distance, double sigma_pixel);
-    
+
     /* 图像分割 */
     //边缘检测
     Image EdgeDetection(Image &src, MatrixXd &kernel);                     //单方向边缘检测滤波器
@@ -102,6 +102,9 @@ namespace opendip {
 
     //Laplacian算子
 	Image Laplacian(Image &src);
+
+    //canny算法
+    Image Canny(Image &src, int sobel_size, double threshold1, double threshold2);
 
     /* 图像形态学 */
     //图像连通域-二值图像

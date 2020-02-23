@@ -411,7 +411,7 @@ namespace opendip {
     *           Author       : YangLin
     *           Modification : Created function
     *****************************************************************************/  
-    Image BilateralFilter(Image &src, int ksize, double sigma_pos, double sigma_pos)
+    Image BilateralFilter(Image &src, int ksize, double sigma_pos, double sigma_gray)
     {
         assert(src.c == 1);
         assert(ksize%2 == 1);
