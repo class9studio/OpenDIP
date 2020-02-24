@@ -767,7 +767,7 @@ TEST_CASE("opendip-Complex")
 TEST_CASE("opencv-harris corner detector")
 {
 	string filename = "../data/test_image/lena.jpg";
-	harris_cornel_detector(filename);
+	HarrisCornelDetector(filename);
 	REQUIRE(true);
 }
 #endif
@@ -783,6 +783,7 @@ TEST_CASE("opendip-BilateralFilter")
 	ImgShow(dst, "After");
 	REQUIRE(true);
 }
+
 
 
 

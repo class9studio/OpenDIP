@@ -171,7 +171,10 @@ namespace opendip {
     /* 模式识别 */
     /* 特征提取算子 */
     // harris角点检测-opencv
-    int harris_cornel_detector(string filename);
+    int HarrisCornelDetector(string filename);
+
+    // SIFT,SUFR特征点匹配-opencv
+    void SurfPicsMatch(string pic1, string pic2);
 } 
 
 #endif //___OPENDIP_ALGORITHM_H_

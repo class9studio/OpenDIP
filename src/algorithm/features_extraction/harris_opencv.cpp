@@ -14,7 +14,7 @@ namespace opendip {
 int thresh = 80;
 Mat src, dst,norm_dst,gray_img,abs_dst,out1,out2;
 void callback(int, void*);
-int harris_cornel_detector(string filename)
+int HarrisCornelDetector(string filename)
 {	
 	src = imread(filename);
 	namedWindow("input",CV_WINDOW_AUTOSIZE);
