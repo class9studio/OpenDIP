@@ -1,9 +1,6 @@
 #include <iostream>
 #include <string>
 
-#include <Eigen/Dense>
-#include <opencv2/opencv.hpp>
-#include <opencv2/highgui/highgui_c.h>
 #include "common.h"
 #include "image.h"
 #include "algorithm.h"
@@ -11,13 +8,20 @@
 
 #define CATCH_CONFIG_MAIN          //catch2的main函数
 #include "catch2.h"
+
+#include <Eigen/Dense>
+
+#if  defined(__linux)
+#include <opencv2/opencv.hpp>
+#include <opencv2/highgui/highgui_c.h>
 #include "matplotlibcpp.h"
+using namespace cv;
+namespace plt = matplotlibcpp;    //图库matplotlib-cpp头文件
+#endif
 
 using namespace Eigen;
 using namespace std;
 using namespace opendip;
-using namespace cv;
-namespace plt = matplotlibcpp;    //图库matplotlib-cpp头文件
 
 #if 0
 TEST_CASE( "simple" )
@@ -770,7 +774,6 @@ TEST_CASE("opencv-harris corner detector")
 	HarrisCornelDetector(filename);
 	REQUIRE(true);
 }
-#endif
 
 TEST_CASE("opendip-BilateralFilter")
 {
@@ -781,6 +784,13 @@ TEST_CASE("opendip-BilateralFilter")
 	ImgShow(src_gray, "Before");
 	Image dst = BilateralFilter(src_gray, 17, 2, 50);
 	ImgShow(dst, "After");
+	REQUIRE(true);
+}
+#endif
+
+TEST_CASE("opendip-BilateralFilter")
+{
+	cout << "yanglin" << endl;
 	REQUIRE(true);
 }
 

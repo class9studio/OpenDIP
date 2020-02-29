@@ -1,11 +1,18 @@
 #include <iostream>
 #include <cmath>
 #include <vector>
+#include <map>
 
 #include "common.h"
 #include "algorithm.h"
-#include "matplotlibcpp.h"
-namespace plt = matplotlibcpp;    //图库matplotlib-cpp头文件
+
+
+#if defined(_WIN32)
+#else // __linux or _apple
+	#include "matplotlibcpp.h"
+	namespace plt = matplotlibcpp;    //图库matplotlib-cpp头文件
+#endif
+
 using namespace std;
 
 namespace opendip {
@@ -21,6 +28,7 @@ namespace opendip {
 *           Author       : YangLin
 *           Modification : Created function
 *****************************************************************************/
+#if defined(__linux)
 void ImgShow(Image &src, string title)
 {
 	assert(src.c == 1 || src.c == 3);
@@ -41,7 +49,7 @@ void ImgShow(Image &src, string title)
 	}
 	plt::show();
 }
-
+#endif
 /*****************************************************************************
 *   Function name: LinearInterpolation
 *   Description  : 最邻近插值法(Nearest Interpolation)

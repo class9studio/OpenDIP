@@ -476,6 +476,7 @@ Image MorphGradient(Image &src, MatrixXd kernel, Morph_Gradient_Type type)
 			assert(false);
 			break;
 	}
+	return Image();
 }
 
 //形态学梯度，轮廓发现运用
