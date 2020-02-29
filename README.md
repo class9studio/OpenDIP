@@ -41,6 +41,7 @@ sudo apt-get install python-matplotlib python-numpy python2.7-dev
 ```
 
 ### OpenDIP Lib Build,And Test
+#### 1.Linux Platform
  ```
  $ mkdir build
  $ cd build
@@ -52,6 +53,28 @@ sudo apt-get install python-matplotlib python-numpy python2.7-dev
  or
  $ ./unit_tests
  ```
+
+ #### 2.Win Platform
+ Install C/C++ development environment first. 
+ if you want build vs project, install Visual Studio Tools
+ ```
+ $ mkdir build
+ $ cd build
+ $ cmake ..  # default vs prj, could find vs prj files   
+ ```
+ if you want build MinGW project, install MinGW then Configure environment variables
+ ```
+ $ mkdir build
+ $ cd build
+ $ cmake -G "MinGW Makefiles" ..  #diff
+ $  mingw32-make.exe
+
+ $ ./OpenDIP
+ $ make test
+ or
+ $ ./unit_tests
+ ```
+
 
  ## 目录
  * [简介](README.md)
