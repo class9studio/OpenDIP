@@ -1,0 +1,4 @@
+﻿  cudaUnitTest.cpp
+z:\yanglin\opendip\3rd_party\catch2\catch2.h(3243): warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
+    正在创建库 Z:\Yanglin\OpenDIP\Windows\cudaOpenDIP\x64\Debug\cudaOpenDIP.lib 和对象 Z:\Yanglin\OpenDIP\Windows\cudaOpenDIP\x64\Debug\cudaOpenDIP.exp
+  cudaOpenDIP.vcxproj -> Z:\Yanglin\OpenDIP\Windows\cudaOpenDIP\x64\Debug\cudaOpenDIP.exe
