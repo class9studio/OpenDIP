@@ -788,9 +788,15 @@ TEST_CASE("opendip-BilateralFilter")
 }
 #endif
 
-TEST_CASE("opendip-BilateralFilter")
+TEST_CASE("opendip-Hog Detector")
 {
-	cout << "yanglin" << endl;
+	//int res = HogFeatures("../data/test_image/lena.jpg");
+	//cout << "Hog Features Numbers: " << res << endl;
+
+	double startTime = now();
+	int val = HogSvm_PeopleDetector("../data/test_image/vtest.avi_2.jpg");
+	double nDetectTime = calcElapsed(startTime, now());
+	printf("Hog SVM Detector time: %d ms.\n ", (int)(nDetectTime * 1000));
 	REQUIRE(true);
 }
 

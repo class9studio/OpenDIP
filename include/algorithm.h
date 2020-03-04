@@ -175,6 +175,11 @@ namespace opendip {
 
     // SIFT,SUFR特征点匹配-opencv
     void SurfPicsMatch(string pic1, string pic2);
+
+    // Hog特征提取-opencv
+    int HogFeatures(string pic_name);
+    // Hog+SVM用于行人检测
+    int HogSvm_PeopleDetector(string pic_name);
 } 
 
 #endif //___OPENDIP_ALGORITHM_H_
