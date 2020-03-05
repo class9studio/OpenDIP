@@ -2,6 +2,14 @@
 
 #include "cudaCommon.h"
 
+
+void init_random_i(int *var, int n)
+{
+    int i;
+    for (i = 0; i < n; i++)
+        var[i] = 1;
+}
+
 /*****************************************************************************
 *   Function name: cudaDeviceTest
 *   Description  : 测试是否存在device设备-GPU
@@ -95,3 +103,68 @@ int cudaVecAddTest(int N)
   return 0;
 }
 
+//One element per thread, using Global Memeory
+//input elements are read several times, not an optimized way
+#define THREADS_PER_BLOCK 10
+#define BLOCK_SIZE THREADS_PER_BLOCK
+#define RADIUS 3
+__global__ void stencil(int *in, int *out)
+{
+  int globIdx = blockIdx.x * blockDim.x + threadIdx.x;
+  int value = 0;
+  for(int offset = -RADIUS; offset <= RADIUS; offset++)
+    value += in[globIdx + offset];
+  out[globIdx] = value;
+}
+
+__global__ void stencil_share_memory(int *in, int *out)
+{
+  __shared__ int shared[BLOCK_SIZE + 2 * RADIUS];
+  int globIdx = blockIdx.x * blockDim.x + threadIdx.x;
+  int locIdx = threadIdx.x + RADIUS;
+  shared[locIdx] = in[globIdx];
+  if(threadIdx.x < RADIUS)
+  {
+    shared[locIdx - RADIUS] = in[globIdx - RADIUS];
+    shared[locIdx + BLOCK_SIZE] = in[globIdx + BLOCK_SIZE];
+  }
+  __syncthreads();
+  int value = 0;
+  for(int offset = -RADIUS; offset <= RADIUS; offset++)
+    value += shared[locIdx + offset];
+  out[globIdx] = value;
+}
+
+int cudaStencilTest(int N)
+{
+  int *in, *out;
+  int *dev_in, *dev_out;
+  in = (int *)malloc(N*sizeof(int));
+  out = (int *)malloc(N*sizeof(int));
+
+  init_random_i(in, N);
+
+  //Allocate memory in GPU Globel Memory
+  cudaMalloc(&dev_in,  N*sizeof(int));
+  cudaMalloc(&dev_out, N*sizeof(int));
+
+  // Copie des valeurs des variables de Host vers Device
+  cudaMemcpy(dev_in, in, N*sizeof(int), cudaMemcpyHostToDevice);
+  cudaMemcpy(dev_out, out, N*sizeof(int), cudaMemcpyHostToDevice);
+
+  //Lanunch the GPU Kernel
+  stencil_share_memory <<<N/THREADS_PER_BLOCK, THREADS_PER_BLOCK>>>(dev_in, dev_out);
+  //copy data back
+  cudaMemcpy(out, dev_out, N*sizeof(int), cudaMemcpyDeviceToHost);
+
+  for(int i = 0; i < N; i++)
+      printf("%i ---i=%d \n", out[i], i);
+  
+
+  free(in);   
+  free(out);
+  cudaFree(dev_in);
+  cudaFree(dev_out);
+  
+  return 0;
+}

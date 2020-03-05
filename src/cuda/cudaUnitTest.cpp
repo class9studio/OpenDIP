@@ -3,6 +3,7 @@
 
 #include "cudaCommon.h" 
 
+#if 0
 TEST_CASE("cuda")
 {
 	cudaDeviceTest();
@@ -13,5 +14,13 @@ TEST_CASE("cuda-vecAdd")
 {
 	int N = 1024;
 	cudaVecAddTest(N);
+	REQUIRE(true);
+}
+#endif
+
+TEST_CASE("opendip-cudaStencil")
+{
+	int N = 30;
+	cudaStencilTest(N);
 	REQUIRE(true);
 }
