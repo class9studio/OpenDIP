@@ -144,7 +144,7 @@ namespace opendip {
         unsigned char *p_src_data = (unsigned char*)src.data;
         unsigned char *p_dst_data = (unsigned char*)dst.data;
         unsigned char *p_dst_bound_data = (unsigned char*)dst_bound.data;
-        int value = 0;
+        double value = 0;
         int offset_row = row / 2;
         int offset_col = col / 2;
         int pixel_val = 0;
@@ -197,6 +197,70 @@ namespace opendip {
         return dst;
     }
 
+    /*****************************************************************************
+    *   Function name: FilterMatrix2d
+    *   Description  : 矩阵窗口滑动操作--矩阵filter
+    *   Parameters   : src                  Matrix类型，不是图像类
+    *                  kernel               不同尺寸卷积核(3,5,7...)
+    *   Return Value : MatrixXd             MatrixXd矩阵
+    *   Spec         :
+    *   History:
+    *
+    *       1.  Date         : 2020-3-7  1:46
+    *           Author       : YangLin
+    *           Modification : Created function
+    *****************************************************************************/
+    MatrixXd FilterMatrix2d(MatrixXd &src, MatrixXd &kernel)
+    {
+        assert((kernel.rows() == kernel.cols() && kernel.rows() % 2 == 1));
+
+        int row = kernel.rows();
+        int col = kernel.cols();
+
+        //卷积核旋转180
+        MatrixXd kernel_m = MatRotate180(kernel);
+
+        MatrixXd dst(src.rows(), src.cols());
+        MatrixXd dst_bound = MatrixXd::Zero(src.rows() + row - 1, src.cols() + col - 1);
+        //unsigned char *p_src_data = (unsigned char*)src.data;
+        //unsigned char *p_dst_data = (unsigned char*)dst.data;
+        //unsigned char *p_dst_bound_data = (unsigned char*)dst_bound.data;
+        double value = 0;
+        int offset_row = row / 2;
+        int offset_col = col / 2;
+        int pixel_val = 0;
+
+        //拓宽边缘
+        for(int j = 0; j < src.rows(); j++)
+        {
+            for(int i = 0; i < src.cols(); i++)
+            {
+                    dst_bound(j+offset_row, i+offset_col) = src(j,i);
+            }
+        }
+
+        //扫描矩阵
+        for(int j = offset_row; j < dst_bound.rows() - offset_row; j++)
+        {
+            for(int i = offset_col; i < dst_bound.cols() - offset_col; i++)
+            {
+                //对每一个像素点进行卷积操作
+                for(int m = 0; m < row; m++)
+                {
+                    for(int n = 0;n < col; n++)
+                    {
+                        pixel_val = dst_bound(j-offset_row+m , i-offset_col+n);
+                        value += pixel_val*kernel_m(m,n);
+                    }
+                }
+
+                dst(j-offset_row, i-offset_col) = value; 
+                value = 0;                   
+            }
+        }
+
+        return dst;        
+    }
     /*****************************************************************************
     *   Function name: Blur
     *   Description  : 均值滤波  

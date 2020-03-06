@@ -565,37 +565,6 @@ TEST_CASE("opendip-腐蚀-膨胀")
 	REQUIRE(true);
 }
 
-
-TEST_CASE("[test-1] opendip-图像卷积")
-{
-	Image src(5,5,1);
-	
-	MapType img_m = ImageCvtMap(src);
-	img_m <<    1,2,3,4,5,
-				6,7,8,9,10,
-				11,12,13,14,15,
-				16,17,18,19,20,
-				21,22,23,24,25;
-
-	MatrixXd kernel(3,3);
-	kernel<< 1, 2, 1,
-			 2, 0, 2,
-			 1, 2, 1;
-
-	Image dst = Filter2D(src, kernel);
-	unsigned char* p_dst = (unsigned char*)dst.data;
-	for(int j = 0; j < dst.h; j++)
-	{
-		for(int i = 0; i < dst.w; i++)
-		{
-			int tmp = p_dst[j*dst.c*dst.w + i*dst.c];
-			cout << tmp << endl;
-		}
-	}
-
-	REQUIRE(true);
-}
-
 TEST_CASE("[test-2] opendip-图像卷积")
 {
 	Image src = ImgRead("../data/test_image/lena_gray.jpg");		
@@ -786,7 +755,6 @@ TEST_CASE("opendip-BilateralFilter")
 	ImgShow(dst, "After");
 	REQUIRE(true);
 }
-#endif
 
 TEST_CASE("opendip-Hog Detector")
 {
@@ -799,6 +767,69 @@ TEST_CASE("opendip-Hog Detector")
 	printf("Hog SVM Detector time: %d ms.\n ", (int)(nDetectTime * 1000));
 	REQUIRE(true);
 }
+#endif
+
+TEST_CASE("[test-1] opendip-图像卷积")
+{
+	Image src(5,5,1);
+	
+	vector<GrayImgMap>img_m = GrayImgCvtMap(src);
+	img_m[0] <<    1,2,3,4,5,
+				6,7,8,9,10,
+				11,12,13,14,15,
+				16,17,18,19,20,
+				21,22,23,24,25;
+
+	MatrixXd kernel(3,3);
+	kernel<< 1, 2, 1,
+			 2, 0, 2,
+			 1, 2, 1;
+
+	Image dst = Filter2D(src, kernel);
+	unsigned char* p_dst = (unsigned char*)dst.data;
+	for(int j = 0; j < dst.h; j++)
+	{
+		for(int i = 0; i < dst.w; i++)
+		{
+			int tmp = p_dst[j*dst.c*dst.w + i*dst.c];
+			cout << tmp << endl;
+		}
+	}
+
+	REQUIRE(true);
+}
+
+TEST_CASE("opendip-FilterMatrix2d")
+{       
+	MatrixXd kernel(3,3);
+	kernel<< 1, 2, 1,
+			 2, 0, 2,
+			 1, 2, 1;
+
+	MatrixXd ImgMat(5,5);
+	ImgMat << 1,2,3,4,5,
+			6,7,8,9,10,
+			11,12,13,14,15,
+			16,17,18,19,20,
+			21,22,23,24,25;
+
+    MatrixXd Mat = FilterMatrix2d(ImgMat, kernel);
+	cout << Mat << endl;
+
+	REQUIRE(true);
+}
+
+TEST_CASE("opendip-Harris角点检测")
+{
+	Image src = ImgRead("../data/test_image/lena_gray.jpg");
+	ImgShow(src, "Before");
+	Image dst = DetectHarrisCorners(src, 0.04, false, 0.01);
+	cout << "channels: "<< dst.c << endl;
+	ImgShow(dst, "Result");
+	REQUIRE(true);
+}
+
+
 
 
 

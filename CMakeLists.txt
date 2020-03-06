@@ -28,6 +28,7 @@ set(ALGORITHM_SOURCE
     src/algorithm/img_segmentation.cpp 
     src/algorithm/img_morphology.cpp
     src/algorithm/frequency_filtering.cpp
+    src/algorithm/img_features.cpp
 
     #src/algorithm/features_extraction/harris_opencv.cpp   #OpenCV only
     src/algorithm/features_extraction/hog_svm_opencv.cpp

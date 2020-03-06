@@ -69,6 +69,8 @@ namespace opendip {
     // 图像的卷积
     Image Filter2D(Image &src, MatrixXd &kernel);
     Image Filter2D_Gray(Image &src, MatrixXd &kernel,int padding = 0);
+    // 矩阵卷积操作
+    MatrixXd FilterMatrix2d(MatrixXd &src, MatrixXd &kernel);
 
     //高斯分布随机数生成
     double RandomGuassinGen(double mean, double sigma);
@@ -172,6 +174,8 @@ namespace opendip {
     /* 特征提取算子 */
     // harris角点检测-opencv
     int HarrisCornelDetector(string filename);
+    // harris角点检测-opendip
+    Image DetectHarrisCorners(Image &src, double alpha, bool with_nms, double threshold);
 
     // SIFT,SUFR特征点匹配-opencv
     void SurfPicsMatch(string pic1, string pic2);
