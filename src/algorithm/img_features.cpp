@@ -19,6 +19,7 @@ namespace opendip
 *                  threshold            响应函数值阈值比例参数(nice choice: 0.01)
 *   Return Value : Image                原始图像大小，角点像素255
 *   Spec         :
+*         Harris角点检测有旋转不变性， 但是不具备尺寸不变性
 *   History:
 *
 *       1.  Date         : 2020-3-7  1:50
