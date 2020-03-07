@@ -185,6 +185,8 @@ namespace opendip {
 
     // Hog特征提取-opencv
     int HogFeatures(string pic_name);
+    // Hog特征提取-opendip
+    vector<vector<vector<double>>> DetectHOGDescription(Image &src, int cell_size, int bin_size);
     // Hog+SVM用于行人检测
     int HogSvm_PeopleDetector(string pic_name);
 } 

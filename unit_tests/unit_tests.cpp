@@ -831,7 +831,7 @@ TEST_CASE("opendip-Harris角点检测")
 
 TEST_CASE("opendip-Gamma Correction")
 {
-	Image src = ImgRead("../data/test_image/lena_gray.jpg");
+	Image src = ImgRead("../data/test_image/lena.jpg");
 	ImgShow(src, "origin");
 	Image dst = GammaCorrection(src, 0.4);
 	ImgShow(dst, "gamma1");
