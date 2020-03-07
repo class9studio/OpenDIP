@@ -63,6 +63,9 @@ namespace opendip {
     //椒盐噪声函数
     void SaltAndPepper(Image &src, int n);
 
+    //gamma校正
+    Image GammaCorrection(Image &src, double fGamma);
+
     /* 空间滤波 */
     //n*n矩阵逆时针旋转180
     MatrixXd MatRotate180(MatrixXd m);

@@ -580,4 +580,33 @@ double Distance(double x, double y, double c_x, double c_y)
     return sqrt((x-c_x)*(x-c_x)+(y-c_y)*(y-c_y));
 }
 
+Image GammaCorrection(Image &src, double fGamma)
+{
+	assert(src.c == 1 || src.c == 3);
+	uint8_t g_GammaLUT[256] = {0}; //gamma校正查找表
+	double f = 0.0;
+
+	Image dst(src.w, src.h, src.c);
+	unsigned char *p_src_data = (unsigned char*)src.data;
+	unsigned char *p_dst_data = (unsigned char*)dst.data;
+	for(int i = 0; i < 256; i++)
+	{
+		f = (i+0.5)/256;
+		f = (double)pow(f, fGamma);
+		g_GammaLUT[i]=(uint8_t)(f*256-0.5);//反归一化
+	}
+
+	for(int i = 0; i < src.h; i++)
+	{
+		for(int j = 0; j < src.w; j++)
+		{
+			for(int z = 0; z < src.c; z++)
+			{
+				p_dst_data[i*src.w*src.c + j*src.c + z] = g_GammaLUT[p_src_data[i*src.w*src.c + j*src.c + z]];
+			}
+		}
+	}
+	return dst;
+}
+
 }   //namespace opendip

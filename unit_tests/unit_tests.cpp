@@ -767,7 +767,6 @@ TEST_CASE("opendip-Hog Detector")
 	printf("Hog SVM Detector time: %d ms.\n ", (int)(nDetectTime * 1000));
 	REQUIRE(true);
 }
-#endif
 
 TEST_CASE("[test-1] opendip-图像卷积")
 {
@@ -826,6 +825,18 @@ TEST_CASE("opendip-Harris角点检测")
 	Image dst = DetectHarrisCorners(src, 0.04, false, 0.01);
 	cout << "channels: "<< dst.c << endl;
 	ImgShow(dst, "Result");
+	REQUIRE(true);
+}
+#endif
+
+TEST_CASE("opendip-Gamma Correction")
+{
+	Image src = ImgRead("../data/test_image/lena_gray.jpg");
+	ImgShow(src, "origin");
+	Image dst = GammaCorrection(src, 0.4);
+	ImgShow(dst, "gamma1");
+	Image dst1 = GammaCorrection(src, 2.5);
+	ImgShow(dst1, "gamma2");
 	REQUIRE(true);
 }
 
