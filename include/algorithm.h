@@ -185,6 +185,8 @@ namespace opendip {
 
     // Hog特征提取-opencv
     int HogFeatures(string pic_name);
+    // 为每个cell构建直方图
+    vector<double> CellHistogram(MatrixXd cell_m, MatrixXd cell_d, int bin_size);
     // Hog特征提取-opendip
     vector<vector<vector<double>>> DetectHOGDescription(Image &src, int cell_size, int bin_size);
     // Hog+SVM用于行人检测

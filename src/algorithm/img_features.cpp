@@ -125,6 +125,44 @@ Image DetectHarrisCorners(Image &src, double alpha, bool with_nms, double thresh
 }
 
 /*****************************************************************************
+*   Function name: CellHistogram
+*   Description  : 每个cell构建直方图
+*   Parameters   : cell_m               cell中幅度矩阵8*8
+*                  cell_d               cell中方向矩阵8*8
+*                  bin_size             180划分成多少bin
+*   Return Value : vector<double>       直方图信息(索引是x轴，值是直方图高度)
+*   Spec         :
+*        
+*   History:
+*
+*       1.  Date         : 2020-3-8  10:21
+*           Author       : YangLin
+*           Modification : Created function
+*****************************************************************************/
+vector<double> CellHistogram(MatrixXd cell_m, MatrixXd cell_d, int bin_size)
+{
+    assert(cell_m.rows()==8 || cell_m.cols()==8); //每个cell必须是8*8像素
+    assert(cell_d.rows()==8 || cell_d.cols()==8);
+    int angle_unit = 20;//20度是每个bin的范围
+    vector<double> cell_his(bin_size, 0);
+    for(int i = 0; i < cell_m.rows(); i++)
+    {
+        for(int j = 0; j < cell_m.cols(); j++)
+        {
+            int magnitude =  cell_m(i,j); //幅度
+            int angle = cell_d(i,j);      //方向
+            //采用双线性插值的方式 填充直方图
+            int idx = angle / angle_unit; 
+            int mod = angle % angle_unit;
+
+            cell_his[idx%bin_size] += magnitude*(1-mod/angle_unit);
+            cell_his[(idx+1)%bin_size] += magnitude*(mod/angle_unit);
+        }
+    }
+    return cell_his;
+}
+
+/*****************************************************************************
 *   Function name: DetectHOGDescription
 *   Description  : HOG特征提取
 *   Parameters   : src                  原始图像
@@ -147,7 +185,7 @@ vector<vector<vector<double>>> DetectHOGDescription(Image &src, int cell_size, i
 
     //src pic uint8转成MatrixXd
     unsigned char *p_src_data = (unsigned char *)src_gamma.data;
-    MatrixXd srcMat(src.h, src.w)
+    MatrixXd srcMat(src.h, src.w);
     for(int i = 0; i < src.h; i++)
     {
         for(int j = 0; j < src.w; j++)
@@ -167,10 +205,10 @@ vector<vector<vector<double>>> DetectHOGDescription(Image &src, int cell_size, i
     MatrixXd dgMat(dstX.rows(), dstX.cols()); //梯度方向(direction of gradient)
     for(int i = 0; i < dstX.rows(); i++)
     {
-        for(int j = 0; j < dstX.cols(), j++)
+        for(int j = 0; j < dstX.cols(); j++)
         {
             double magnitude = sqrt(dstX(i,j)*dstX(i,j)+dstY(i,j)*dstY(i,j));
-            double direction = atan2(dstX(i,j),dstY(i,j)));
+            double direction = atan2(dstX(i,j),dstY(i,j));
             mgMat(i,j) = magnitude;
             dgMat(i,j) = (direction>180)?(direction-180):direction;
         }
@@ -190,7 +228,7 @@ vector<vector<vector<double>>> DetectHOGDescription(Image &src, int cell_size, i
             //遍历每个cell
             MatrixXd cell_magnitude = mgMat.block(i*cell_size, j*cell_size, 8, 8);
             MatrixXd cell_direction = dgMat.block(i*cell_size, j*cell_size, 8, 8);
-            vector<double> cell_histogram = CellHistogram(cell_magnitude, cell_direction);
+            vector<double> cell_histogram = CellHistogram(cell_magnitude, cell_direction, bin_size);
             cell_vec.push_back(cell_histogram);
         }
    }
