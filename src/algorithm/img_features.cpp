@@ -316,15 +316,29 @@ Image DetectOriginLBP(Image &src)
     return dst;
 }
 
-/*
-*  对于目标像素点，映射原图的点关系式：
-*  xp = xc + R*cos(2πp/P)
-*  yp = yc - R*sin(2πp/P)
+/*****************************************************************************
+*   Function name: DetectCircleLBP
+*   Description  : 原始LBP特征描述
+*   Parameters   : src          原始图像
+*                  radius       邻域半径
+*                  neighbors    采样数
+*   Return Value : Image        LBP纹理图
+*   Spec         :
+*        满足不同尺寸和频率纹理的需要。为了适应不同尺度的纹理特征，并达到灰度和旋转不变性的要求
+*        将 3×3 邻域扩展到任意邻域，并用圆形邻域代替了正方形邻域，改进后的 LBP 算子允许在半径为 R 的圆形邻域内有任意多个像素点
+*   对于目标像素点，映射原图的点关系式：
+*   xp = xc + R*cos(2πp/P)
+*   yp = yc - R*sin(2πp/P)
 *     其中P是采样点, p是第几个采样点
-*  得出映射关系后，通过线性插值得出目标坐标的像素值
-*  线性插值:              f(0,0) f(0,1)   1-y
+*     得出映射关系后，通过线性插值得出目标坐标的像素值
+*   线性插值:              f(0,0) f(0,1)   1-y
 *     f(x, y) = [1-x, x][f(1,0) f(1,1)][  y  ]
-*/
+*   History:
+*
+*       1.  Date         : 2020-3-10  10:58
+*           Author       : YangLin
+*           Modification : Created function
+*****************************************************************************/
 Image DetectCircleLBP(Image &src, int radius, int neighbors)
 {
     assert(src.c == 1);
@@ -368,6 +382,91 @@ Image DetectCircleLBP(Image &src, int radius, int neighbors)
                 //LBP特征图像的每个邻居的LBP值累加，累加通过与操作完成，对应的LBP值通过移位取得
                 p_dst_data[(i-radius)*dst.w + j - radius] |= (neighbor > center) << (neighbors-k-1); 
             }
+        }
+    }
+
+    return dst;
+}
+
+/*****************************************************************************
+*   Function name: DetectRotationInvariantLBP
+*   Description  : 旋转不变LBP特征描述
+*   Parameters   : src          原始图像
+*                  radius       邻域半径
+*                  neighbors    采样数
+*   Return Value : Image        LBP纹理图
+*   Spec         :
+*       上面的LBP特征具有灰度不变性，但还不具备旋转不变性
+*       不断的旋转圆形邻域内的LBP特征，选择LBP特征值最小的作为中心像素点的LBP特征
+*   History:
+*
+*       1.  Date         : 2020-3-10  10:58
+*           Author       : YangLin
+*           Modification : Created function
+*****************************************************************************/
+Image DetectRotationInvariantLBP(Image &src, int radius, int neighbors)
+{
+    assert(src.c == 1);
+    //Pic Map to Matrix
+    GrayImgMap src_mat = GrayImgCvtMap(src);
+
+    Image dst(src.w-2*radius, src.h-2*radius, 1);
+    unsigned char *p_dst_data = (unsigned char *)dst.data;
+    memset(p_dst_data, 0, dst.w*dst.h);    
+
+    for(int k = 0; k < neighbors; k++)
+    {
+        //计算采样点对于中心点坐标的偏移量rx，ry
+        float rx = static_cast<float>(radius * cos(2.0 * OPENDIP_PI * k / neighbors));
+        float ry = -static_cast<float>(radius * sin(2.0 * OPENDIP_PI * k / neighbors));
+
+        //对采样点偏移量分别进行上下取整
+        int x1 = static_cast<int>(floor(rx));
+        int x2 = static_cast<int>(ceil(rx));
+        int y1 = static_cast<int>(floor(ry));
+        int y2 = static_cast<int>(ceil(ry));
+        //将坐标偏移量映射到0-1之间
+        float tx = rx - x1;
+        float ty = ry - y1;
+        //根据0-1之间的x，y的权重计算公式计算权重，权重与坐标具体位置无关，与坐标间的差值有关
+        float w1 = (1-tx) * (1-ty);
+        float w2 =    tx  * (1-ty);
+        float w3 = (1-tx) *    ty;
+        float w4 =    tx  *    ty;
+
+        //循环处理每个像素
+        for(int i = radius; i < src.h-radius; ++i)
+        {
+            for(int j = radius; j < src.w-radius; ++j)
+            {
+                //获得中心像素点的灰度值
+                unsigned char center = src_mat(i,j);
+                //根据双线性插值公式计算第k个采样点的灰度值
+                float neighbor = src_mat(i+x1,j+y1) * w1 + src_mat(i+x1,j+y2) *w2 \
+                    + src_mat(i+x2,j+y1) * w3 + src_mat(i+x2,j+y2) *w4;
+                //LBP特征图像的每个邻居的LBP值累加，累加通过与操作完成，对应的LBP值通过移位取得
+                p_dst_data[(i-radius)*dst.w + j - radius] |= (neighbor > center) << (neighbors-k-1); 
+            }
+        }
+    }
+
+    //进行旋转不变处理
+    for(int i = 0; i < dst.h; ++i)
+    {
+        for(int j = 0; j < dst.w; ++j)
+        {
+            unsigned char currentValue = p_dst_data[i*src.w+j];
+            unsigned char minValue = currentValue;
+            for(int k = 1; k < neighbors; ++k)
+            {
+                //循环左移
+                unsigned char temp = (currentValue>>(neighbors-k)) | (currentValue<<k);
+                if(temp < minValue)
+                {
+                    minValue = temp;
+                }
+            }
+            p_dst_data[i*src.w+j] = minValue;
         }
     }
 

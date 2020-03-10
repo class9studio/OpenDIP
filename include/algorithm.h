@@ -195,6 +195,8 @@ namespace opendip {
     Image DetectOriginLBP(Image &src);
     // 改进LBP-圆形LBP可以设置半径和采样点
     Image DetectCircleLBP(Image &src, int radius, int neighbors);
+    // 旋转不变性LBP
+    Image DetectRotationInvariantLBP(Image &src, int radius, int neighbors);
 } 
 
 #endif //___OPENDIP_ALGORITHM_H_
