@@ -827,7 +827,6 @@ TEST_CASE("opendip-Harris角点检测")
 	ImgShow(dst, "Result");
 	REQUIRE(true);
 }
-#endif
 
 TEST_CASE("opendip-Gamma Correction")
 {
@@ -838,6 +837,25 @@ TEST_CASE("opendip-Gamma Correction")
 	Image dst1 = GammaCorrection(src, 2.5);
 	ImgShow(dst1, "gamma2");
 	REQUIRE(true);
+}
+#endif
+
+TEST_CASE("opendip-OriginLbp")
+{
+	Image src = ImgRead("../data/test_image/lena_gray.jpg");
+	ImgShow(src, "origin");
+	Image dst = DetectOriginLBP(src);
+	ImgShow(dst, "origin lbp");
+}
+
+TEST_CASE("opendip-CircleLbp")
+{
+	Image src = ImgRead("../data/test_image/lena_gray.jpg");
+	ImgShow(src, "origin");
+	Image dst = DetectCircleLBP(src, 3, 8);
+	ImgShow(dst, "circle lbp");
+	Image dst1 = DetectCircleLBP(src, 1, 8);
+	ImgShow(dst1, "circle1 lbp");
 }
 
 

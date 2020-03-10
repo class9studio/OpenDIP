@@ -421,9 +421,9 @@ Image MorphGradient(Image &src, MatrixXd kernel, Morph_Gradient_Type type)
 			Image dst_erode  = MorphErode(src, kernel);
 			if(1 == src.c)
 			{
-				vector<GrayImgMap> gray_map_dilate = GrayImgCvtMap(dst_dilate);
-				vector<GrayImgMap> gray_map_erode  = GrayImgCvtMap(dst_erode);
-				gray_map_dilate[0] += gray_map_erode[0];
+				GrayImgMap gray_map_dilate = GrayImgCvtMap(dst_dilate);
+				GrayImgMap gray_map_erode  = GrayImgCvtMap(dst_erode);
+				gray_map_dilate += gray_map_erode;
 			}
 			else
 			{
@@ -439,9 +439,9 @@ Image MorphGradient(Image &src, MatrixXd kernel, Morph_Gradient_Type type)
 			Image dst_erode = MorphErode(src, kernel);
 			if(src.c == 1)
 			{
-				vector<GrayImgMap> gray_map_src = GrayImgCvtMap(src);
-				vector<GrayImgMap> gray_map_erode  = GrayImgCvtMap(dst_erode);
-				gray_map_erode[0] -= gray_map_src[0];
+				GrayImgMap gray_map_src = GrayImgCvtMap(src);
+				GrayImgMap gray_map_erode  = GrayImgCvtMap(dst_erode);
+				gray_map_erode -= gray_map_src;
 			}
 			else 
 			{
@@ -458,9 +458,9 @@ Image MorphGradient(Image &src, MatrixXd kernel, Morph_Gradient_Type type)
 			Image dst_dilate = MorphDilate(src, kernel);
 			if(src.c == 1)
 			{
-				vector<GrayImgMap> gray_map_dilate = GrayImgCvtMap(dst_dilate);
-				vector<GrayImgMap> gray_map_src  = GrayImgCvtMap(src);
-				gray_map_dilate[0] += gray_map_src[0];
+				GrayImgMap gray_map_dilate = GrayImgCvtMap(dst_dilate);
+				GrayImgMap gray_map_src  = GrayImgCvtMap(src);
+				gray_map_dilate += gray_map_src;
 			}
 			else 
 			{
@@ -500,9 +500,9 @@ Image MorphTophat(Image &src, MatrixXd kernel)
 	Image dst_open = MorphOpen(src, kernel);
 	if(src.c == 1)
 	{
-		vector<GrayImgMap> gray_map_open = GrayImgCvtMap(dst_open);
-		vector<GrayImgMap> gray_map_src  = GrayImgCvtMap(src);
-		gray_map_open[0] += gray_map_src[0];
+		GrayImgMap gray_map_open = GrayImgCvtMap(dst_open);
+		GrayImgMap gray_map_src  = GrayImgCvtMap(src);
+		gray_map_open += gray_map_src;
 	}
 	else 
 	{
@@ -535,9 +535,9 @@ Image MorphBlackhat(Image &src, MatrixXd kernel)
 
 	if(src.c == 1)
 	{
-		vector<GrayImgMap> gray_map_close = GrayImgCvtMap(dst_close);
-		vector<GrayImgMap> gray_map_src  = GrayImgCvtMap(src);
-		gray_map_close[0] += gray_map_src[0];
+		GrayImgMap gray_map_close = GrayImgCvtMap(dst_close);
+		GrayImgMap gray_map_src  = GrayImgCvtMap(src);
+		gray_map_close += gray_map_src;
 	}
 	else 
 	{

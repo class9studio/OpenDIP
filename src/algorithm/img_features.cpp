@@ -271,4 +271,107 @@ vector<vector<vector<double>>> DetectHOGDescription(Image &src, int cell_size, i
     return hog_vec;
 }
 
+/*****************************************************************************
+*   Function name: DetectOriginLBP
+*   Description  : 原始LBP特征描述
+*   Parameters   : src          原始图像
+*   Return Value : Image        LBP纹理图
+*   Spec         :
+*          原始的LBP算子定义在像素3*3的邻域内，以邻域中心像素为阈值，相邻的8个像素的灰度值与邻域中心的像素值进行比较，
+*       若周围像素大于中心像素值，则该像素点的位置被标记为1，否则为0。这样，3*3邻域内的8个点经过比较可产生8位二进制数，
+*       将这8位二进制数依次排列形成一个二进制数字，这个二进制数字就是中心像素的LBP值; 中心像素的LBP值反映了该像素周围区域的纹理信息
+*   History:
+*
+*       1.  Date         : 2020-3-10  10:58
+*           Author       : YangLin
+*           Modification : Created function
+*****************************************************************************/
+Image DetectOriginLBP(Image &src)
+{
+    assert(src.c == 1); //support gray pic only
+    //Pic Map to Matrix
+    GrayImgMap src_mat = GrayImgCvtMap(src);
+
+    Image dst(src.w-2, src.h-2, 1);
+    unsigned char *p_dst_data = (unsigned char *)dst.data;
+    memset(p_dst_data, 0, dst.w*dst.h);
+    for(int i = 1; i < src.h - 1; ++i)
+    {
+        for(int j = 1; j < src.w - 1; ++j)
+        {
+            unsigned char lbpCode = 0;
+            unsigned char center = src_mat(i,j);
+            lbpCode |= (src_mat(i-1,j-1) > center) << 7; //从z左上角，顺时针
+            lbpCode |= (src_mat(i-1,j  ) > center) << 6;
+            lbpCode |= (src_mat(i-1,j+1) > center) << 5;
+            lbpCode |= (src_mat(i  ,j+1) > center) << 4;
+            lbpCode |= (src_mat(i+1,j+1) > center) << 3;
+            lbpCode |= (src_mat(i+1,j  ) > center) << 2;
+            lbpCode |= (src_mat(i+1,j-1) > center) << 1;
+            lbpCode |= (src_mat(i  ,j-1) > center) << 0; 
+            p_dst_data[(i-1)*dst.w + j -1] = lbpCode;       
+        }
+    }
+
+    return dst;
+}
+
+/*
+*  对于目标像素点，映射原图的点关系式：
+*  xp = xc + R*cos(2πp/P)
+*  yp = yc - R*sin(2πp/P)
+*     其中P是采样点, p是第几个采样点
+*  得出映射关系后，通过线性插值得出目标坐标的像素值
+*  线性插值:              f(0,0) f(0,1)   1-y
+*     f(x, y) = [1-x, x][f(1,0) f(1,1)][  y  ]
+*/
+Image DetectCircleLBP(Image &src, int radius, int neighbors)
+{
+    assert(src.c == 1);
+    //Pic Map to Matrix
+    GrayImgMap src_mat = GrayImgCvtMap(src);
+
+    Image dst(src.w-2*radius, src.h-2*radius, 1);
+    unsigned char *p_dst_data = (unsigned char *)dst.data;
+    memset(p_dst_data, 0, dst.w*dst.h);    
+
+    for(int k = 0; k < neighbors; k++)
+    {
+        //计算采样点对于中心点坐标的偏移量rx，ry
+        float rx = static_cast<float>(radius * cos(2.0 * OPENDIP_PI * k / neighbors));
+        float ry = -static_cast<float>(radius * sin(2.0 * OPENDIP_PI * k / neighbors));
+
+        //对采样点偏移量分别进行上下取整
+        int x1 = static_cast<int>(floor(rx));
+        int x2 = static_cast<int>(ceil(rx));
+        int y1 = static_cast<int>(floor(ry));
+        int y2 = static_cast<int>(ceil(ry));
+        //将坐标偏移量映射到0-1之间
+        float tx = rx - x1;
+        float ty = ry - y1;
+        //根据0-1之间的x，y的权重计算公式计算权重，权重与坐标具体位置无关，与坐标间的差值有关
+        float w1 = (1-tx) * (1-ty);
+        float w2 =    tx  * (1-ty);
+        float w3 = (1-tx) *    ty;
+        float w4 =    tx  *    ty;
+
+        //循环处理每个像素
+        for(int i = radius; i < src.h-radius; ++i)
+        {
+            for(int j = radius; j < src.w-radius; ++j)
+            {
+                //获得中心像素点的灰度值
+                unsigned char center = src_mat(i,j);
+                //根据双线性插值公式计算第k个采样点的灰度值
+                float neighbor = src_mat(i+x1,j+y1) * w1 + src_mat(i+x1,j+y2) *w2 \
+                    + src_mat(i+x2,j+y1) * w3 + src_mat(i+x2,j+y2) *w4;
+                //LBP特征图像的每个邻居的LBP值累加，累加通过与操作完成，对应的LBP值通过移位取得
+                p_dst_data[(i-radius)*dst.w + j - radius] |= (neighbor > center) << (neighbors-k-1); 
+            }
+        }
+    }
+
+    return dst;
+}
+
 } //namespace opendip

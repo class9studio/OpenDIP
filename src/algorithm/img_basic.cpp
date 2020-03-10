@@ -392,13 +392,10 @@ void MinMaxLoc(Image &src, unsigned char *min, unsigned char *max, Point &min_lo
 *           Author       : YangLin
 *           Modification : function increased
 *****************************************************************************/
-vector<GrayImgMap> GrayImgCvtMap(Image &src)
+GrayImgMap GrayImgCvtMap(Image &src)
 {
 	assert(src.c == 1);
-	vector<GrayImgMap> res_maps;
-	res_maps.push_back(GrayImgMap((unsigned char *)src.data, src.h, src.w));
-
-	return res_maps;
+	return(GrayImgMap((unsigned char *)src.data, src.h, src.w));
 }
 
 /*****************************************************************************
@@ -414,13 +411,10 @@ vector<GrayImgMap> GrayImgCvtMap(Image &src)
 *           Author       : YangLin
 *           Modification : function increased
 *****************************************************************************/
-vector<GrayImgMapConst> GrayImgCvtMapConst(Image &src)
+GrayImgMapConst GrayImgCvtMapConst(Image &src)
 {
 	assert(src.c == 1);
-	vector<GrayImgMapConst> res_maps;
-	res_maps.push_back(GrayImgMapConst((unsigned char *)src.data, src.h, src.w));
-
-	return res_maps;
+	return(GrayImgMapConst((unsigned char *)src.data, src.h, src.w));
 }
 
 /*****************************************************************************

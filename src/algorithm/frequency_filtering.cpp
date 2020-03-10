@@ -731,10 +731,10 @@ Image FrequencyFiltering(Image &src, Frequency_Filter_Type filter_type, double p
 
     //将原图像扩充至2的幂次-4倍，并用黑色填充，防止周期缠绕
     Image src_ex(4*src.w, 4*src.h, 1);
-    vector<GrayImgMap> src_map = GrayImgCvtMap(src);
-    vector<GrayImgMap> src_ex_map = GrayImgCvtMap(src_ex);
-    vector<GrayImgMap> dst_map = GrayImgCvtMap(dst);
-    src_ex_map[0].block(0,0,src.h,src.w) = src_map[0];
+    GrayImgMap src_map = GrayImgCvtMap(src);
+    GrayImgMap src_ex_map = GrayImgCvtMap(src_ex);
+    GrayImgMap dst_map = GrayImgCvtMap(dst);
+    src_ex_map.block(0,0,src.h,src.w) = src_map;
 
     //产生滤波器
     double *filter = new double[src.w*src.h]();
@@ -762,7 +762,7 @@ Image FrequencyFiltering(Image &src, Frequency_Filter_Type filter_type, double p
     //IFFT
     ImgIFFT(temp_complex, 4*src.w, 4*src.h);
     //还原图像
-    dst_map[0] = src_ex_map[0].block(0,0,src.h,src.w);
+    dst_map = src_ex_map.block(0,0,src.h,src.w);
 
     delete[] filter;
     delete[] temp_complex;

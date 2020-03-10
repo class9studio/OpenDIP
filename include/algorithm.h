@@ -30,8 +30,8 @@ namespace opendip {
     void MinMaxLoc(Image &src, unsigned char *min, unsigned char *max, Point &min_loc, Point &max_loc);
 
     // 单通道图像数据映射到Map中
-    vector<GrayImgMap> GrayImgCvtMap(Image &src);
-    vector<GrayImgMapConst> GrayImgCvtMapConst(Image &src);
+    GrayImgMap GrayImgCvtMap(Image &src);
+    GrayImgMapConst GrayImgCvtMapConst(Image &src);
     vector<ColorImgMap> ColorImgCvtMap(Image &src);
     vector<ColorImgMapConst> ColorImgCvtMapConst(Image &src);
 
@@ -191,6 +191,10 @@ namespace opendip {
     vector<vector<vector<double>>> DetectHOGDescription(Image &src, int cell_size, int bin_size);
     // Hog+SVM用于行人检测
     int HogSvm_PeopleDetector(string pic_name);
+    // 原始LBP特征提取
+    Image DetectOriginLBP(Image &src);
+    // 改进LBP-圆形LBP可以设置半径和采样点
+    Image DetectCircleLBP(Image &src, int radius, int neighbors);
 } 
 
 #endif //___OPENDIP_ALGORITHM_H_

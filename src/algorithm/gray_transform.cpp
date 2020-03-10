@@ -550,11 +550,11 @@ void GussianNoiseImg_Maps(Image &src, double mean, double sigma)
     //将image映射成Map的matrix
     if(1 == src.c)
     {
-        vector<GrayImgMap> maps = GrayImgCvtMap(src);
-        vector<GrayImgMap> maps_guss = GrayImgCvtMap(gussain_noise);
+        GrayImgMap maps = GrayImgCvtMap(src);
+        GrayImgMap maps_guss = GrayImgCvtMap(gussain_noise);
 
         // map的加和操作会修改data的数据
-        maps[0] += maps_guss[0];
+        maps += maps_guss;
     }
     else if(3 == src.c)
     {
