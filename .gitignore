@@ -8,4 +8,4 @@
 /Windows/.vs/
 /Windows/OpenDIP/x64/
 /Windows/Windows/x64
-#/Windows/cudaOpenDIP/
+/Windows/cudaOpenDIP/

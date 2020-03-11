@@ -12,6 +12,6 @@ int cudaVecAddTest(int N);
 int cudaStencilTest(int N);
 //RGB2Gray
 Image cudaOpenDipRGB2Gray(Image &src);
-
+Image cudaConv2d(Image &src, int kernel_size);
 #endif
 

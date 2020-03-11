@@ -25,7 +25,6 @@ TEST_CASE("opendip-cudaStencil")
 	cudaStencilTest(N);
 	REQUIRE(true);
 }
-#endif
 
 TEST_CASE("opendip-cudaRGB2Gray")
 {
@@ -36,5 +35,17 @@ TEST_CASE("opendip-cudaRGB2Gray")
 	printf("LinearInterpolation time: %d ms.\n ", (int)(nDetectTime * 1000));
 
 	ImgWrite("../../../data/output_image/linux/lena_cuda.jpg", dst);
+	REQUIRE(true);
+}
+#endif
+
+TEST_CASE("opendip-cudaConv2d")
+{
+	Image src = ImgRead("../../../data/test_image/lena_gray.jpg");
+	double startTime = now();
+	Image dst = cudaConv2d(src, 3);
+	double nDetectTime = calcElapsed(startTime, now());
+	printf("LinearInterpolation time: %d ms.\n ", (int)(nDetectTime * 1000));
+	ImgWrite("../../../data/output_image/linux/lena_cuda_conv2d.jpg", dst);	
 	REQUIRE(true);
 }
