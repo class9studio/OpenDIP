@@ -5,6 +5,7 @@
 #include "image.h"
 #include "algorithm.h"
 #include "timing.h"
+#include "cudaCommon.h" 
 
 #define CATCH_CONFIG_MAIN          //catch2的main函数
 #include "catch2.h"
@@ -838,7 +839,6 @@ TEST_CASE("opendip-Gamma Correction")
 	ImgShow(dst1, "gamma2");
 	REQUIRE(true);
 }
-#endif
 
 TEST_CASE("opendip-OriginLbp")
 {
@@ -857,6 +857,28 @@ TEST_CASE("opendip-CircleLbp")
 	Image dst1 = DetectCircleLBP(src, 1, 8);
 	ImgShow(dst1, "circle1 lbp");
 }
+
+TEST_CASE("cuda")
+{
+	cudaDeviceTest();
+	REQUIRE(true);
+}
+
+TEST_CASE("cuda-vecAdd")
+{
+	int N = 1024;
+	cudaVecAddTest(N);
+	REQUIRE(true);
+}
+#endif
+
+TEST_CASE("opendip-cudaStencil")
+{
+	int N = 30;
+	cudaStencilTest(N);
+	REQUIRE(true);
+}
+
 
 
 

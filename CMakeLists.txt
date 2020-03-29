@@ -1,8 +1,8 @@
 # Set the minimum version of CMake that can be used
-cmake_minimum_required(VERSION 3.1)
+cmake_minimum_required(VERSION 3.8)
 
 # Set the project name
-project (OpenDIP)
+project (OpenDIP LANGUAGES CXX CUDA)
 
 # Use c++11, to build catch2 
 set(CMAKE_CXX_STANDARD 11)
@@ -11,6 +11,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 # Set Options
 option(WITH_OPENCV "With OpenCV Support" ON)
 option(WITH_MATPLOTLIB_CPP "With Matplotlib-cpp Support" ON)
+option(WITH_CUDA_CPP "With Cuda-cpp Support" ON)
 
 # add the CMakeFile that defines catch2、eigen3
 add_subdirectory(3rd_party/catch2)
@@ -32,6 +33,10 @@ set(ALGORITHM_SOURCE
 
     #src/algorithm/features_extraction/harris_opencv.cpp   #OpenCV only
     src/algorithm/features_extraction/hog_svm_opencv.cpp
+)
+
+set(CUDA_CPP_SOURCE
+    src/cuda/cudaCommon.cu
 )
 
 add_library(OpenDIP STATIC
@@ -81,7 +86,14 @@ elseif(UNIX)
         else()
             message(FATAL_ERROR "cannot find PythonLibs")
         endif()
-    endif()      
+    endif()  
+
+    if(WITH_CUDA_CPP)
+        add_library(CudaCpp STATIC
+            ${CUDA_CPP_SOURCE}
+        )
+        target_compile_features(CudaCpp PUBLIC cxx_std_11)
+    endif()    
 endif()
 
 #############################################
@@ -104,7 +116,8 @@ add_executable(unit_tests ${SOURCES})
 # link library
 target_link_libraries(unit_tests
     OpenDIP
-    Catch2::Test	
+    Catch2::Test
+    CudaCpp	
 )
 
 add_test(test_all unit_tests)

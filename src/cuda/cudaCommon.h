@@ -7,5 +7,6 @@ int cudaDeviceTest();
 int cudaVecAddTest(int N);
 //share memory使用
 int cudaStencilTest(int N);
+
 #endif
 
