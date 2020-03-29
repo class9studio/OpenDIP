@@ -1,7 +1,8 @@
 #include<stdio.h>
 
-#include "cudaCommon.h"
+#include "cudahead.h"
 
+namespace opendip{
 
 void init_random_i(int *var, int n)
 {
@@ -167,4 +168,6 @@ int cudaStencilTest(int N)
   cudaFree(dev_out);
   
   return 0;
+}
+
 }

@@ -38,6 +38,7 @@ set(ALGORITHM_SOURCE
 set(CUDA_CPP_SOURCE
     src/cuda/cudaCommon.cu
     src/cuda/cudaConv2d.cu
+    src/cuda/cudaImgResize.cu
 )
 
 add_library(OpenDIP STATIC
@@ -93,7 +94,6 @@ elseif(UNIX)
         add_library(CudaCpp STATIC
             ${CUDA_CPP_SOURCE}
         )
-        target_compile_features(CudaCpp PUBLIC cxx_std_11)
     endif()    
 endif()
 
@@ -138,7 +138,6 @@ target_include_directories(CudaCpp
     PUBLIC 
         ${PROJECT_SOURCE_DIR}/include
 )
-
 
 
 
