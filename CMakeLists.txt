@@ -37,6 +37,7 @@ set(ALGORITHM_SOURCE
 
 set(CUDA_CPP_SOURCE
     src/cuda/cudaCommon.cu
+    src/cuda/cudaConv2d.cu
 )
 
 add_library(OpenDIP STATIC
@@ -131,6 +132,11 @@ target_include_directories(OpenDIP
         ${PROJECT_SOURCE_DIR}/3rd_party/catch2
         ${PROJECT_SOURCE_DIR}/3rd_party/eigen3
 		${EIGEN_INCLUDE_DIRS}
+)
+
+target_include_directories(CudaCpp
+    PUBLIC 
+        ${PROJECT_SOURCE_DIR}/include
 )
 
 
