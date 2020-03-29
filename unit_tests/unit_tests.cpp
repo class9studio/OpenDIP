@@ -889,14 +889,9 @@ TEST_CASE("algorithm-cuda resize compare")
     printf("cpu BilinearInterpolation time: %d ms.\n ", (int)(nDetectTime * 1000));
 	ImgShow(dst_bilinear, "cpu_bilinear");
 
-
-	Image dst(1856, 960, src.c);
-	uchar *p_src_data = (uchar *)src.data;
-	uchar *p_dst_data = (uchar *)dst.data;
-	
 	
 	startTime = now();
-	cudaResize(p_src_data, src.w, src.h, 1856, 960, src.c, &p_dst_data);
+	Image dst = cudaResize(src, 1856, 960);
 	nDetectTime = calcElapsed(startTime, now());
     printf("gpu BilinearInterpolation time: %d ms.\n ", (int)(nDetectTime * 1000));	
 	ImgShow(dst, "gpu_bilinear");

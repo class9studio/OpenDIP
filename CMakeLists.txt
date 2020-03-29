@@ -44,6 +44,7 @@ set(CUDA_CPP_SOURCE
 add_library(OpenDIP STATIC
     ${COMMON_SOURCE}
     ${ALGORITHM_SOURCE}
+    ${CUDA_CPP_SOURCE}
 )
 
 if(WIN32)	
@@ -88,12 +89,6 @@ elseif(UNIX)
         else()
             message(FATAL_ERROR "cannot find PythonLibs")
         endif()
-    endif()  
-
-    if(WITH_CUDA_CPP)
-        add_library(CudaCpp STATIC
-            ${CUDA_CPP_SOURCE}
-        )
     endif()    
 endif()
 
@@ -118,7 +113,6 @@ add_executable(unit_tests ${SOURCES})
 target_link_libraries(unit_tests
     OpenDIP
     Catch2::Test
-    CudaCpp	
 )
 
 add_test(test_all unit_tests)
@@ -133,11 +127,5 @@ target_include_directories(OpenDIP
         ${PROJECT_SOURCE_DIR}/3rd_party/eigen3
 		${EIGEN_INCLUDE_DIRS}
 )
-
-target_include_directories(CudaCpp
-    PUBLIC 
-        ${PROJECT_SOURCE_DIR}/include
-)
-
 
 

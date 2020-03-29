@@ -115,29 +115,35 @@ namespace opendip
         return hostResizedImage;
     }
 
-    void cudaResize(uchar* src_data, int origin_w, int origin_h, int resize_w, int resize_h, int channel, uchar **dst_data_ptr)
+    Image cudaResize(Image &src, int resize_w, int resize_h)
     {
         // gpu version
-        printf("bilinear upsampling gpu version starts:\n");
-        uchar* dataGpu = NULL;
-        unsigned int lengthSrc= origin_w* origin_h* channel * sizeof(uchar);
-        unsigned int lengthResize= resize_w* resize_h* channel * sizeof(uchar);
-        reAllocPinned(lengthSrc, lengthResize, src_data); //allocate pinned host memory for fast cuda memcpy 
+        Image dst(resize_w, resize_h, src.c);
+        uchar *p_src_data = (uchar *)src.data;
+        uchar *p_dst_data = (uchar *)dst.data;
 
-        initGPU(resize_w, resize_h, channel);
+        uchar* dataGpu = NULL;
+        unsigned int lengthSrc= src.w* src.h* src.c * sizeof(uchar);
+        unsigned int lengthResize= resize_w* resize_h* src.c * sizeof(uchar);
+        reAllocPinned(lengthSrc, lengthResize, p_src_data); //allocate pinned host memory for fast cuda memcpy 
+
+        initGPU(resize_w, resize_h, src.c);
 
         double cpu_startTime = clock();
-        dataGpu = resizeBilinear_gpu(origin_w, origin_h, channel, resize_w, resize_h); //init device
+        dataGpu = resizeBilinear_gpu(src.w, src.h, src.c, resize_w, resize_h); //init device
         double cpu_endTime = clock();
         double cpu_ElapseTime = ((double)(cpu_endTime - cpu_startTime)*1000 / (double)CLOCKS_PER_SEC);
         printf("Time GPU: %f ms\n", cpu_ElapseTime);
+
         // for (int i = 0; i < RESIZE_CALL_NUM; i++){
-        //     dataGpu = resizeBilinear_gpu(origin_w, origin_h, channel, resize_w, resize_h);
+        //     dataGpu = resizeBilinear_gpu(src.w, src.h, src.c, resize_w, resize_h);
         // }
 
-        memcpy((*dst_data_ptr), dataGpu,lengthResize);
+        memcpy(p_dst_data, dataGpu,lengthResize);
         deinitGPU();
         freePinned();  
+
+        return dst;
     }
 
 }

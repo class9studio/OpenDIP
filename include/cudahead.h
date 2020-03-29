@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <iostream>
 #include <math.h>
+#include "image.h"
 
 typedef unsigned char uchar;
 
@@ -15,8 +16,8 @@ int cudaVecAddTest(int N);
 //share memory使用
 int cudaStencilTest(int N);
 //RGB2Gray
-// Image cudaOpenDipRGB2Gray(Image &src);
-// Image cudaConv2d(Image &src, int kernel_size);
+Image cudaOpenDipRGB2Gray(Image &src);
+Image cudaConv2d(Image &src, int kernel_size);
 
 //gpu resize
 void reAllocPinned(unsigned int lengthSrc, unsigned int lengthResize, uchar* dataSource);
@@ -26,8 +27,8 @@ void initGPU(int w, int h, int c, uchar dtype = sizeof(uchar));
 void deinitGPU();
 
 //Img Resize
-// Image cudaResize(Image &src, int resize_w, int resize_h);
-void cudaResize(uchar* src_data, int origin_w, int origin_h, int resize_w, int resize_h, int channel, uchar **dst_data_ptr);
+Image cudaResize(Image &src, int resize_w, int resize_h);
+// void cudaResize(uchar* src_data, int origin_w, int origin_h, int resize_w, int resize_h, int channel, uchar **dst_data_ptr);
 
 }
 
