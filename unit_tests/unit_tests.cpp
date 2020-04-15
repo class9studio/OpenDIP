@@ -5,7 +5,7 @@
 #include "image.h"
 #include "algorithm.h"
 #include "timing.h"
-#include "cudaCommon.h" 
+#include "cudahead.h" 
 
 #define CATCH_CONFIG_MAIN          //catch2的main函数
 #include "catch2.h"
@@ -872,12 +872,32 @@ TEST_CASE("cuda-vecAdd")
 	cudaVecAddTest(N);
 	REQUIRE(true);
 }
-#endif
 
 TEST_CASE("opendip-cudaStencil")
 {
 	int N = 30;
 	cudaStencilTest(N);
+	REQUIRE(true);
+}
+#endif
+
+TEST_CASE("algorithm-cuda resize compare")
+{
+	Image src = ImgRead("../data/test_image/lena.jpg");
+
+	double startTime = now();
+	Image dst_bilinear = BilinearInterpolation(src, 1856, 960);
+	double nDetectTime = calcElapsed(startTime, now());
+    printf("cpu BilinearInterpolation time: %d ms.\n ", (int)(nDetectTime * 1000));
+	ImgShow(dst_bilinear, "cpu_bilinear");
+
+	
+	startTime = now();
+	Image dst = cudaResize(src, 1856, 960);
+	nDetectTime = calcElapsed(startTime, now());
+    printf("gpu BilinearInterpolation time: %d ms.\n ", (int)(nDetectTime * 1000));	
+	ImgShow(dst, "gpu_bilinear");
+
 	REQUIRE(true);
 }
 

@@ -2,8 +2,9 @@
 #include <iostream>
 #include <assert.h>
 #include <cuda_runtime.h>
-#include "cudaCommon.h"
+#include "cudahead.h"
 
+namespace opendip{
 static void HandleError(cudaError_t err, const char *file, int line)
 {
     if(err != cudaSuccess)
@@ -90,4 +91,5 @@ Image cudaConv2d(Image &src, int kernel_size)
     cudaFree(d_kernel);
 
     return dst;
+}
 }

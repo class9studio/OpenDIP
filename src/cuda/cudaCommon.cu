@@ -2,8 +2,10 @@
 #include <iostream>
 #include <assert.h>
 #include <cuda_runtime.h>
-#include "cudaCommon.h"
 
+#include "cudahead.h"
+
+namespace opendip{
 
 void init_random_i(int *var, int n)
 {
@@ -195,7 +197,7 @@ Image cudaOpenDipRGB2Gray(Image &src)
 	assert(src.c == 3);// src img should be color img
 	Image gray(src.w, src.h, 1);
 	image_pixel *h_src_data = (image_pixel *)src.data;
-	unsigned char *h_gray_data = (unsigned char *)gray.data;
+	// unsigned char *h_gray_data = (unsigned char *)gray.data;
 
 	image_pixel *d_color_data;
 	unsigned char *d_gray_data;
@@ -216,3 +218,4 @@ Image cudaOpenDipRGB2Gray(Image &src)
 
 	return gray;
 }
+} //namespace opendip
