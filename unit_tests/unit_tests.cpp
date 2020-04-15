@@ -846,6 +846,7 @@ TEST_CASE("opendip-OriginLbp")
 	ImgShow(src, "origin");
 	Image dst = DetectOriginLBP(src);
 	ImgShow(dst, "origin lbp");
+	REQUIRE(true);
 }
 
 TEST_CASE("opendip-CircleLbp")
@@ -856,6 +857,7 @@ TEST_CASE("opendip-CircleLbp")
 	ImgShow(dst, "circle lbp");
 	Image dst1 = DetectCircleLBP(src, 1, 8);
 	ImgShow(dst1, "circle1 lbp");
+	REQUIRE(true);
 }
 
 TEST_CASE("cuda")
@@ -879,7 +881,16 @@ TEST_CASE("opendip-cudaStencil")
 	REQUIRE(true);
 }
 
-
+TEST_CASE("opendip-RotationInvariantLbp")
+{
+	Image src = ImgRead("../data/test_image/lena_gray.jpg");
+	ImgShow(src, "origin");
+	Image dst = DetectRotationInvariantLBP(src, 3, 8);
+	ImgShow(dst, "RotationInvariant Lbp");
+	Image dst1 = DetectRotationInvariantLBP(src, 1, 8);
+	ImgShow(dst1, "RotationInvariant Lbp");
+	REQUIRE(true);
+}
 
 
 

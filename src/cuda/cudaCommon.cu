@@ -1,5 +1,7 @@
 #include<stdio.h>
-
+#include <iostream>
+#include <assert.h>
+#include <cuda_runtime.h>
 #include "cudaCommon.h"
 
 
@@ -167,4 +169,50 @@ int cudaStencilTest(int N)
   cudaFree(dev_out);
   
   return 0;
+}
+
+struct image_pixel
+{
+	unsigned char r;
+	unsigned char g;
+	unsigned char b;
+};
+
+__global__ void Rgb2Gray(image_pixel *d_color_data, unsigned char *d_gray_data, int image_rows, int image_cols)
+{
+	int i = blockIdx.x * blockDim.x + threadIdx.x;
+	int j = blockIdx.y * blockDim.y + threadIdx.y;
+
+	if (i < image_cols && j < image_rows) {
+		int pixel_index = image_cols * j + i;
+		image_pixel pixel = d_color_data[pixel_index];
+		d_gray_data[pixel_index] = pixel.r * 0.299 + pixel.g * 0.587 + pixel.b * 0.114;
+	}
+}
+
+Image cudaOpenDipRGB2Gray(Image &src)
+{
+	assert(src.c == 3);// src img should be color img
+	Image gray(src.w, src.h, 1);
+	image_pixel *h_src_data = (image_pixel *)src.data;
+	unsigned char *h_gray_data = (unsigned char *)gray.data;
+
+	image_pixel *d_color_data;
+	unsigned char *d_gray_data;
+	cudaMalloc((void**)&d_color_data, src.h*src.w * sizeof(image_pixel));
+	cudaMalloc((void**)&d_gray_data, src.h*src.w);
+
+	cudaMemcpy(d_color_data, h_src_data, src.h*src.w * sizeof(image_pixel), cudaMemcpyHostToDevice);
+
+	dim3 block_dim(16, 16);
+	dim3 grad_dim(src.w / block_dim.x + 1, src.h / block_dim.y + 1);
+
+	Rgb2Gray << <grad_dim, block_dim >> > (d_color_data, d_gray_data, src.h, src.w);
+
+	cudaMemcpy(gray.data, d_gray_data, src.h*src.w, cudaMemcpyDeviceToHost);
+
+	cudaFree(d_color_data);
+	cudaFree(d_gray_data);
+
+	return gray;
 }
