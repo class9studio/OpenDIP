@@ -11,6 +11,7 @@ namespace opendip{
 
 //测试是否存在device设备-GPU
 int cudaDeviceTest();
+int getThreadNum();
 //数组加法
 int cudaVecAddTest(int N);
 //share memory使用
@@ -30,6 +31,10 @@ void deinitGPU();
 Image cudaResize(Image &src, int resize_w, int resize_h);
 // void cudaResize(uchar* src_data, int origin_w, int origin_h, int resize_w, int resize_h, int channel, uchar **dst_data_ptr);
 
+//归约求和（one block）
+float RedutionSum(float *array);
+//归约求和（多个blocks)
+float RedutionSumBlocks(float *a, float *b);
 }
 
 #endif

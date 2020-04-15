@@ -879,7 +879,6 @@ TEST_CASE("opendip-cudaStencil")
 	cudaStencilTest(N);
 	REQUIRE(true);
 }
-#endif
 
 TEST_CASE("algorithm-cuda resize compare")
 {
@@ -909,6 +908,46 @@ TEST_CASE("opendip-RotationInvariantLbp")
 	ImgShow(dst, "RotationInvariant Lbp");
 	Image dst1 = DetectRotationInvariantLBP(src, 1, 8);
 	ImgShow(dst1, "RotationInvariant Lbp");
+	REQUIRE(true);
+}
+#endif
+
+TEST_CASE("opendip-reduce sum")
+{
+	float *ary = new float[16];
+	for(int i = 0; i < 16; i++)
+	{
+		ary[i] = i * (i + 1);
+	}
+
+	float res = RedutionSum(ary);
+	cout << "result is: " << res << endl;
+
+	delete[] ary;
+	REQUIRE(true);
+}
+
+TEST_CASE("opendip-reduce sum, blocks")
+{
+	float *a = new float[16];
+	float *b = new float[16];
+	float sum = 0;
+	for(int i = 0; i < 16; i++)
+	{
+		a[i] = i * (i + 1);
+		b[i] = i * (i - 2);
+	}
+
+	float res = RedutionSumBlocks(a, b);
+	cout << "result is: " << res << endl;
+
+	for(int j = 0; j < 16; j++)
+	{
+		sum += a[j]*b[j];
+	}
+	cout << "cpu result is: " << sum << endl;
+	delete[] a;
+	delete[] b;
 	REQUIRE(true);
 }
 

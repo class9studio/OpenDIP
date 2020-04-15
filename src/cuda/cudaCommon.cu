@@ -218,4 +218,18 @@ Image cudaOpenDipRGB2Gray(Image &src)
 
 	return gray;
 }
+
+int getThreadNum()
+{
+	cudaDeviceProp prop;//cudaDeviceProp的一个对象
+	int count = 0;//GPU的个数
+	cudaGetDeviceCount(&count);
+	std::cout << "gpu count：" << count << '\n';
+
+	cudaGetDeviceProperties(&prop, 0);//第二参数为那个gpu
+	std::cout << "Max thread nums：" << prop.maxThreadsPerBlock << std::endl;
+	std::cout << "Max Block nums: " << prop.maxGridSize[0] << '\t' << prop.maxGridSize[1] << '\t' << prop.maxGridSize[2] << std::endl;
+	return prop.maxThreadsPerBlock;
+}
+
 } //namespace opendip
