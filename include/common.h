@@ -32,11 +32,11 @@ namespace opendip
 	#define OPENDIP_PI   3.1415926535897932384626433832795
 	// image convert to Mat format
     typedef Matrix<unsigned char, Dynamic, Dynamic, RowMajor> RowMatrixXc;
-    typedef Map<RowMatrixXc, Unaligned, InnerStride<1>> GrayImgMap;
-    typedef Map<const RowMatrixXc, Unaligned, InnerStride<1>> GrayImgMapConst;
+    typedef Map<RowMatrixXc, Unaligned, InnerStride<1> > GrayImgMap;
+    typedef Map<const RowMatrixXc, Unaligned, InnerStride<1> > GrayImgMapConst;
 
-    typedef Map<RowMatrixXc, Unaligned, InnerStride<3>> ColorImgMap;
-    typedef Map<const RowMatrixXc, Unaligned, InnerStride<3>> ColorImgMapConst;
+    typedef Map<RowMatrixXc, Unaligned, InnerStride<3> > ColorImgMap;
+    typedef Map<const RowMatrixXc, Unaligned, InnerStride<3> > ColorImgMapConst;
 
     //read image data
     int ReadImage(char *file_name, unsigned char *p_image_data, long int image_size);

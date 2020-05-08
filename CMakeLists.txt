@@ -40,7 +40,13 @@ set(CUDA_CPP_SOURCE
     src/cuda/cudaConv2d.cu
     src/cuda/cudaImgResize.cu
     src/cuda/cudaRedutionSum.cu
-)
+    src/cuda/cudaThreadsOrg.cu
+    src/cuda/cudaUniqueGid.cu
+    src/cuda/cudaGrid2D.cu
+    src/cuda/cudaMemTrs.cu
+    src/cuda/cudaDeviceQuery.cu
+    src/cuda/cudaSumArray.cu
+    )
 
 add_library(OpenDIP STATIC
     ${COMMON_SOURCE}

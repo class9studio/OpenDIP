@@ -910,7 +910,6 @@ TEST_CASE("opendip-RotationInvariantLbp")
 	ImgShow(dst1, "RotationInvariant Lbp");
 	REQUIRE(true);
 }
-#endif
 
 TEST_CASE("opendip-reduce sum")
 {
@@ -950,6 +949,57 @@ TEST_CASE("opendip-reduce sum, blocks")
 	delete[] b;
 	REQUIRE(true);
 }
+
+TEST_CASE("opendip-cuda orgnazition")
+{
+	threads_organization();
+	REQUIRE(true);
+}
+
+TEST_CASE("opendip-cuda orgnazition1")
+{
+	threads_organization1();
+	REQUIRE(true);
+}
+
+TEST_CASE("opendip-cuda unique global index")
+{
+	unique_gid_calc();
+	REQUIRE(true);
+}
+
+TEST_CASE("opendip-cuda unique 2D")
+{
+	unique_gid_calculation_2d();
+	REQUIRE(true);
+}
+
+TEST_CASE("opendip-cuda unique 2D")
+{
+	unique_gid_calculation_2d_2d();
+	REQUIRE(true);
+}
+
+TEST_CASE("opendip-cuda memory transfer test")
+{
+	mem_transfer_test();
+	REQUIRE(true);
+}
+
+TEST_CASE("opendip-cuda device query")
+{
+	query_device();
+	REQUIRE(true);
+}
+#endif
+
+TEST_CASE("opendip-cuda device query")
+{
+	sum_array();
+	REQUIRE(true);
+}
+
+
 
 
 

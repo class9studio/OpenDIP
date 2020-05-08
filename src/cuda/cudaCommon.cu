@@ -4,6 +4,7 @@
 #include <cuda_runtime.h>
 
 #include "cudahead.h"
+#include "device_launch_parameters.h"
 
 namespace opendip{
 

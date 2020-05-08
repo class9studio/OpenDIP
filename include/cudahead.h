@@ -35,6 +35,16 @@ Image cudaResize(Image &src, int resize_w, int resize_h);
 float RedutionSum(float *array);
 //归约求和（多个blocks)
 float RedutionSumBlocks(float *a, float *b);
+
+int threads_organization(void);
+int threads_organization1(void);
+
+int unique_gid_calc(void);
+int unique_gid_calculation_2d(void);
+int unique_gid_calculation_2d_2d(void);
+int mem_transfer_test(void);
+void query_device(void);
+int sum_array(void);
 }
 
 #endif
