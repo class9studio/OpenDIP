@@ -47,6 +47,7 @@ set(CUDA_CPP_SOURCE
     src/cuda/cudaDeviceQuery.cu
     src/cuda/cudaSumArray.cu
     src/cuda/cudaWarpIndex.cu
+    src/cuda/cudaWarpDivergence.cu
     )
 
 add_library(OpenDIP STATIC
