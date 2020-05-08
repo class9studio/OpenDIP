@@ -991,14 +991,19 @@ TEST_CASE("opendip-cuda device query")
 	query_device();
 	REQUIRE(true);
 }
-#endif
 
 TEST_CASE("opendip-cuda device query")
 {
 	sum_array();
 	REQUIRE(true);
 }
+#endif
 
+TEST_CASE("opendip-cuda warps index")
+{
+	warps_index();
+	REQUIRE(true);
+}
 
 
 

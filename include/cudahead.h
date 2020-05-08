@@ -45,6 +45,7 @@ int unique_gid_calculation_2d_2d(void);
 int mem_transfer_test(void);
 void query_device(void);
 int sum_array(void);
+int warps_index(void);
 }
 
 #endif
