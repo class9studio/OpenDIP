@@ -1003,11 +1003,17 @@ TEST_CASE("opendip-cuda warps index")
 	warps_index();
 	REQUIRE(true);
 }
-#endif
 
 TEST_CASE("opendip-cuda warps divergence test")
 {
 	warp_divergence_test();
+	REQUIRE(true);
+}
+#endif
+
+TEST_CASE("opendip-cuda reduction neighbor pairs")
+{
+	reduction_neighbor_pairs();
 	REQUIRE(true);
 }
 

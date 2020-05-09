@@ -47,6 +47,7 @@ void query_device(void);
 int sum_array(void);
 int warps_index(void);
 int warp_divergence_test(void);
+int reduction_neighbor_pairs(void);
 }
 
 #endif
