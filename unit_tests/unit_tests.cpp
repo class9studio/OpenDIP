@@ -1023,12 +1023,17 @@ TEST_CASE("opendip-cuda reduction interleaved pairs")
 }
 #endif
 
-
 TEST_CASE("opendip-cuda reduction warp div improved neighbor pairs")
 {
 	reduction_warp_div_improved();
 	REQUIRE(true);
 }
+
+// TEST_CASE("opendip-cuda reduction with dynamic parallelism")
+// {
+// 	reduce_with_dynamic_parallelism();
+// 	REQUIRE(true);
+// }
 
 
 

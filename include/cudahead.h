@@ -50,7 +50,7 @@ int warp_divergence_test(void);
 int reduction_neighbor_pairs(void);
 int reduction_intleaved_pairs(void);
 int reduction_warp_div_improved(void);
-
+int reduce_with_dynamic_parallelism(void);
 }
 
 #endif
