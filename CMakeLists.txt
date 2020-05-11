@@ -52,6 +52,7 @@ set(CUDA_CPP_SOURCE
     src/cuda/cudaReductionInterleavedPair.cu
     src/cuda/cudaReductionWarpDivImp.cu
     # src/cuda/cudaReductionWithDynamicPara.cu
+    src/cuda/cudaReductionComparison.cu
     )
 
 add_library(OpenDIP STATIC
