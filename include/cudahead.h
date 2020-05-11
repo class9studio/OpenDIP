@@ -52,6 +52,7 @@ int reduction_intleaved_pairs(void);
 int reduction_warp_div_improved(void);
 int reduce_with_dynamic_parallelism(void);
 int reduction_comparison(void);
+int matrix_transpose(int kernel_type);
 }
 
 #endif
