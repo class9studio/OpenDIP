@@ -1046,10 +1046,22 @@ TEST_CASE("opendip-cuda matrix transpose")
 	matrix_transpose(kernel_type);
 	REQUIRE(true);
 }
-#endif
 
 TEST_CASE("opendip-cuda shared memory dynamic")
 {
 	shared_memory_dynamic();
+	REQUIRE(true);
+}
+
+TEST_CASE("opendip-cuda shared memory padding")
+{
+	shared_memory_padding();
+	REQUIRE(true);
+}
+#endif
+
+TEST_CASE("opendip-cuda shared memory matrix transpose")
+{
+	matrix_transpose_shared_memory();
 	REQUIRE(true);
 }
