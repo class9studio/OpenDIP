@@ -57,6 +57,7 @@ set(CUDA_CPP_SOURCE
     src/cuda/cudaSmemDynamic.cu
     src/cuda/cudaSmemPadding.cu
     src/cuda/cudaMatrixTransposeSmem.cu
+    src/cuda/cudaConstantStencilCompu.cu
     )
 
 add_library(OpenDIP STATIC

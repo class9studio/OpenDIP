@@ -56,6 +56,7 @@ int matrix_transpose(int kernel_type);
 int shared_memory_dynamic(void);
 int shared_memory_padding(void);
 int matrix_transpose_shared_memory(void);
+int stencil_computation_constant(void);
 }
 
 #endif

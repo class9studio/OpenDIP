@@ -1058,10 +1058,16 @@ TEST_CASE("opendip-cuda shared memory padding")
 	shared_memory_padding();
 	REQUIRE(true);
 }
-#endif
 
 TEST_CASE("opendip-cuda shared memory matrix transpose")
 {
 	matrix_transpose_shared_memory();
+	REQUIRE(true);
+}
+#endif
+
+TEST_CASE("opendip-cuda stencil computation constant")
+{
+	stencil_computation_constant();
 	REQUIRE(true);
 }
