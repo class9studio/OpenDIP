@@ -1039,11 +1039,17 @@ TEST_CASE("opendip-cuda reduction comparison")
 	reduction_comparison();
 	REQUIRE(true);
 }
-#endif
 
 TEST_CASE("opendip-cuda matrix transpose")
 {
 	int kernel_type = 2;
 	matrix_transpose(kernel_type);
+	REQUIRE(true);
+}
+#endif
+
+TEST_CASE("opendip-cuda shared memory dynamic")
+{
+	shared_memory_dynamic();
 	REQUIRE(true);
 }
